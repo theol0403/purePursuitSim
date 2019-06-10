@@ -1,0 +1,39 @@
+canvas {
+  border: 1px solid green;
+  /* margin: 10px; */
+}
+
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 15px;
+  background: #ccccff;
+  outline: none;
+  -moz-outline-radius: 50px;
+  border-radius: 50px;
+  opacity: 0.8;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: #ff0000;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  background: #ff0000;
+  border-width: 0;
+  cursor: pointer;
+}

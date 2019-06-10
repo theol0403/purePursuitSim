@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Path Generation</title>
+  <link href="index.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <canvas id="c"></canvas>
+
+  <script src="script/jquery.js">
+
+  </script>
+
+  <div class="sliderContainer">
+    <input type="range" min="1" max="1000" value="250" class="slider" id="resolutionSlider">
+    <span id="resValue"></span>
+
+    <input type="range" min="1" max="1000" value="250" class="slider" id="curveSlider">
+    <span id="curveValue"></span>
+
+    <input type="range" min="1" max="1000" value="1000" class="slider" id="toleranceSlider">
+    <span id="tolValue"></span>
+
+  </div>
+
+  <script src="script/lodash.js">
+  </script>
+
+  <script src="script/point.js">
+  </script>
+
+  <script src="script/pathgen.js">
+  </script>
+
+  <script src="script/canvas.js">
+  </script>
+
+  <script src="main.js">
+  </script>
+
+
+</body>
+
+</html>
