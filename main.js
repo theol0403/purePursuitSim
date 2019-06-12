@@ -59,9 +59,17 @@ function animate() {
   path = computeDistances(path);
   path = computeCurvature(path);
   // path = computeVelocity(path, 6, 5, 5.8);
-  for (let i = 0; i < 10; i++) {
-    console.log(path[i]);
-  }
+  // for (let i = 0; i < path.length; i++) {
+  //   console.log(path[i]);
+  // }
+
+  console.log("max: " + path.reduce(function(a, b) {
+    return Math.max(a, b.curvature);
+  }, 0));
+
+  console.log("min: " + path.reduce(function(a, b) {
+    return Math.min(a, b.curvature);
+  }, 0));
 
   /* draw waypoints and path */
   drawWaypoints(points);
