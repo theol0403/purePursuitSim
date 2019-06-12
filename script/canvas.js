@@ -1,5 +1,33 @@
 
 
+/*----Uility Functions----*/
+function perc2color(perc, min, max) {
+  let base = (max - min);
+  // console.log(max);
+  // if(Math.abs(base) < 0.001) {
+  //   base = 0;
+  // }
+  // console.log(max)
+
+  if (base == 0) { 
+    perc = 100; 
+  } else {
+    perc = (perc - min) / base * 100; 
+  }
+
+  let r, g, b = 0;
+  if (perc < 50) {
+    r = 255;
+    g = Math.round(5.1 * perc);
+  } else {
+    g = 255;
+    r = Math.round(510 - 5.10 * perc);
+  }
+
+  let h = r * 0x10000 + g * 0x100 + b * 0x1;
+  return '#' + ('000000' + h.toString(16)).slice(-6);
+}
+
 
 /*----Canvas Display----*/
 function drawWaypoints(points) {
@@ -20,15 +48,26 @@ function drawWaypoints(points) {
 function drawPath(path) {
   //extract points from path and upcanvasScale
   let canvasPath = [];
-  // console.log(typeof(path))
+
   path.forEach((node, i) => {
     canvasPath.push({ x: node.loc[0] * canvasScale, y: node.loc[1] * canvasScale })
   });
 
+  let minCurvature = path.reduce(function(a, b) {
+    return Math.min(a, b.curvature);
+  }, path[0].curvature);
+
+  let maxCurvature = path.reduce(function(a, b) {
+    return Math.max(a, b.curvature);
+  }, path[0].curvature);
+
   c.strokeStyle = "#000";
-  c.fillStyle = "#000";
+  c.fillStyle = perc2color(0, minCurvature, maxCurvature);
 
   canvasPath.forEach((node, i) => {
+
+    //find curvature colors
+    c.fillStyle = perc2color(node.curvature, minCurvature, maxCurvature);
     //draw points
     c.beginPath();
     c.arc(node.x, canvas.height - node.y, pointWidth, 0, Math.PI * 2);
@@ -105,9 +144,9 @@ function move(e) {
     lastCoord = canvasEventToLocalCoord(e);
     dragIndex = points.findIndex(function (node) {
       return lastCoord.x >= node.x - waypointWidth / canvasScale
-        && lastCoord.x <= node.x + waypointWidth / canvasScale
-        && lastCoord.y >= node.y - waypointWidth / canvasScale
-        && lastCoord.y <= node.y + waypointWidth / canvasScale;
+      && lastCoord.x <= node.x + waypointWidth / canvasScale
+      && lastCoord.y >= node.y - waypointWidth / canvasScale
+      && lastCoord.y <= node.y + waypointWidth / canvasScale;
     });
 
     if (e.ctrlKey) {
@@ -146,8 +185,8 @@ function move(e) {
         && goalY >= node.y
         && orginY <= node.y) {
         deleteIndexes.push(i);
-      }
-    });
+    }
+  });
   } else {
     lastCoord = canvasEventToLocalCoord(e);
     points[dragIndex] = lastCoord;

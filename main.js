@@ -31,7 +31,8 @@ const marginOffset = 9; //correction for canvas choords vs window choords. relat
 
 let points = [
 { x: 1, y: 1 },
-{ x: 3, y: 3 }
+{ x: 3, y: 3 },
+{ x: 3, y: 1 }
 ];
 
 
@@ -59,17 +60,9 @@ function animate() {
   path = computeDistances(path);
   path = computeCurvature(path);
   // path = computeVelocity(path, 6, 5, 5.8);
-  // for (let i = 0; i < path.length; i++) {
-  //   console.log(path[i]);
-  // }
-
-  console.log("max: " + path.reduce(function(a, b) {
-    return Math.max(a, b.curvature);
-  }, 0));
-
-  console.log("min: " + path.reduce(function(a, b) {
-    return Math.min(a, b.curvature);
-  }, 0));
+  for (let i = 0; i < path.length; i++) {
+    console.log(path[i].curvature);
+  }
 
   /* draw waypoints and path */
   drawWaypoints(points);
@@ -87,4 +80,4 @@ function animate() {
 }
 
 
-window.onload = animate;
+// window.onload = animate;

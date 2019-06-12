@@ -56,7 +56,7 @@ function smoothen(inp, dataWeight, tolerance) {
 
 function computeDistances(path) {
   const dist = (a, b) =>
-Math.sqrt((a.loc[0] - b.loc[0]) * (a.loc[0] - b.loc[0]) + (a.loc[1] - b.loc[1]) * (a.loc[1] - b.loc[1]));
+  Math.sqrt((a.loc[0] - b.loc[0]) * (a.loc[0] - b.loc[0]) + (a.loc[1] - b.loc[1]) * (a.loc[1] - b.loc[1]));
 
   path[0].setDistance(0);
   for (let i = 0; i < path.length - 1; i++) {
@@ -72,15 +72,16 @@ function computeCurvature(path) {
   path[0].setCurvature(0);
 
   for(let i = 0; i < path.length - 2; i++) {
-    let x2 = path[i].loc[0] + 0.0001;
+    let x2 = path[i].loc[0];
     let y2 = path[i].loc[1];
     let x1 = path[i+1].loc[0];
     let y1 = path[i+1].loc[1];
     let x3 = path[i+2].loc[0];
     let y3 = path[i+2].loc[1];
 
-    let k1 = 0.5 * (Math.pow(x1, 2) + Math.pow(y1, 2) - Math.pow(x2, 2) - Math.pow(y2, 2)) / (x1 - x2);
-    let k2 = (y1 - y2) / (x1 - x2);
+    let base = (x1 - x2);
+    let k1 = 0.5 * (Math.pow(x1, 2) + Math.pow(y1, 2) - Math.pow(x2, 2) - Math.pow(y2, 2)) / (base == 0 ? 1 : base);
+    let k2 = (y1 - y2) / (base == 0 ? 1 : base);
     let b = 0.5*(Math.pow(x2, 2) - 2*x2*k1 + Math.pow(y2, 2) - Math.pow(x3, 3) + 2*x3*k1 - Math.pow(y3, 2))/(x3*k2 - y3 + y2 - x2*k2);
     let a = k1 - k2*b;
     let r = Math.sqrt(Math.pow(x1-a, 2) + Math.pow(y1-b, 2));
@@ -94,20 +95,20 @@ function computeCurvature(path) {
 
 
 
-    function computeVelocity(path, maxVel, k, maxRate) {
-      const dist = (a, b) =>
+function computeVelocity(path, maxVel, k, maxRate) {
+  const dist = (a, b) =>
   Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
-        path[0].setTargetVel(0);
-        for (let i = path.length - 1; i > 0; i--) {
-            let lastVel = Math.min(maxVel, (k / path[i].curvature));
-            let start = path[i];
-            let end = path[i - 1];
-            let distance = dist({x: start.x, y: start.y}, {x: end.x, y: end.y});
-            let newVel = Math.min(lastVel, Math.sqrt(Math.pow(path[i].targetVel, 2) + 2 * maxRate * distance));
-            path[i - 1].setTargetVel(newVel);
-        }
-        return path;
-    }
+  path[0].setTargetVel(0);
+  for (let i = path.length - 1; i > 0; i--) {
+    let lastVel = Math.min(maxVel, (k / path[i].curvature));
+    let start = path[i];
+    let end = path[i - 1];
+    let distance = dist({x: start.x, y: start.y}, {x: end.x, y: end.y});
+    let newVel = Math.min(lastVel, Math.sqrt(Math.pow(path[i].targetVel, 2) + 2 * maxRate * distance));
+    path[i - 1].setTargetVel(newVel);
+  }
+  return path;
+}
 
 
 
