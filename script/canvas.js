@@ -2,18 +2,18 @@
 
 /*----Uility Functions----*/
 function perc2color(perc, min, max) {
-  let base = (max - min);
-  // console.log(max);
-  // if(Math.abs(base) < 0.001) {
-  //   base = 0;
-  // }
-  // console.log(max)
 
+  let base = (max - min);
+  // console.log("value: " + perc)
+  
   if (base == 0) { 
     perc = 100; 
   } else {
     perc = (perc - min) / base * 100; 
   }
+  // console.log("max: " + max)
+  // console.log("min: " + min)
+  // console.log("perc: " + perc)
 
   let r, g, b = 0;
   if (perc < 50) {
@@ -62,12 +62,11 @@ function drawPath(path) {
   }, path[0].curvature);
 
   c.strokeStyle = "#000";
-  c.fillStyle = perc2color(0, minCurvature, maxCurvature);
 
   canvasPath.forEach((node, i) => {
 
     //find curvature colors
-    c.fillStyle = perc2color(node.curvature, minCurvature, maxCurvature);
+    c.fillStyle = perc2color(path[i].curvature, minCurvature, maxCurvature);
     //draw points
     c.beginPath();
     c.arc(node.x, canvas.height - node.y, pointWidth, 0, Math.PI * 2);

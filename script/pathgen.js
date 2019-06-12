@@ -80,8 +80,8 @@ function computeCurvature(path) {
     let y3 = path[i+2].loc[1];
 
     let base = (x1 - x2);
-    let k1 = 0.5 * (Math.pow(x1, 2) + Math.pow(y1, 2) - Math.pow(x2, 2) - Math.pow(y2, 2)) / (base == 0 ? 1 : base);
-    let k2 = (y1 - y2) / (base == 0 ? 1 : base);
+    let k1 = 0.5 * (Math.pow(x1, 2) + Math.pow(y1, 2) - Math.pow(x2, 2) - Math.pow(y2, 2)) / base;
+    let k2 = (y1 - y2) / base;
     let b = 0.5*(Math.pow(x2, 2) - 2*x2*k1 + Math.pow(y2, 2) - Math.pow(x3, 3) + 2*x3*k1 - Math.pow(y3, 2))/(x3*k2 - y3 + y2 - x2*k2);
     let a = k1 - k2*b;
     let r = Math.sqrt(Math.pow(x1-a, 2) + Math.pow(y1-b, 2));
