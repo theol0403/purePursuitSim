@@ -42,8 +42,8 @@ function drawWaypoints(points) {
 function drawPath(path) {
 
   //curvature color calculations
-  let minCurve = getAttr(path, Math.min, a => a.curvature);
-  let maxCurve = getAttr(path, Math.max, a => a.curvature);
+  let minCurve = getAttr(path, Math.min, a => a.velocity);
+  let maxCurve = getAttr(path, Math.max, a => a.velocity);
 
   c.strokeStyle = "#000";
 
@@ -51,7 +51,7 @@ function drawPath(path) {
 
     let canvasX = node.x() * canvasScale;
     let canvasY = node.y() * canvasScale;
-    c.fillStyle = perc2color(node.curvature, minCurve, maxCurve); //find curvature color
+    c.fillStyle = perc2color(node.velocity, 0, 7); //find curvature color
 
     //draw points
     c.beginPath();

@@ -85,31 +85,49 @@ function computeCurvatures(path) {
     let semiPerimeter = (distanceOne + distanceTwo + distanceThree) / 2;
     let triangleArea = Math.sqrt(semiPerimeter * (semiPerimeter - distanceOne) * (semiPerimeter - distanceTwo) * (semiPerimeter - distanceThree));
 
-    let radius = (productOfSides) / (4 * triangleArea);
-    let curvature = 1 / radius;
+    let r = (productOfSides) / (4 * triangleArea);
+    let curvature = isNaN(1/r) ? 0 : 1/r;
     path[i].setCurvature(curvature);
   }
 
-  path[path.length - 1].setCurvature(0);
+  path[path.length - 1].setCurvature(0) ;
   return path;
 }
 
 
 
-function computeVelocity(path, maxVel, k, maxRate) {
-  const dist = (a, b) =>
-  Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
-  path[0].setVelocity(0);
-  for (let i = path.length - 1; i > 0; i--) {
-    let lastVel = Math.min(maxVel, (k / path[i].curvature));
-    let start = path[i];
-    let end = path[i - 1];
-    let distance = dist({x: start.x(), y: start.y()}, {x: end.x(), y: end.y()});
-    let newVel = Math.min(lastVel, Math.sqrt(Math.pow(path[i].velocity, 2) + 2 * maxRate * distance));
-    path[i - 1].setVelocity(newVel);
+// function computeVelocity(path, maxVel, k, maxRate) {
+//   const dist = (a, b) =>
+//   Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+//   path[0].setVelocity(0);
+//   for (let i = path.length - 1; i > 0; i--) {
+//     let lastVel = Math.min(maxVel, (k / path[i].curvature));
+//     let start = path[i];
+//     let end = path[i - 1];
+//     let distance = dist({x: start.x(), y: start.y()}, {x: end.x(), y: end.y()});
+//     let newVel = Math.min(lastVel, Math.sqrt(Math.pow(path[i].velocity, 2) + 2 * maxRate * distance));
+//     path[i - 1].setVelocity(newVel);
+//   }
+//   return path;
+// }
+
+function calculateMaxVelocity(path, i, maxVel, k) {
+  if (i > 0) {
+    let curvature = path[i].curvature;
+      return Math.min(maxVel, k / (curvature == 0 ? 1 : curvature)); //k is a constant (generally between 1-5 based on how quickly you want to make the turn)
+    }
+    return maxVel;
   }
-  return path;
-}
+
+  function computeVelocities(path, maxVel, maxAccel, k) {
+    path[0].setVelocity(0);
+    for (let i = path.length - 2; i >= 0; i--) {
+      let distance = dist(path[i + 1], path[i]);
+      let maxVel = Math.sqrt(Math.pow(path[i + 1].velocity, 2) + (2 * maxAccel * distance));
+      path[i].setVelocity(Math.min(calculateMaxVelocity(path, i, maxVel, k), maxVel));
+    }
+    return path;
+  }
 
 
 
