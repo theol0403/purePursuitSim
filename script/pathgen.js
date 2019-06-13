@@ -56,7 +56,7 @@ function smoothen(inp, dataWeight, tolerance) {
 
 function computeDistances(path) {
   const dist = (a, b) =>
-  Math.sqrt((a.loc[0] - b.loc[0]) * (a.loc[0] - b.loc[0]) + (a.loc[1] - b.loc[1]) * (a.loc[1] - b.loc[1]));
+  Math.sqrt((a.x() - b.x()) * (a.x() - b.x()) + (a.y() - b.y()) * (a.y() - b.y()));
 
   path[0].setDistance(0);
   for (let i = 0; i < path.length - 1; i++) {
@@ -72,12 +72,12 @@ function computeCurvature(path) {
   path[0].setCurvature(0);
 
   for(let i = 0; i < path.length - 2; i++) {
-    let x2 = path[i].loc[0];
-    let y2 = path[i].loc[1];
-    let x1 = path[i+1].loc[0];
-    let y1 = path[i+1].loc[1];
-    let x3 = path[i+2].loc[0];
-    let y3 = path[i+2].loc[1];
+    let x2 = path[i].x();
+    let y2 = path[i].y();
+    let x1 = path[i+1].x();
+    let y1 = path[i+1].y();
+    let x3 = path[i+2].x();
+    let y3 = path[i+2].y();
 
     let base = (x1 - x2);
     let k1 = 0.5 * (Math.pow(x1, 2) + Math.pow(y1, 2) - Math.pow(x2, 2) - Math.pow(y2, 2)) / base;

@@ -17,6 +17,14 @@ class WayPoint {
   //   this.curvature = p.curvature;
   // }
 
+  x() {
+    return this.loc[0];
+  }
+
+  y() {
+    return this.loc[1];
+  }
+
   setDistance(idistance) {
     this.distance = idistance;
   }

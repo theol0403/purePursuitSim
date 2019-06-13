@@ -52,8 +52,8 @@ function drawPath(path) {
 
   path.forEach((node, i) => {
 
-    let canvasX = node.loc[0] * canvasScale;
-    let canvasY = node.loc[1] * canvasScale;
+    let canvasX = node.x() * canvasScale;
+    let canvasY = node.y() * canvasScale;
     c.fillStyle = perc2color(path[i].curvature, minCurvature, maxCurvature); //find curvature color
 
     //draw points
@@ -64,8 +64,8 @@ function drawPath(path) {
 
     //draw lines
     if (i > 0) {
-      let lastX = path[i - 1].loc[0] * canvasScale;
-      let lastY = path[i - 1].loc[1] * canvasScale;
+      let lastX = path[i - 1].x() * canvasScale;
+      let lastY = path[i - 1].y() * canvasScale;
       c.beginPath();
       //move to previous point except for 0
       c.moveTo(lastX, canvas.height - lastY);
