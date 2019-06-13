@@ -23,9 +23,10 @@ function perc2color(perc, min, max) {
   return '#' + ('000000' + h.toString(16)).slice(-6);
 }
 
-function getAttr(op, get, array) {
+//gets a value from an variable nested in an array such as the min curvature
+function getAttr(array, compare, get) {
   return array.reduce((a, b) => {
-    return op(a, get(b));
+    return compare(a, get(b));
   }, get(array[0]));
 }
 
@@ -44,8 +45,8 @@ function drawWaypoints(points) {
 function drawPath(path) {
 
   //curvature color calculations
-  let minCurvature = getAttr(Math.min, a => a.distance, path);
-  let maxCurvature = getAttr(Math.max, a => a.distance, path);
+  let minCurvature = getAttr(path, Math.min, a => a.curvature);
+  let maxCurvature = getAttr(path, Math.max, a => a.curvature);
 
   c.strokeStyle = "#000";
 
@@ -53,7 +54,7 @@ function drawPath(path) {
 
     let canvasX = node.loc[0] * canvasScale;
     let canvasY = node.loc[1] * canvasScale;
-    c.fillStyle = perc2color(path[i].distance, minCurvature, maxCurvature); //find curvature color
+    c.fillStyle = perc2color(path[i].curvature, minCurvature, maxCurvature); //find curvature color
 
     //draw points
     c.beginPath();
