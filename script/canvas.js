@@ -26,15 +26,10 @@ function perc2color(perc, min, max) {
 
 /*----Canvas Display----*/
 function drawWaypoints(points) {
-  let waypoints = [];
-  points.forEach((node, i) => {
-    waypoints.push({ x: node.x * canvasScale, y: node.y * canvasScale });
-  });
-
   c.fillStyle = "#ff7f00";
-  waypoints.forEach((node, i) => {
+  points.forEach((node, i) => {
     c.beginPath();
-    c.arc(node.x, canvas.height - node.y, waypointWidth, 0, Math.PI * 2);
+    c.arc(node.x * canvasScale, canvas.height - node.y * canvasScale, waypointWidth, 0, Math.PI * 2);
     c.closePath();
     c.fill();
   });
@@ -42,40 +37,41 @@ function drawWaypoints(points) {
 
 function drawPath(path) {
 
-  let minCurvature = path.reduce(function(a, b) {
-    return Math.min(a, b.curvature);
-  }, path[0].curvature);
+//curvature color calculations
+let minCurvature = path.reduce(function(a, b) {
+  return Math.min(a, b.curvature);
+}, path[0].curvature);
 
-  let maxCurvature = path.reduce(function(a, b) {
-    return Math.max(a, b.curvature);
-  }, path[0].curvature);
+let maxCurvature = path.reduce(function(a, b) {
+  return Math.max(a, b.curvature);
+}, path[0].curvature);
 
-  c.strokeStyle = "#000";
+c.strokeStyle = "#000";
 
-  path.forEach((node, i) => {
-    let canvasX = node.loc[0] * canvasScale;
-    let canvasY = node.loc[1] * canvasScale;
+path.forEach((node, i) => {
 
-    //find curvature colors
-    c.fillStyle = perc2color(path[i].curvature, minCurvature, maxCurvature);
-    //draw points
+  let canvasX = node.loc[0] * canvasScale;
+  let canvasY = node.loc[1] * canvasScale;
+  c.fillStyle = perc2color(path[i].curvature, minCurvature, maxCurvature); //find curvature color
+ 
+  //draw points
+  c.beginPath();
+  c.arc(canvasX, canvas.height - canvasY, pointWidth, 0, Math.PI * 2);
+  c.closePath();
+  c.fill();
+
+  //draw lines
+  if (i > 0) {
+    let lastX = path[i - 1].loc[0] * canvasScale;
+    let lastY = path[i - 1].loc[1] * canvasScale;
     c.beginPath();
-    c.arc(canvasX, canvas.height - canvasY, pointWidth, 0, Math.PI * 2);
+    //move to previous point except for 0
+    c.moveTo(lastX, canvas.height - lastY);
+    c.lineTo(canvasX, canvas.height - canvasY);
     c.closePath();
-    c.fill();
-
-    //draw lines
-    if (i > 0) {
-      let lastX = path[i - 1].loc[0] * canvasScale;
-      let lastY = path[i - 1].loc[1] * canvasScale;
-      c.beginPath();
-      //move to previous point except for 0
-      c.moveTo(lastX, canvas.height - lastY);
-      c.lineTo(canvasX, canvas.height - canvasY);
-      c.closePath();
-      c.stroke();
-    }
-  });
+    c.stroke();
+  }
+});
 }
 
 
