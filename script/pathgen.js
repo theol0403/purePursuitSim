@@ -98,14 +98,14 @@ function computeCurvature(path) {
 function computeVelocity(path, maxVel, k, maxRate) {
   const dist = (a, b) =>
   Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
-  path[0].setTargetVel(0);
+  path[0].setVelocity(0);
   for (let i = path.length - 1; i > 0; i--) {
     let lastVel = Math.min(maxVel, (k / path[i].curvature));
     let start = path[i];
     let end = path[i - 1];
-    let distance = dist({x: start.x, y: start.y}, {x: end.x, y: end.y});
-    let newVel = Math.min(lastVel, Math.sqrt(Math.pow(path[i].targetVel, 2) + 2 * maxRate * distance));
-    path[i - 1].setTargetVel(newVel);
+    let distance = dist({x: start.x(), y: start.y()}, {x: end.x(), y: end.y()});
+    let newVel = Math.min(lastVel, Math.sqrt(Math.pow(path[i].velocity, 2) + 2 * maxRate * distance));
+    path[i - 1].setVelocity(newVel);
   }
   return path;
 }

@@ -3,13 +3,11 @@
 /*----Uility Functions----*/
 function perc2color(perc, min, max) {
   let base = max - min;
-  
   if (base == 0) { 
     perc = 100; 
   } else {
     perc = (perc - min) / base * 100; 
   }
-
   let r, g, b = 0;
   if (perc < 50) {
     r = 255;
@@ -18,7 +16,6 @@ function perc2color(perc, min, max) {
     g = 255;
     r = Math.round(510 - 5.10 * perc);
   }
-
   let h = r * 0x10000 + g * 0x100 + b * 0x1;
   return '#' + ('000000' + h.toString(16)).slice(-6);
 }
@@ -45,8 +42,8 @@ function drawWaypoints(points) {
 function drawPath(path) {
 
   //curvature color calculations
-  let minCurvature = getAttr(path, Math.min, a => a.curvature);
-  let maxCurvature = getAttr(path, Math.max, a => a.curvature);
+  let minCurve = getAttr(path, Math.min, a => a.curvature);
+  let maxCurve = getAttr(path, Math.max, a => a.curvature);
 
   c.strokeStyle = "#000";
 
@@ -54,7 +51,7 @@ function drawPath(path) {
 
     let canvasX = node.x() * canvasScale;
     let canvasY = node.y() * canvasScale;
-    c.fillStyle = perc2color(path[i].curvature, minCurvature, maxCurvature); //find curvature color
+    c.fillStyle = perc2color(node.curvature, minCurve, maxCurve); //find curvature color
 
     //draw points
     c.beginPath();
@@ -67,7 +64,6 @@ function drawPath(path) {
       let lastX = path[i - 1].x() * canvasScale;
       let lastY = path[i - 1].y() * canvasScale;
       c.beginPath();
-      //move to previous point except for 0
       c.moveTo(lastX, canvas.height - lastY);
       c.lineTo(canvasX, canvas.height - canvasY);
       c.closePath();

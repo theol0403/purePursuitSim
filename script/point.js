@@ -6,14 +6,14 @@ class WayPoint {
   constructor(ix, iy) {
     this.loc = [ ix, iy ];
     this.distance = 0;
-    this.targetVel = 0;
+    this.velocity = 0;
     this.curvature = 0;
   }
 
   // constructor(WayPoint p) {
   //   this.loc = p.loc;
   //   this.distance = p.distance;
-  //   this.targetVel = p.targetVel;
+  //   this.velocity = p.velocity;
   //   this.curvature = p.curvature;
   // }
 
@@ -29,8 +29,8 @@ class WayPoint {
     this.distance = idistance;
   }
 
-  setTargetVel(itargetVel) {
-    this.targetVel = itargetVel;
+  setVelocity(ivelocity) {
+    this.velocity = ivelocity;
   }
 
   setCurvature(icurvature) {
