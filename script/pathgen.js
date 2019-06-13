@@ -67,31 +67,65 @@ function computeDistances(path) {
 }
 
 
-function computeCurvature(path) {
+// function computeCurvature(path) {
 
+//   path[0].setCurvature(0);
+
+//   for(let i = 0; i < path.length - 2; i++) {
+//     let x2 = path[i].x();
+//     let y2 = path[i].y();
+//     let x1 = path[i+1].x();
+//     let y1 = path[i+1].y();
+//     let x3 = path[i+2].x();
+//     let y3 = path[i+2].y();
+
+//     let base = (x1 - x2);
+//     let k1 = 0.5 * (Math.pow(x1, 2) + Math.pow(y1, 2) - Math.pow(x2, 2) - Math.pow(y2, 2)) / base;
+//     let k2 = (y1 - y2) / base;
+//     let b = 0.5*(Math.pow(x2, 2) - 2*x2*k1 + Math.pow(y2, 2) - Math.pow(x3, 3) + 2*x3*k1 - Math.pow(y3, 2))/(x3*k2 - y3 + y2 - x2*k2);
+//     let a = k1 - k2*b;
+//     let r = Math.sqrt(Math.pow(x1-a, 2) + Math.pow(y1-b, 2));
+//     let curve = isNaN(1/r) ? 0 : 1/r;
+
+//     path[i+1].setCurvature(curve);
+//   }
+
+//   return path;
+// }
+
+function computeCurvature(path, index) {
+  //todo bounds checking
+  //todo better dist
+  const dist = (a, b) =>
+  Math.sqrt((a.x() - b.x()) * (a.x() - b.x()) + (a.y() - b.y()) * (a.y() - b.y()));
+
+  let point = path[index];
+  let prevPoint = path[index - 1];
+  let nextPoint = path[index + 1];
+
+  let distanceOne = dist(point, prevPoint);
+  let distanceTwo = dist(point, nextPoint);
+  let distanceThree = dist(nextPoint, prevPoint);
+
+  let productOfSides = distanceOne * distanceTwo * distanceThree;
+  let semiPerimeter = (distanceOne + distanceTwo + distanceThree) / 2;
+  let triangleArea = Math.sqrt(semiPerimeter * (semiPerimeter - distanceOne) * (semiPerimeter - distanceTwo) * (semiPerimeter - distanceThree));
+
+  let radius = (productOfSides) / (4 * triangleArea);
+  let curvature = 1 / radius;
+  return curvature;
+}
+
+
+function setCurvatures(path) {
   path[0].setCurvature(0);
-
-  for(let i = 0; i < path.length - 2; i++) {
-    let x2 = path[i].x();
-    let y2 = path[i].y();
-    let x1 = path[i+1].x();
-    let y1 = path[i+1].y();
-    let x3 = path[i+2].x();
-    let y3 = path[i+2].y();
-
-    let base = (x1 - x2);
-    let k1 = 0.5 * (Math.pow(x1, 2) + Math.pow(y1, 2) - Math.pow(x2, 2) - Math.pow(y2, 2)) / base;
-    let k2 = (y1 - y2) / base;
-    let b = 0.5*(Math.pow(x2, 2) - 2*x2*k1 + Math.pow(y2, 2) - Math.pow(x3, 3) + 2*x3*k1 - Math.pow(y3, 2))/(x3*k2 - y3 + y2 - x2*k2);
-    let a = k1 - k2*b;
-    let r = Math.sqrt(Math.pow(x1-a, 2) + Math.pow(y1-b, 2));
-    let curve = isNaN(1/r) ? 0 : 1/r;
-
-    path[i+1].setCurvature(curve);
+  path[path.length - 1].setCurvature(0);
+  for (let i = 1; i < path.length - 1; i++) {
+    path[i].setCurvature(computeCurvature(path, i));
   }
-
   return path;
 }
+
 
 
 

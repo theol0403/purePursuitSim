@@ -58,8 +58,8 @@ function animate() {
   let path = insertPoints(points, resolution);
   path = smoothen(path, curve, tolerance);
   path = computeDistances(path);
-  path = computeCurvature(path);
-  path = computeVelocity(path, 6, 5, 5.8);
+  path = setCurvatures(path);
+  // path = computeVelocity(path, 6, 5, 5.8);
   for (let i = 0; i < path.length; i++) {
     // console.log(path[i].velocity);
   }
