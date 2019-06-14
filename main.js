@@ -31,8 +31,8 @@ const marginOffset = 9; //correction for canvas choords vs window choords. relat
 
 let points = [
 { x: 1, y: 1 },
-{ x: 6, y: 3 },
-{ x: 3, y: 1 },
+{ x: 2, y: 6 },
+{ x: 4, y: 2 },
 ];
 
 
@@ -59,14 +59,14 @@ function animate() {
   path = smoothen(path, curve, tolerance);
   path = computeDistances(path);
   path = computeCurvatures(path);
-  path = computeVelocities(path, 6, 1, 4);
+  path = computeVelocity(path, 6, 6, 6);
   for (let i = 0; i < path.length; i++) {
     console.log(path[i].velocity);
   }
 
   /* draw waypoints and path */
   drawWaypoints(points);
-  drawPath(path);
+  drawPath(path, a => a.velocity, 0, 6);
 
   if (showRect) {
     c.beginPath();
@@ -76,6 +76,7 @@ function animate() {
     c.stroke();
   }
 
+  // debugger;
   // requestAnimationFrame(animate);
 }
 

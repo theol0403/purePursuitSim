@@ -1,23 +1,61 @@
 
 
 /*----Uility Functions----*/
+// function perc2color(perc, min, max) {
+//   let base = max - min;
+//   if (base == 0) { 
+//     perc = 0; 
+//   } else {
+//     perc = (perc - min) / base * 100; 
+//   }
+//   let r, g, b = 0;
+//   if (perc < 50) {
+//     r = 255;
+//     g = Math.round(5.1 * perc);
+//   } else {
+//     g = 255;
+//     r = Math.round(510 - 5.10 * perc);
+//   }
+//   let h = r * 0x10000 + g * 0x100 + b * 0x1;
+//   return '#' + ('000000' + h.toString(16)).slice(-6);
+// }
 function perc2color(perc, min, max) {
   let base = max - min;
   if (base == 0) { 
-    perc = 100; 
+    perc = 0; 
   } else {
     perc = (perc - min) / base * 100; 
   }
-  let r, g, b = 0;
-  if (perc < 50) {
-    r = 255;
-    g = Math.round(5.1 * perc);
-  } else {
-    g = 255;
-    r = Math.round(510 - 5.10 * perc);
+  let r, g, b = 0
+
+  if (perc >= 0 && perc <= 20) {
+    r = 255
+    g = Math.round(12.75 * perc)
+    b = 0
   }
-  let h = r * 0x10000 + g * 0x100 + b * 0x1;
-  return '#' + ('000000' + h.toString(16)).slice(-6);
+  else if (perc > 20 && perc <= 40) {
+    r = Math.round(-12.75 * perc + 510)
+    g = 255
+    b = 0
+  }
+  else if (perc > 40 && perc <= 60) {
+    r = 0
+    g = 255
+    b = Math.round(12.75 * perc) - 510
+  }
+  else if (perc > 60 && perc <= 80) {
+    r = 0
+    g = Math.round(-12.75 * perc + 1020)
+    b = 255
+  }
+  else {
+    r = Math.round(12.75 * perc - 1020)
+    g = 0
+    b = 255
+  }
+
+  let h = r * 0x10000 + g * 0x100 + b * 0x1
+  return '#' + ('000000' + h.toString(16)).slice(-6)
 }
 
 //gets a value from an variable nested in an array such as the min curvature
@@ -39,11 +77,26 @@ function drawWaypoints(points) {
   });
 }
 
-function drawPath(path) {
+let fullMin = Infinity;
+let fullMax = 0;
+
+//ommit min and max OR min = false : iterative min and max calculation
+//min = true : historical min and max calculation
+//min + max = number  : static min and max
+function drawPath(path, colorGet, min, max) {
 
   //curvature color calculations
-  let minCurve = getAttr(path, Math.min, a => a.velocity);
-  let maxCurve = getAttr(path, Math.max, a => a.velocity);
+  //if min is true
+  if(min === true) {
+    fullMin = Math.min(fullMin, getAttr(path, Math.min, colorGet));
+    fullMax = Math.max(fullMax, getAttr(path, Math.max, colorGet));
+  } else if (min === undefined || min === false) { //if min is not provided or is false
+    fullMin = getAttr(path, Math.min, colorGet);
+    fullMax = getAttr(path, Math.max, colorGet);
+  } else {
+    fullMin = min;
+    fullMax = max;
+  }
 
   c.strokeStyle = "#000";
 
@@ -51,7 +104,7 @@ function drawPath(path) {
 
     let canvasX = node.x() * canvasScale;
     let canvasY = node.y() * canvasScale;
-    c.fillStyle = perc2color(node.velocity, 0, 7); //find curvature color
+    c.fillStyle = perc2color(colorGet(node), fullMin, fullMax); //find curvature color
 
     //draw points
     c.beginPath();
