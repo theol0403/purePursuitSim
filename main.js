@@ -10,6 +10,8 @@ const resValue = document.getElementById('resValue');
 const curveValue = document.getElementById('curveValue');
 const tolValue = document.getElementById('tolValue');
 
+var tooltip = document.getElementById('tooltip-span');
+
 canvas.addEventListener("mousedown", click);
 canvas.addEventListener("mousemove", move);
 canvas.addEventListener("mouseup", end);
@@ -35,6 +37,7 @@ let points = [
 { x: 4, y: 2 },
 ];
 
+let path = [];
 
 function animate() {
 
@@ -55,13 +58,13 @@ function animate() {
 
 
   /* path calculations */
-  let path = insertPoints(points, resolution);
+  path = insertPoints(points, resolution);
   path = smoothen(path, curve, tolerance);
   path = computeDistances(path);
   path = computeCurvatures(path);
   path = computeVelocity(path, 6, 6, 6);
   for (let i = 0; i < path.length; i++) {
-    console.log(path[i].velocity);
+    // console.log(path[i].velocity);
   }
 
   /* draw waypoints and path */
@@ -77,7 +80,7 @@ function animate() {
   }
 
   // debugger;
-  // requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
 }
 
 

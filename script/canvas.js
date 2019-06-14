@@ -179,6 +179,7 @@ function click(e) {
 function move(e) {
   e.preventDefault();
 
+  /* waypoint interaction */
   if (!dragging) {
     lastCoord = canvasEventToLocalCoord(e);
     dragIndex = points.findIndex(function (node) {
@@ -229,6 +230,24 @@ function move(e) {
   } else {
     lastCoord = canvasEventToLocalCoord(e);
     points[dragIndex] = lastCoord;
+  }
+
+
+  /* node interaction */
+  let nodeIndex = path.findIndex(function (node) {
+    return lastCoord.x >= node.x() - waypointWidth / canvasScale
+    && lastCoord.x <= node.x() + waypointWidth / canvasScale
+    && lastCoord.y >= node.y() - waypointWidth / canvasScale
+    && lastCoord.y <= node.y() + waypointWidth / canvasScale;
+  });
+  if (nodeIndex == -1) {
+    tooltip.style.visibility = "hidden";
+  } else {
+    tooltip.style.visibility = "visible";
+    var x = e.clientX,
+    y = e.clientY;
+  tooltip.style.top = y + 'px';
+  tooltip.style.left = x + 'px';
   }
 }
 
