@@ -30,6 +30,11 @@ const pointWidth = 2;
 
 const marginOffset = 9; //correction for canvas choords vs window choords. related to margin
 
+const minVel = 1;
+const maxVel = 6;
+const maxAccel = 15;
+const turnK = 10;
+
 
 let points = [
 { x: 1, y: 1 },
@@ -62,14 +67,15 @@ function animate() {
   path = smoothen(path, curve, tolerance);
   path = computeDistances(path);
   path = computeCurvatures(path);
-  path = computeVelocity(path, 6, 6, 6);
+  path = computeVelocity(path, maxVel, maxAccel, turnK);
+  path = limitVelocity(path, minVel, maxAccel);
   // for (let i = 0; i < path.length; i++) {
   //   // console.log(path[i].velocity);
   // }
 
   /* draw waypoints and path */
   drawWaypoints(points);
-  drawPath(path, a => a.velocity, 0, 6);
+  drawPath(path, a => a.velocity, minVel, maxVel);
 
   if (showRect) {
     c.beginPath();

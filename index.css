@@ -39,6 +39,12 @@ canvas {
   cursor: pointer;
 }
 
+.text {
+  font-size: 17px;
+  text-align: center;
+  vertical-align: top;
+  padding-right: 10px;
+}
 
 
 /*.tooltip {

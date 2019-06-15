@@ -104,7 +104,7 @@ function drawPath(path, colorGet, min, max) {
 
     let canvasX = node.x() * canvasScale;
     let canvasY = node.y() * canvasScale;
-    let style = perc2color(colorGet(node), fullMin, fullMax);
+    let style = perc2multcolor(colorGet(node), fullMin, fullMax);
     c.fillStyle = style;
     c.strokeStyle = style;
 
