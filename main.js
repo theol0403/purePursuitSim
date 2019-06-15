@@ -38,8 +38,8 @@ const turnK = 10;
 
 let points = [
 { x: 1, y: 1 },
-{ x: 2, y: 6 },
-{ x: 4, y: 2 },
+{ x: 5, y: 3 },
+{ x: 9, y: 5 },
 ];
 
 let path = [];
@@ -70,8 +70,13 @@ function animate() {
   path = computeVelocity(path, maxVel, maxAccel, turnK);
   path = limitVelocity(path, minVel, maxAccel);
   // for (let i = 0; i < path.length; i++) {
-  //   // console.log(path[i].velocity);
+  //   console.log(i, path[i].loc);
   // }
+
+  clstPt = findClosestPoint(path, new WayPoint(3, 2));
+  console.log(clstPt);
+  lkhdPt = findLookaheadPoint(path, clstPt, new WayPoint(3, 2), 2);
+  console.log(lkhdPt);
 
   /* draw waypoints and path */
   drawWaypoints(points);
@@ -86,7 +91,7 @@ function animate() {
   }
 
   // debugger;
-  requestAnimationFrame(animate);
+  // requestAnimationFrame(animate);
 }
 
 
