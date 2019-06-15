@@ -12,8 +12,19 @@ class Vector {
   }
 
 
+  // vec1 + vec2
+  static add(vec1, vec2) {
+    return Vector(vec1.x + vec2.x, vec1.y + vec2.y);
+  }
+
+
   // vec1 dotted with vec2
   static dot(vec1, vec2) {
     return (vec1.x * vec2.x) + (vec1.y * vec2.y);
+  }
+
+  // scalar multiplication
+  static scalarMult(vec, scalar) {
+    return new Vector(vec.x * scalar, vec.y * scalar);
   }
 }

@@ -1,42 +1,41 @@
 
-var lastClosestPoint = 0;
-var lastLookaheadPoint = 0;
+var lastclosestPointIndex = 0;
 var onLastSegment = false;
 
-function findClosestPoint(path, currentPos) {
+function findclosestPointIndex(path, currentPos) {
   let closestDist = Number.POSITIVE_INFINITY;
-  let closestPoint;
+  let closestPointIndex;
 
   for (let i = 0; i < path.length; i++) {
     let distance = dist(currentPos, path[i]);
-    // console.log("Dist at", i, "is", distance);
+    console.log("Dist at", i, "is", distance);
     if(distance < closestDist) {
       closestDist = distance;
-      closestPoint = i;
+      closestPointIndex = i;
     }
   }
 
-  lastClosestPoint = closestPoint;
-  return closestPoint;
+  lastclosestPointIndex = closestPointIndex;
+  return closestPointIndex;
 }
 
 
-function calcTVal(path, i, currentPos, lookAheadDistance) {
-  d = new Vector(path[i+1].x() - path[i].x(), path[i+1].y() - path[i].y());
-  f = new Vector(path[i+1].x() - currentPos.x(), path[i+1].y() - currentPos.y());
+function calcTVal(start, end, currentPos, lookAheadDistance) {
+  let d = Vector.sub(end, start);
+  let f = Vector.sub(start, currentPos);
 
-  a = Vector.dot(d, d);
-  b = 2 * Vector.dot(f, d);
-  z = Vector.dot(f, f) - Math.pow(lookAheadDistance, 2);
-  discriminant = Math.pow(b, 2) - 4 * a * z;
+  let a = Vector.dot(d, d);
+  let b = 2 * Vector.dot(f, d);
+  let c = Vector.dot(f, f) - Math.pow(lookAheadDistance, 2);
+  let discriminant = Math.pow(b, 2) - 4 * a * c;
 
   if (discriminant < 0) {
-    return -1; //no intersection on this interval
+    return null; //no intersection on this interval
   }
   else {
     discriminant = Math.sqrt(discriminant);
-    t1 = (-b - discriminant) / (2 * a);
-    t2 = (-b + discriminant) / (2 * a);
+    let t1 = (-b - discriminant) / (2 * a);
+    let t2 = (-b + discriminant) / (2 * a);
 
     if (t1 >= 0 && t1 <= 1) {
       return t1;
@@ -46,25 +45,38 @@ function calcTVal(path, i, currentPos, lookAheadDistance) {
     }
   }
 
-  return -1; //no intersection
+  return null;
 }
 
 
-function findLookaheadPoint(path, closestPoint, currentPos, lookAheadDistance) {
+function findLookaheadPoint(path, start, end, currentPos, lookAheadDistance, onLastSegment) {
+  let tVal = calcTVal(start, end, currentPos, lookAheadDistance);
   if (onLastSegment) {
-    lastLookaheadPoint = path.length - 1;
-    return path.length - 1;
+    return path[path.length-1];
   }
-
-  for (let i = Math.floor(lastLookaheadPoint); i < path.length - 1; i++) {
-    tVal = calcTVal(path, i, currentPos, lookAheadDistance);
-    fracIndex = closestPoint + tVal;
-
-    if (tVal != -1) {
-        lastLookaheadPoint = fracIndex;
-        return fracIndex;
-    }
+  else if (tVal == null) {
+    return null;
   }
+  else {
+    let intersect = Vector.sub(end, start);
+    let segment = Vector.scalarMult(intersect, tVal);
+    let point = Vector.add(start, segment);
+    return point;
+  }
+}
 
-  return lastLookaheadPoint;
+
+function update(path, currentPos, currentLeft, currentRight, heading, lookAheadDistance) {
+  onLastSegment = false;
+  let closestPointIndex = findclosestPointIndex(path, currentPos);
+  let lookaheadPoint = new WayPoint(0, 0);
+
+  for (let i = closestPointIndex + 1; i < path.length; i++) {
+    let startPoint = new Vector(path[i-1].x(), path[i-1.y()]);
+    let endPoint = new Vector(path[i].x(), path[i].y());
+
+    onLastSegment = i == path.length - 1;
+
+
+  }
 }
