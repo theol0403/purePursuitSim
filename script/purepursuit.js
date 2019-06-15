@@ -1,6 +1,7 @@
 
-var lastclosestPointIndex = 0;
-var onLastSegment = false;
+var lastClosestPointIndex = 0;
+var robotTrack = 1;
+
 
 function findclosestPointIndex(path, currentPos) {
   let closestDist = Number.POSITIVE_INFINITY;
@@ -15,7 +16,7 @@ function findclosestPointIndex(path, currentPos) {
     }
   }
 
-  lastclosestPointIndex = closestPointIndex;
+  lastClosestPointIndex = closestPointIndex;
   return closestPointIndex;
 }
 
@@ -66,17 +67,54 @@ function findLookaheadPoint(path, start, end, currentPos, lookAheadDistance, onL
 }
 
 
+function computeLookaheadArcCurvature(currentPos, heading, lookaheadPoint, lookAheadDistance) {
+  let a = - Math.tan(heading);
+  let b = 1;
+  let c = (Math.tan(heading) * currentPos.x) - currentPos.y;
+  let x = Math.abs(a * lookaheadPoint.x + b * lookaheadPoint.y + c) / Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+  let cross = (Math.sin(heading) * (lookaheadPoint.x - currentPos.x)) - (Math.cos(heading) * (lookaheadPoint.y - currentPos.y));
+  let side = cross > 0 ? 1 : -1;
+  let curvature = (2 * x) / Math.pow(lookAheadDistance, 2);
+
+  return curvature * side;
+}
+
+
+function computeLeftTargetVel(targetVel, curvature) {
+  return targetVel * (2 + robotTrack * curvature) / 2;
+}
+
+
+function computeRightTargetVel(targetVel, curvature) {
+  return targetVel * (2 - robotTrack * curvature) / 2;
+}
+
+
 function update(path, currentPos, currentLeft, currentRight, heading, lookAheadDistance) {
-  onLastSegment = false;
+  let onLastSegment = false;
   let closestPointIndex = findclosestPointIndex(path, currentPos);
   let lookaheadPoint = new WayPoint(0, 0);
 
   for (let i = closestPointIndex + 1; i < path.length; i++) {
-    let startPoint = new Vector(path[i-1].x(), path[i-1.y()]);
+    let startPoint = new Vector(path[i-1].x(), path[i-1].y());
     let endPoint = new Vector(path[i].x(), path[i].y());
 
     onLastSegment = i == path.length - 1;
 
+    let lookaheadPointTemp = findLookaheadPoint(path, startPoint, endPoint, currentPos, lookAheadDistance, onLastSegment);
 
+    if (lookaheadPointTemp != null) {
+      lookaheadPoint.loc[0] = lookaheadPointTemp.x;
+      lookaheadPoint.loc[1] = lookaheadPointTemp.y
+      break;
+    }
   }
+
+  console.log(lookaheadPoint);
+
+  let curvature = computeLookaheadArcCurvature(currentPos, heading, lookaheadPoint, lookAheadDistance);
+  let leftTargetVel = computeLeftTargetVel(path[closestPointIndex].velocity, curvature);
+  let rightTargetVel = computeRightTargetVel(path[closestPointIndex].velocity, curvature);
+
+  console.log(leftTargetVel, rightTargetVel);
 }

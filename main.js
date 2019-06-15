@@ -73,10 +73,7 @@ function animate() {
   //   console.log(i, path[i].loc);
   // }
 
-  clstPt = findClosestPoint(path, new WayPoint(1, 3));
-  console.log(clstPt);
-  lkhdPt = findLookaheadPoint(path, clstPt, new WayPoint(1, 3), 5);
-  console.log(lkhdPt);
+  update(path, new Vector(3.2, 2.1), 0, 0, 0, 2);
 
   /* draw waypoints and path */
   drawWaypoints(points);

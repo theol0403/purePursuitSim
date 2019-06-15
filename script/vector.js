@@ -6,15 +6,25 @@ class Vector {
     this.y = iy;
   }
 
+
+  x() {
+    return this.x;
+  }
+
+  y() {
+    return this.y;
+  }
+
+
   // vec1 - vec2
   static sub(vec1, vec2) {
-    return Vector(vec1.x - vec2.x, vec1.y - vec2.y);
+    return new Vector(vec1.x - vec2.x, vec1.y - vec2.y);
   }
 
 
   // vec1 + vec2
   static add(vec1, vec2) {
-    return Vector(vec1.x + vec2.x, vec1.y + vec2.y);
+    return new Vector(vec1.x + vec2.x, vec1.y + vec2.y);
   }
 
 

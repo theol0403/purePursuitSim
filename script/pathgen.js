@@ -1,7 +1,7 @@
 
 //distance between two waypoints
 const dist = (a, b) =>
-Math.sqrt((a.x() - b.x()) * (a.x() - b.x()) + (a.y() - b.y()) * (a.y() - b.y()));
+Math.sqrt((a.x - b.x()) * (a.x - b.x()) + (a.y - b.y()) * (a.y - b.y()));
 
 
 function insertPoints(points, resolution) {
@@ -71,7 +71,7 @@ function computeDistances(path) {
 
 function computeCurvatures(path) {
   path[0].setCurvature(0);
-  
+
   for (let i = 1; i < path.length - 1; i++) {
     let point = path[i];
     let prevPoint = path[i - 1];
@@ -126,4 +126,3 @@ function limitVelocity(path, minVel, maxRate) {
 
   return path;
 }
-
