@@ -23,7 +23,7 @@ window.focus();
 
 
 let canvasScale = 80;
-const lineWidth = 0.1;
+const lineWidth = 1;
 
 const waypointWidth = 4;
 const pointWidth = 2;
@@ -63,9 +63,9 @@ function animate() {
   path = computeDistances(path);
   path = computeCurvatures(path);
   path = computeVelocity(path, 6, 6, 6);
-  for (let i = 0; i < path.length; i++) {
-    // console.log(path[i].velocity);
-  }
+  // for (let i = 0; i < path.length; i++) {
+  //   // console.log(path[i].velocity);
+  // }
 
   /* draw waypoints and path */
   drawWaypoints(points);

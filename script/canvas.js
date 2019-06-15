@@ -1,25 +1,26 @@
 
 
 /*----Uility Functions----*/
-// function perc2color(perc, min, max) {
-//   let base = max - min;
-//   if (base == 0) { 
-//     perc = 0; 
-//   } else {
-//     perc = (perc - min) / base * 100; 
-//   }
-//   let r, g, b = 0;
-//   if (perc < 50) {
-//     r = 255;
-//     g = Math.round(5.1 * perc);
-//   } else {
-//     g = 255;
-//     r = Math.round(510 - 5.10 * perc);
-//   }
-//   let h = r * 0x10000 + g * 0x100 + b * 0x1;
-//   return '#' + ('000000' + h.toString(16)).slice(-6);
-// }
 function perc2color(perc, min, max) {
+  let base = max - min;
+  if (base == 0) { 
+    perc = 0; 
+  } else {
+    perc = (perc - min) / base * 100; 
+  }
+  let r, g, b = 0;
+  if (perc < 50) {
+    r = 255;
+    g = Math.round(5.1 * perc);
+  } else {
+    g = 255;
+    r = Math.round(510 - 5.10 * perc);
+  }
+  let h = r * 0x10000 + g * 0x100 + b * 0x1;
+  return '#' + ('000000' + h.toString(16)).slice(-6);
+}
+
+function perc2multcolor(perc, min, max) {
   let base = max - min;
   if (base == 0) { 
     perc = 0; 
@@ -97,14 +98,15 @@ function drawPath(path, colorGet, min, max) {
     fullMin = min;
     fullMax = max;
   }
-
-  c.strokeStyle = "#000";
+  
 
   path.forEach((node, i) => {
 
     let canvasX = node.x() * canvasScale;
     let canvasY = node.y() * canvasScale;
-    c.fillStyle = perc2color(colorGet(node), fullMin, fullMax); //find curvature color
+    let style = perc2color(colorGet(node), fullMin, fullMax);
+    c.fillStyle = style;
+    c.strokeStyle = style;
 
     //draw points
     c.beginPath();
@@ -242,10 +244,10 @@ function move(e) {
 
   /* node interaction */
   nodeIndex = path.findIndex(function (node) {
-    return lastCoord.x >= node.x() - waypointWidth / canvasScale
-    && lastCoord.x <= node.x() + waypointWidth / canvasScale
-    && lastCoord.y >= node.y() - waypointWidth / canvasScale
-    && lastCoord.y <= node.y() + waypointWidth / canvasScale;
+    return lastCoord.x >= node.x() - waypointWidth * 2 / canvasScale
+    && lastCoord.x <= node.x() + waypointWidth * 2 / canvasScale
+    && lastCoord.y >= node.y() - waypointWidth * 2 / canvasScale
+    && lastCoord.y <= node.y() + waypointWidth * 2 / canvasScale;
   });
   if (nodeIndex == -1) {
     tooltip.style.opacity = "0";
