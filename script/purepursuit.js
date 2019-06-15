@@ -9,7 +9,7 @@ function findclosestPointIndex(path, currentPos) {
 
   for (let i = 0; i < path.length; i++) {
     let distance = dist(currentPos, path[i]);
-    console.log("Dist at", i, "is", distance);
+    // console.log("Dist at", i, "is", distance);
     if(distance < closestDist) {
       closestDist = distance;
       closestPointIndex = i;
@@ -71,8 +71,8 @@ function computeLookaheadArcCurvature(currentPos, heading, lookaheadPoint, lookA
   let a = - Math.tan(heading);
   let b = 1;
   let c = (Math.tan(heading) * currentPos.x) - currentPos.y;
-  let x = Math.abs(a * lookaheadPoint.x + b * lookaheadPoint.y + c) / Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
-  let cross = (Math.sin(heading) * (lookaheadPoint.x - currentPos.x)) - (Math.cos(heading) * (lookaheadPoint.y - currentPos.y));
+  let x = Math.abs(a * lookaheadPoint.x() + b * lookaheadPoint.y() + c) / Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+  let cross = (Math.sin(heading) * (lookaheadPoint.x() - currentPos.x)) - (Math.cos(heading) * (lookaheadPoint.y() - currentPos.y));
   let side = cross > 0 ? 1 : -1;
   let curvature = (2 * x) / Math.pow(lookAheadDistance, 2);
 
@@ -110,11 +110,7 @@ function update(path, currentPos, currentLeft, currentRight, heading, lookAheadD
     }
   }
 
-  console.log(lookaheadPoint);
-
   let curvature = computeLookaheadArcCurvature(currentPos, heading, lookaheadPoint, lookAheadDistance);
   let leftTargetVel = computeLeftTargetVel(path[closestPointIndex].velocity, curvature);
   let rightTargetVel = computeRightTargetVel(path[closestPointIndex].velocity, curvature);
-
-  console.log(leftTargetVel, rightTargetVel);
 }
