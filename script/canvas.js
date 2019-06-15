@@ -108,7 +108,12 @@ function drawPath(path, colorGet, min, max) {
 
     //draw points
     c.beginPath();
-    c.arc(canvasX, canvas.height - canvasY, pointWidth, 0, Math.PI * 2);
+    if(nodeIndex == i) {
+      c.arc(canvasX, canvas.height - canvasY, pointWidth * 2, 0, Math.PI * 2);
+    } else {
+      c.arc(canvasX, canvas.height - canvasY, pointWidth, 0, Math.PI * 2);
+    }
+    
     c.closePath();
     c.fill();
 
@@ -135,6 +140,8 @@ let hovering = false;
 let dragging = false;
 let dragIndex = -1;
 let lastCoord = { x: 0, y: 0 };
+
+let nodeIndex = -1;
 
 
 function canvasEventToLocalCoord(e) {
@@ -234,20 +241,22 @@ function move(e) {
 
 
   /* node interaction */
-  let nodeIndex = path.findIndex(function (node) {
+  nodeIndex = path.findIndex(function (node) {
     return lastCoord.x >= node.x() - waypointWidth / canvasScale
     && lastCoord.x <= node.x() + waypointWidth / canvasScale
     && lastCoord.y >= node.y() - waypointWidth / canvasScale
     && lastCoord.y <= node.y() + waypointWidth / canvasScale;
   });
   if (nodeIndex == -1) {
-    tooltip.style.visibility = "hidden";
+    tooltip.style.opacity = "0";
   } else {
-    tooltip.style.visibility = "visible";
-    var x = e.clientX,
-    y = e.clientY;
-  tooltip.style.top = y + 'px';
-  tooltip.style.left = x + 'px';
+    tooltip.style.opacity = "1";
+    tooltip.style.left = e.clientX + marginOffset + 'px';
+    tooltip.style.top = e.clientY - marginOffset + 'px';
+
+    tooltip.innerHTML = 
+    "curvature: " + path[nodeIndex].curvature.toFixed(4) + 
+    "\nvelocity: " + path[nodeIndex].velocity.toFixed(4);
   }
 }
 
