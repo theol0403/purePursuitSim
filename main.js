@@ -44,6 +44,8 @@ let points = [
 
 let path = [];
 
+let bot = new Bot(50, 50, 0);
+
 function animate() {
 
   /* maintain canvas */
@@ -73,7 +75,10 @@ function animate() {
   //   console.log(i, path[i].loc);
   // }
 
-  let velocities = update(path, new Vector(3.2, 2.1), 0, 2);
+  // console.log(bot.getPos());
+  let velocities = update(path, bot.getPos(), bot.getHeading(), 2);
+  bot.tank(velocities.left / maxVel, velocities.right / maxVel);
+  bot.update();
 
   /* draw waypoints and path */
   drawWaypoints(points);
@@ -88,7 +93,7 @@ function animate() {
   }
 
   // debugger;
-  // requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
 }
 
 
