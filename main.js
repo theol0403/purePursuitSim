@@ -88,7 +88,7 @@ function animate() {
   }
 
   // debugger;
-  requestAnimationFrame(animate);
+  // requestAnimationFrame(animate);
 }
 
 

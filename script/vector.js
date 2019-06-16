@@ -40,7 +40,7 @@ class Vector {
 
   //distance formula
   static dist(vec1, vec2) {
-    return Math.sqrt((vec1.x - vec2.x) * (vec1.x - vec2.x) + (vec1.y - vec2.y) * (vec1.y - vec2.y))
+    return Math.sqrt((vec1.x - vec2.x) * (vec1.x - vec2.x) + (vec1.y - vec2.y) * (vec1.y - vec2.y));
   }
   
 }

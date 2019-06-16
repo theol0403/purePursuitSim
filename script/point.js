@@ -26,7 +26,7 @@ class WayPoint {
   }
 
   vector() {
-    return Vector(this.x, this.y);
+    return new Vector(this.x(), this.y());
   }
 
   setDistance(idistance) {
