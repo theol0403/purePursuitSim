@@ -31,16 +31,14 @@ function calcTVal(start, end, currentPos, lookAheadDistance) {
 
   if (discriminant < 0) {
     return null; //no intersection on this interval
-  }
-  else {
+  } else {
     discriminant = Math.sqrt(discriminant);
     let t1 = (-b - discriminant) / (2 * a);
     let t2 = (-b + discriminant) / (2 * a);
 
     if (t1 >= 0 && t1 <= 1) {
       return t1;
-    }
-    if (t2 >= 0 && t2 <= 1) {
+    } if (t2 >= 0 && t2 <= 1) {
       return t2;
     }
   }
@@ -53,11 +51,9 @@ function findLookaheadPoint(path, start, end, currentPos, lookAheadDistance, onL
   let tVal = calcTVal(start, end, currentPos, lookAheadDistance);
   if (onLastSegment) {
     return path[path.length-1];
-  }
-  else if (tVal == null) {
+  } else if (tVal == null) {
     return null;
-  }
-  else {
+  } else {
     let intersect = Vector.sub(end, start);
     let segment = Vector.scalarMult(intersect, tVal);
     let point = Vector.add(start, segment);
@@ -89,7 +85,7 @@ function computeRightTargetVel(targetVel, curvature) {
 }
 
 
-function update(path, currentPos, currentLeft, currentRight, heading, lookAheadDistance) {
+function update(path, currentPos, heading, lookAheadDistance) {
   let onLastSegment = false;
   let closestPointIndex = findclosestPointIndex(path, currentPos);
   let lookaheadPoint = new WayPoint(0, 0);
@@ -98,7 +94,7 @@ function update(path, currentPos, currentLeft, currentRight, heading, lookAheadD
     let startPoint = new Vector(path[i-1].x(), path[i-1].y());
     let endPoint = new Vector(path[i].x(), path[i].y());
 
-    onLastSegment = i == path.length - 1;
+    onLastSegment = i == (path.length - 1);
 
     let lookaheadPointTemp = findLookaheadPoint(path, startPoint, endPoint, currentPos, lookAheadDistance, onLastSegment);
 
@@ -112,4 +108,6 @@ function update(path, currentPos, currentLeft, currentRight, heading, lookAheadD
   let curvature = computeLookaheadArcCurvature(currentPos, heading, lookaheadPoint, lookAheadDistance);
   let leftTargetVel = computeLeftTargetVel(path[closestPointIndex].velocity, curvature);
   let rightTargetVel = computeRightTargetVel(path[closestPointIndex].velocity, curvature);
+
+  return {left: leftTargetVel, right: rightTargetVel};
 }
