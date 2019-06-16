@@ -1,6 +1,6 @@
 
-class Spine {
-    constructor(a, b, c, d, e, x_offset, y_offset, angle_offset, knot_distance, arc_length) {
+class Spline {
+    constructor(a, b, c, d, e, x_offset, y_offset, angle_offset, knot_distance, arcLength) {
         this.a = a;
         this.b = b;
         this.c = c;
@@ -10,21 +10,23 @@ class Spine {
         this.y_offset = y_offset;
         this.angle_offset = angle_offset;
         this.knot_distance = knot_distance;
-        this.arc_length = arc_length;
+        this.arcLength = arcLength;
     }
 }
 
 
 class TrajectoryConfig {
-    constructor(dt, x, y, position, velocity, acceleration, jerk, heading) {
+    constructor(dt, maxV, maxA, maxJ, srcV, srcTheta, destPos, destV, destTheta, sampleCount) {
         this.dt = dt;
-        this.x = x;
-        this.y = y;
-        this.position = position;
-        this.velocity = velocity;
-        this.acceleration = acceleration;
-        this.jerk = jerk;
-        this.heading = heading;
+        this.maxV = maxV;
+        this.maxA = maxA;
+        this.maxJ = maxJ;
+        this.srcV = srcV;
+        this.srcTheta = srcTheta;
+        this.destPos = destPos;
+        this.destV = destV;
+        this.destTheta = destTheta;
+        this.sampleCount = sampleCount;
     }
 }
 
@@ -43,12 +45,12 @@ class TrajectoryInfo {
 
 
 class TrajectoryCandidate {
-    constructor(splines, lengths, totalLength, length, path_length, info, config) {
+    constructor(splines, lengths, totalLength, length, pathLength, info, config) {
         this.splines = splines;
         this.lengths = lengths;
         this.totalLength = totalLength;
         this.length = length;
-        this.path_length = path_length;
+        this.pathLength = pathLength;
         this.info = info;
         this.config = config;
     }
