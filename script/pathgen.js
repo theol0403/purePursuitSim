@@ -57,7 +57,7 @@ function smoothen(inp, dataWeight, tolerance) {
 function computeDistances(path) {
   path[0].setDistance(0);
   for (let i = 0; i < path.length - 1; i++) {
-    let distance = path[i].distance + distWaypoint(path[i + 1], path[i]);
+    let distance = path[i].distance + distWaypoint(path[i], path[i + 1]);
     path[i + 1].setDistance(distance);
   }
   return path;
@@ -92,30 +92,27 @@ function computeCurvatures(path) {
 
 
 function computeVelocity(path, maxVel, maxRate, k) {
-  path[path.length - 1].setVelocity(0);
+  path[path.length-1].setVelocity(0);
   for (let i = path.length - 1; i > 0; i--) {
-    let lastVel = Math.min(maxVel, (k / path[i].curvature));
     let start = path[i];
     let end = path[i - 1];
+    let wantedVel = Math.min(maxVel, (k / path[i].curvature));
     let distance = distWaypoint(start, end);
-    let newVel = Math.min(lastVel, Math.sqrt(Math.pow(path[i].velocity, 2) + (2 * maxRate * distance)));
+    let newVel = Math.min(wantedVel, Math.sqrt(Math.pow(start.velocity, 2) + (2 * maxRate * distance)));
     path[i - 1].setVelocity(newVel);
   }
   return path;
 }
 
 function limitVelocity(path, minVel, maxRate) {
-  const dist = (a, b) =>
-  Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
-
   path[0].setVelocity(minVel);
   for (let i = 0; i < path.length - 1; i++) {
     let start = path[i];
     let end = path[i + 1];
     let distance = distWaypoint(start, end);
-    let newVel = Math.min(path[i+1].velocity, Math.sqrt(Math.pow(path[i].velocity, 2) + (2 * maxRate * distance)));
-    path[i + 1].setVelocity(Math.max(newVel, minVel));
+    let wantedVel = Math.min(end.velocity, Math.sqrt(Math.pow(start.velocity, 2) + (2 * maxRate * distance)));
+    let newVel = Math.max(wantedVel, minVel);
+    path[i + 1].setVelocity(newVel);
   }
-
   return path;
 }
