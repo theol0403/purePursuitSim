@@ -1,9 +1,4 @@
 
-//distance between two waypoints
-const distWaypoint = (a, b) =>
-Math.sqrt((a.x() - b.x()) * (a.x() - b.x()) + (a.y() - b.y()) * (a.y() - b.y()));
-
-
 function insertPoints(points, resolution) {
   let path = [];
   let numPoints = points.length;

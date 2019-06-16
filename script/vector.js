@@ -7,11 +7,11 @@ class Vector {
   }
 
 
-  x() {
+  getX() {
     return this.x;
   }
 
-  y() {
+  getY() {
     return this.y;
   }
 

@@ -1,5 +1,3 @@
-const dist = (a, b) =>
-Math.sqrt((a.x - b.x()) * (a.x - b.x()) + (a.y - b.y()) * (a.y - b.y()));
 
 var lastClosestPointIndex = 0;
 var robotTrack = 1;
@@ -10,7 +8,7 @@ function findclosestPointIndex(path, currentPos) {
   let closestPointIndex;
 
   for (let i = 0; i < path.length; i++) {
-    let distance = dist(currentPos, path[i]);
+    let distance = distPoint(currentPos, path[i].vector());
     // console.log("Dist at", i, "is", distance);
     if(distance < closestDist) {
       closestDist = distance;
