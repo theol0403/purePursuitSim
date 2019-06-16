@@ -1,4 +1,10 @@
 
+const dist = (ax, ay, bx, by) =>
+Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
+const distPoint = (a, b) => dist(a.x, a.y, b.x, b.y);
+const distWaypoint = (a, b) => dist(a.x(), a.y(), b.x(), b.y());
+
+
 let Point = { x: 0, y: 0 };
 
 class WayPoint {
@@ -23,6 +29,10 @@ class WayPoint {
 
   y() {
     return this.loc[1];
+  }
+
+  vector() {
+    return Vector(this.x, this.y);
   }
 
   setDistance(idistance) {

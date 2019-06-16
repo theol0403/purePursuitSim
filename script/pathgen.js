@@ -1,9 +1,4 @@
 
-//distance between two waypoints
-const dist = (a, b) =>
-Math.sqrt((a.x() - b.x()) * (a.x() - b.x()) + (a.y() - b.y()) * (a.y() - b.y()));
-
-
 function insertPoints(points, resolution) {
   let path = [];
   let numPoints = points.length;
@@ -62,7 +57,7 @@ function smoothen(inp, dataWeight, tolerance) {
 function computeDistances(path) {
   path[0].setDistance(0);
   for (let i = 0; i < path.length - 1; i++) {
-    let distance = path[i].distance + dist(path[i + 1], path[i]);
+    let distance = path[i].distance + distWaypoint(path[i], path[i + 1]);
     path[i + 1].setDistance(distance);
   }
   return path;
@@ -71,15 +66,15 @@ function computeDistances(path) {
 
 function computeCurvatures(path) {
   path[0].setCurvature(0);
-  
+
   for (let i = 1; i < path.length - 1; i++) {
     let point = path[i];
     let prevPoint = path[i - 1];
     let nextPoint = path[i + 1];
 
-    let distanceOne = dist(point, prevPoint);
-    let distanceTwo = dist(point, nextPoint);
-    let distanceThree = dist(nextPoint, prevPoint);
+    let distanceOne = distWaypoint(point, prevPoint);
+    let distanceTwo = distWaypoint(point, nextPoint);
+    let distanceThree = distWaypoint(nextPoint, prevPoint);
 
     let productOfSides = distanceOne * distanceTwo * distanceThree;
     let semiPerimeter = (distanceOne + distanceTwo + distanceThree) / 2;
@@ -97,33 +92,27 @@ function computeCurvatures(path) {
 
 
 function computeVelocity(path, maxVel, maxRate, k) {
-  const dist = (a, b) =>
-  Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
-  path[path.length - 1].setVelocity(0);
+  path[path.length-1].setVelocity(0);
   for (let i = path.length - 1; i > 0; i--) {
-    let lastVel = Math.min(maxVel, (k / path[i].curvature));
     let start = path[i];
     let end = path[i - 1];
-    let distance = dist({x: start.x(), y: start.y()}, {x: end.x(), y: end.y()});
-    let newVel = Math.min(lastVel, Math.sqrt(Math.pow(path[i].velocity, 2) + (2 * maxRate * distance)));
+    let wantedVel = Math.min(maxVel, (k / path[i].curvature));
+    let distance = distWaypoint(start, end);
+    let newVel = Math.min(wantedVel, Math.sqrt(Math.pow(start.velocity, 2) + (2 * maxRate * distance)));
     path[i - 1].setVelocity(newVel);
   }
   return path;
 }
 
 function limitVelocity(path, minVel, maxRate) {
-  const dist = (a, b) =>
-  Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
-
   path[0].setVelocity(minVel);
   for (let i = 0; i < path.length - 1; i++) {
     let start = path[i];
     let end = path[i + 1];
-    let distance = dist({x: start.x(), y: start.y()}, {x: end.x(), y: end.y()});
-    let newVel = Math.min(path[i+1].velocity, Math.sqrt(Math.pow(path[i].velocity, 2) + (2 * maxRate * distance)));
-    path[i + 1].setVelocity(Math.max(newVel, minVel));
+    let distance = distWaypoint(start, end);
+    let wantedVel = Math.min(end.velocity, Math.sqrt(Math.pow(start.velocity, 2) + (2 * maxRate * distance)));
+    let newVel = Math.max(wantedVel, minVel);
+    path[i + 1].setVelocity(newVel);
   }
-
   return path;
 }
-
