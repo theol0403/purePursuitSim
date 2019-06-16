@@ -1,3 +1,5 @@
+const dist = (a, b) =>
+Math.sqrt((a.x - b.x()) * (a.x - b.x()) + (a.y - b.y()) * (a.y - b.y()));
 
 var lastClosestPointIndex = 0;
 var robotTrack = 1;

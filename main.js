@@ -73,7 +73,7 @@ function animate() {
   //   console.log(i, path[i].loc);
   // }
 
-  update(path, new Vector(3.2, 2.1), 0, 0, 0, 2);
+  // update(path, new Vector(3.2, 2.1), 0, 0, 0, 2);
 
   /* draw waypoints and path */
   drawWaypoints(points);
@@ -88,7 +88,7 @@ function animate() {
   }
 
   // debugger;
-  // requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
 }
 
 
