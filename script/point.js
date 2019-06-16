@@ -5,6 +5,7 @@ class WayPoint {
 
   constructor(ix, iy) {
     this.loc = [ ix, iy ];
+    this.angle = 0;
     this.distance = 0;
     this.velocity = 0;
     this.curvature = 0;
