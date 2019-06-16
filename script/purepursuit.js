@@ -8,8 +8,7 @@ function findclosestPointIndex(path, currentPos) {
   let closestPointIndex;
 
   for (let i = 0; i < path.length; i++) {
-    let distance = distPoint(currentPos, path[i].vector());
-    // console.log("Dist at", i, "is", distance);
+    let distance = Vector.dist(currentPos, path[i].vector());
     if(distance < closestDist) {
       closestDist = distance;
       closestPointIndex = i;

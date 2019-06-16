@@ -1,4 +1,10 @@
 
+
+const dist = (ax, ay, bx, by) =>
+Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
+const distWaypoint = (a, b) => dist(a.x(), a.y(), b.x(), b.y());
+
+
 function insertPoints(points, resolution) {
   let path = [];
   let numPoints = points.length;
