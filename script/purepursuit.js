@@ -1,6 +1,6 @@
 
 var lastClosestPointIndex = 0;
-var robotTrack = 1;
+var robotTrack = 2;
 
 
 function findclosestPointIndex(path, currentPos) {
@@ -8,7 +8,7 @@ function findclosestPointIndex(path, currentPos) {
   let closestPointIndex;
 
   for (let i = 0; i < path.length; i++) {
-    let distance = Vector.dist(currentPos, path[i].vector());
+    let distance = Vector.dist(currentPos, path[i].vector());    
     if(distance < closestDist) {
       closestDist = distance;
       closestPointIndex = i;
@@ -50,7 +50,7 @@ function calcTVal(start, end, currentPos, lookAheadDistance) {
 function findLookaheadPoint(path, start, end, currentPos, lookAheadDistance, onLastSegment) {
   let tVal = calcTVal(start, end, currentPos, lookAheadDistance);
   if (onLastSegment) {
-    return path[path.length-1];
+    return path[path.length-1].vector();
   } else if (tVal == null) {
     return null;
   } else {
@@ -66,8 +66,8 @@ function computeLookaheadArcCurvature(currentPos, heading, lookaheadPoint, lookA
   let a = - Math.tan(heading);
   let b = 1;
   let c = (Math.tan(heading) * currentPos.x) - currentPos.y;
-  let x = Math.abs(a * lookaheadPoint.x() + b * lookaheadPoint.y() + c) / Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
-  let cross = (Math.sin(heading) * (lookaheadPoint.x() - currentPos.x)) - (Math.cos(heading) * (lookaheadPoint.y() - currentPos.y));
+  let x = Math.abs(a * lookaheadPoint.x + b * lookaheadPoint.y + c) / Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+  let cross = (Math.sin(heading) * (lookaheadPoint.x - currentPos.x)) - (Math.cos(heading) * (lookaheadPoint.y - currentPos.y));
   let side = cross > 0 ? 1 : -1;
   let curvature = (2 * x) / Math.pow(lookAheadDistance, 2);
 
@@ -88,19 +88,18 @@ function computeRightTargetVel(targetVel, curvature) {
 function update(path, currentPos, heading, lookAheadDistance) {
   let onLastSegment = false;
   let closestPointIndex = findclosestPointIndex(path, currentPos);
-  let lookaheadPoint = new WayPoint(0, 0);
+  let lookaheadPoint = new Vector(0, 0);
 
   for (let i = closestPointIndex + 1; i < path.length; i++) {
-    let startPoint = new Vector(path[i-1].x(), path[i-1].y());
-    let endPoint = new Vector(path[i].x(), path[i].y());
+    let startPoint = path[i-1].vector();
+    let endPoint = path[i].vector();
 
     onLastSegment = i == (path.length - 1);
 
     let lookaheadPointTemp = findLookaheadPoint(path, startPoint, endPoint, currentPos, lookAheadDistance, onLastSegment);
 
     if (lookaheadPointTemp != null) {
-      lookaheadPoint.loc[0] = lookaheadPointTemp.x;
-      lookaheadPoint.loc[1] = lookaheadPointTemp.y
+      lookaheadPoint = lookaheadPointTemp;
       break;
     }
   }

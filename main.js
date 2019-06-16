@@ -35,16 +35,27 @@ const maxVel = 6;
 const maxAccel = 15;
 const turnK = 10;
 
+canvas.width = window.innerWidth - marginOffset * 2;
+canvas.height = window.innerHeight - 80;
 
 let points = [
 { x: 1, y: 1 },
 { x: 5, y: 3 },
-{ x: 9, y: 5 },
+{ x: 9, y: 2 },
 ];
 
 let path = [];
 
-let bot = new Bot(50, 50, 0);
+function localPointToCanvasPoint(point) {
+  return { x: point.x * canvasScale, y: canvas.height - (point.y * canvasScale)};
+}
+
+function canvasPointToLocalPoint(point) {
+  return { x: point.x / canvasScale, y: (canvas.height - point.y) / canvasScale};
+}
+
+let botPos = localPointToCanvasPoint(points[0]);
+let bot = new Bot(botPos.x, botPos.y, 0);
 
 function animate() {
 
@@ -75,9 +86,10 @@ function animate() {
   //   console.log(i, path[i].loc);
   // }
 
-  // console.log(bot.getPos());
-  let velocities = update(path, bot.getPos(), bot.getHeading(), 2);
-  bot.tank(velocities.left / maxVel, velocities.right / maxVel);
+
+  botPos = canvasPointToLocalPoint(bot.getPos());
+  let velocities = update(path, new Vector(botPos.x, botPos.y), bot.getHeading(), 0.5);
+  bot.tank(velocities.left/maxVel, velocities.right/maxVel);
   bot.update();
 
   /* draw waypoints and path */
