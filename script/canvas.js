@@ -168,6 +168,10 @@ function click(e) {
     window.focus();
     if (e.ctrlKey) {
       dragIndex = -2;
+    } else if(nodeIndex != -1) {
+      lastCoord = canvasEventToLocalCoord(e);
+      points.splice(path[nodeIndex].segment + 1, 0, lastCoord);
+      move(e);
     } else if (!hovering) {
       lastCoord = canvasEventToLocalCoord(e);
       points.push(lastCoord);

@@ -28,7 +28,9 @@ function insertPoints(points, resolution) {
     for (let j = 0; j < numInsert; j++) {
       let xNew = start.x + xStep * j;
       let yNew = start.y + yStep * j;
-      path.push(new WayPoint(xNew, yNew));
+      let newPoint = new WayPoint(xNew, yNew);
+      newPoint.setSegment(i);
+      path.push(newPoint);
     }
   }
 
