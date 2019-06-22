@@ -46,13 +46,6 @@ let points = [
 
 let path = [];
 
-function localPointToCanvasPoint(point) {
-  return { x: point.x * canvasScale, y: canvas.height - (point.y * canvasScale)};
-}
-
-function canvasPointToLocalPoint(point) {
-  return { x: point.x / canvasScale, y: (canvas.height - point.y) / canvasScale};
-}
 
 let botPos = localPointToCanvasPoint(points[0]);
 let bot = new Bot(botPos.x, botPos.y, 0);

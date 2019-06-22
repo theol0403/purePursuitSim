@@ -67,6 +67,15 @@ function getAttr(array, compare, get) {
 }
 
 
+function localPointToCanvasPoint(point) {
+  return { x: point.x * canvasScale, y: canvas.height - (point.y * canvasScale)};
+}
+
+function canvasPointToLocalPoint(point) {
+  return { x: point.x / canvasScale, y: (canvas.height - point.y) / canvasScale};
+}
+
+
 /*----Canvas Display----*/
 function drawWaypoints(points) {
   c.fillStyle = "#ff7f00";
@@ -149,18 +158,9 @@ let nodeIndex = -1;
 function canvasEventToLocalCoord(e) {
   let screenX = e.clientX - marginOffset;
   let screenY = e.clientY - marginOffset;
-
-  let newX = screenX / canvasScale;
-  let newY = (canvas.height - screenY) / canvasScale;
-
-  return { x: newX, y: newY };
+  return canvasPointToLocalPoint({ x: screenX, y: screenY });
 }
 
-function localCoordToCanvasCoord(point) {
-  let newX = point.x * canvasScale;
-  let newY = canvas.height - (point.y * canvasScale);
-  return { x: newX, y: newY };
-}
 
 function click(e) {
   //left click
@@ -221,8 +221,8 @@ function move(e) {
   } else if (dragIndex == -3) {
     showRect = true;
     let goal = canvasEventToLocalCoord(e);
-    rectangle[0] = localCoordToCanvasCoord(lastCoord);
-    rectangle[1] = localCoordToCanvasCoord(goal);
+    rectangle[0] = localPointToCanvasPoint(lastCoord);
+    rectangle[1] = localPointToCanvasPoint(goal);
     deleteIndexes = [];
     points.forEach(function (node, i) {
       let orginX = Math.min(lastCoord.x, goal.x);
