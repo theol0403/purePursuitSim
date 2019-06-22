@@ -5,9 +5,9 @@ var robotTrack = 2;
 
 function findclosestPointIndex(path, currentPos) {
   let closestDist = Number.POSITIVE_INFINITY;
-  let closestPointIndex;
+  let closestPointIndex = lastClosestPointIndex;
 
-  for (let i = 0; i < path.length; i++) {
+  for (let i = lastClosestPointIndex; i < path.length; i++) {
     let distance = Vector.dist(currentPos, path[i].vector());    
     if(distance < closestDist) {
       closestDist = distance;
@@ -63,7 +63,7 @@ function findLookaheadPoint(path, start, end, currentPos, lookAheadDistance, onL
 
 
 function computeLookaheadArcCurvature(currentPos, heading, lookaheadPoint, lookAheadDistance) {
-  let a = - Math.tan(heading);
+  let a = -Math.tan(heading);
   let b = 1;
   let c = (Math.tan(heading) * currentPos.x) - currentPos.y;
   let x = Math.abs(a * lookaheadPoint.x + b * lookaheadPoint.y + c) / Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
@@ -94,7 +94,7 @@ function update(path, currentPos, heading, lookAheadDistance) {
     let startPoint = path[i-1].vector();
     let endPoint = path[i].vector();
 
-    onLastSegment = i == (path.length - 1);
+    onLastSegment = i == (path.length);
 
     let lookaheadPointTemp = findLookaheadPoint(path, startPoint, endPoint, currentPos, lookAheadDistance, onLastSegment);
 
@@ -108,5 +108,5 @@ function update(path, currentPos, heading, lookAheadDistance) {
   let leftTargetVel = computeLeftTargetVel(path[closestPointIndex].velocity, curvature);
   let rightTargetVel = computeRightTargetVel(path[closestPointIndex].velocity, curvature);
 
-  return {left: leftTargetVel, right: rightTargetVel};
+  return {left: leftTargetVel, right: rightTargetVel, lookahead: lookaheadPoint, curvature: curvature};
 }

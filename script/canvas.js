@@ -77,11 +77,39 @@ function canvasPointToLocalPoint(point) {
 
 
 /*----Canvas Display----*/
+function drawLookahead(lookahead, currPos) {
+  let cPoint = localPointToCanvasPoint(lookahead);
+  c.fillStyle = "#ff0087";
+  c.strokeStyle = "#ff0087";
+  c.beginPath();
+  c.arc(cPoint.x, cPoint.y, lookaheadWidth, 0, Math.PI * 2);
+  c.closePath();
+  c.fill();
+  c.beginPath();
+  c.moveTo(currPos.x, currPos.y);
+  c.lineTo(cPoint.x, cPoint.y);
+  c.closePath();
+  c.stroke();
+}
+
+function drawCurvature(curvature, currPos, lookahead) {
+  
+//   c.beginPath();
+//   let radius = isNaN(1/curvature) ? 0 : 1/curvature;
+// // console.log(radius)
+// let x = currPos.x + radius * (lookahead.x - currPos.x);
+// //let y = currPos.y + radius * Math.sin(0);
+// c.arc(x, currPos.y, Math.abs(radius), 0, Math.PI * 2);
+// c.closePath();
+// c.stroke();
+}
+
 function drawWaypoints(points) {
   c.fillStyle = "#ff7f00";
   points.forEach((node, i) => {
     c.beginPath();
-    c.arc(node.x * canvasScale, canvas.height - node.y * canvasScale, waypointWidth, 0, Math.PI * 2);
+    let cPoint = localPointToCanvasPoint(node);
+    c.arc(cPoint.x, cPoint.y, waypointWidth, 0, Math.PI * 2);
     c.closePath();
     c.fill();
   });
@@ -96,27 +124,24 @@ let fullMax = 0;
 function drawPath(path, colorGet, min, max) {
 
   //curvature color calculations
-  //if min is true
   if(min === true) {
     fullMin = Math.min(fullMin, getAttr(path, Math.min, colorGet));
     fullMax = Math.max(fullMax, getAttr(path, Math.max, colorGet));
-  } else if (min === undefined || min === false) { //if min is not provided or is false
-    fullMin = getAttr(path, Math.min, colorGet);
-    fullMax = getAttr(path, Math.max, colorGet);
-  } else {
-    fullMin = min;
-    fullMax = max;
-  }
-  
+  } else if (min === undefined || min === false) { 
+  //if min is not provided or is false
+  fullMin = getAttr(path, Math.min, colorGet);
+  fullMax = getAttr(path, Math.max, colorGet);
+} else {
+  fullMin = min;
+  fullMax = max;
+}
 
-  path.forEach((node, i) => {
-
-    let canvasX = node.x() * canvasScale;
-    let canvasY = node.y() * canvasScale;
-    let style = perc2multcolor(colorGet(node), fullMin, fullMax);
-    c.fillStyle = style;
-    c.strokeStyle = style;
-
+path.forEach((node, i) => {
+ let canvasX = node.x() * canvasScale;
+ let canvasY = node.y() * canvasScale;
+ let style = perc2multcolor(colorGet(node), fullMin, fullMax);
+ c.fillStyle = style;
+ c.strokeStyle = style;
     //draw points
     c.beginPath();
     if(nodeIndex == i) {
@@ -124,10 +149,8 @@ function drawPath(path, colorGet, min, max) {
     } else {
       c.arc(canvasX, canvas.height - canvasY, pointWidth, 0, Math.PI * 2);
     }
-    
     c.closePath();
     c.fill();
-
     //draw lines
     if (i > 0) {
       let lastX = path[i - 1].x() * canvasScale;
