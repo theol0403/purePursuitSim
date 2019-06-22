@@ -31,8 +31,8 @@ const pointWidth = 2;
 const marginOffset = 9; //correction for canvas choords vs window choords. related to margin
 
 const minVel = 1;
-const maxVel = 6;
-const maxAccel = 15;
+const maxVel = 8;
+const maxAccel = 10;
 const turnK = 10;
 
 canvas.width = window.innerWidth - marginOffset * 2;
