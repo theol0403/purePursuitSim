@@ -94,7 +94,7 @@ function update(path, currentPos, heading, lookAheadDistance) {
     let startPoint = path[i-1].vector();
     let endPoint = path[i].vector();
 
-    onLastSegment = i == (path.length);
+    onLastSegment = i == (path.length - 1);
 
     let lookaheadPointTemp = findLookaheadPoint(path, startPoint, endPoint, currentPos, lookAheadDistance, onLastSegment);
 
@@ -108,5 +108,5 @@ function update(path, currentPos, heading, lookAheadDistance) {
   let leftTargetVel = computeLeftTargetVel(path[closestPointIndex].velocity, curvature);
   let rightTargetVel = computeRightTargetVel(path[closestPointIndex].velocity, curvature);
 
-  return {left: leftTargetVel, right: rightTargetVel, lookahead: lookaheadPoint, curvature: curvature};
+  return {left: leftTargetVel, right: rightTargetVel, lookahead: lookaheadPoint, curvature: curvature, closest: path[closestPointIndex].vector()};
 }

@@ -59,6 +59,10 @@ function perc2multcolor(perc, min, max) {
   return '#' + ('000000' + h.toString(16)).slice(-6)
 }
 
+function rgbToHex(rgb){
+  return '#' + ((rgb[0] << 16) | (rgb[1] << 8) | rgb[2]).toString(16);
+};
+
 //gets a value from an variable nested in an array such as the min curvature
 function getAttr(array, compare, get) {
   return array.reduce((a, b) => {
@@ -92,9 +96,42 @@ function drawLookahead(lookahead, currPos) {
   c.stroke();
 }
 
+function drawClosest(closest, currPos) {
+  let cPoint = localPointToCanvasPoint(closest);
+  c.fillStyle = "#2b00ba";
+  c.strokeStyle = "#2b00ba";
+  c.beginPath();
+  c.arc(cPoint.x, cPoint.y, pointWidth, 0, Math.PI * 2);
+  c.closePath();
+  c.fill();
+  c.beginPath();
+  c.moveTo(currPos.x, currPos.y);
+  c.lineTo(cPoint.x, cPoint.y);
+  c.closePath();
+  c.stroke();
+}
+
 function drawCurvature(curvature, currPos, lookahead) {
-  
-//   c.beginPath();
+  // currPos = {x: 4, y: 6};
+  // lookahead = {x: 5, y: 7};
+  // curvature = 0.00001;
+  let x3 = (currPos.x + lookahead.x) / 2;
+  let y3 = (currPos.y + lookahead.y) / 2;
+  let q = Math.sqrt(Math.pow(currPos.x - lookahead.x, 2) + Math.pow(currPos.y - lookahead.y, 2));
+  let x = x3 - Math.sqrt(Math.pow(1/curvature, 2) - Math.pow(q / 2, 2)) * (currPos.y - lookahead.y)/q * sgn(curvature);
+  let y = y3 - Math.sqrt(Math.pow(1/curvature, 2) - Math.pow(q / 2, 2)) * (currPos.x - lookahead.x)/q * sgn(curvature);
+  // x = Math.cos(-Math.PI / 2) * x;
+  // y = Math.sin(-Math.PI / 2) * y;
+  let canvasPoint = localPointToCanvasPoint({ x: x, y: y });
+  // console.log(canvasPoint)
+
+  c.beginPath();
+  c.arc(canvasPoint.x, canvasPoint.y, Math.abs(1/curvature*canvasScale), 0, Math.PI * 2);
+  c.closePath();
+  c.stroke();
+ // c.fill();
+
+  // c.beginPath();
 //   let radius = isNaN(1/curvature) ? 0 : 1/curvature;
 // // console.log(radius)
 // let x = currPos.x + radius * (lookahead.x - currPos.x);
@@ -128,20 +165,20 @@ function drawPath(path, colorGet, min, max) {
     fullMin = Math.min(fullMin, getAttr(path, Math.min, colorGet));
     fullMax = Math.max(fullMax, getAttr(path, Math.max, colorGet));
   } else if (min === undefined || min === false) { 
-  //if min is not provided or is false
-  fullMin = getAttr(path, Math.min, colorGet);
-  fullMax = getAttr(path, Math.max, colorGet);
-} else {
-  fullMin = min;
-  fullMax = max;
-}
+    //if min is not provided or is false
+    fullMin = getAttr(path, Math.min, colorGet);
+    fullMax = getAttr(path, Math.max, colorGet);
+  } else {
+    fullMin = min;
+    fullMax = max;
+  }
 
-path.forEach((node, i) => {
- let canvasX = node.x() * canvasScale;
- let canvasY = node.y() * canvasScale;
- let style = perc2multcolor(colorGet(node), fullMin, fullMax);
- c.fillStyle = style;
- c.strokeStyle = style;
+  path.forEach((node, i) => {
+   let canvasX = node.x() * canvasScale;
+   let canvasY = node.y() * canvasScale;
+   let style = perc2multcolor(colorGet(node), fullMin, fullMax);
+   c.fillStyle = style;
+   c.strokeStyle = style;
     //draw points
     c.beginPath();
     if(nodeIndex == i) {
@@ -191,7 +228,7 @@ function click(e) {
     window.focus();
     if (e.ctrlKey) {
       dragIndex = -2;
-    } else if(nodeIndex != -1) {
+    } else if(nodeIndex != -1 && !hovering) {
       lastCoord = canvasEventToLocalCoord(e);
       points.splice(path[nodeIndex].segment + 1, 0, lastCoord);
       move(e);

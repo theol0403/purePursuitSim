@@ -27,7 +27,7 @@ const lineWidth = 1;
 
 const waypointWidth = 4;
 const pointWidth = 2;
-const lookaheadWidth = 4.5;
+const lookaheadWidth = 3;
 
 const marginOffset = 9; //correction for canvas choords vs window choords. related to margin
 
@@ -41,7 +41,7 @@ canvas.height = window.innerHeight - 80;
 
 let points = [
 { x: 1, y: 1 },
-{ x: 5, y: 3 },
+{ x: 5, y: 4 },
 { x: 9, y: 2 },
 ];
 
@@ -85,12 +85,15 @@ function animate() {
   let pursuit = update(path, new Vector(botPos.x, botPos.y), bot.getHeading(), 0.5);
   bot.tank(pursuit.left/maxVel, pursuit.right/maxVel);
   bot.update();
-  drawLookahead(pursuit.lookahead, bot.getPos());
-  drawCurvature(pursuit.curvature, bot.getPos(), pursuit.lookahead);
 
   /* draw waypoints and path */
   drawWaypoints(points);
   drawPath(path, a => a.velocity, minVel, maxVel);
+
+  drawLookahead(pursuit.lookahead, bot.getPos());
+  drawClosest(pursuit.closest, bot.getPos());
+  // drawCurvature(pursuit.curvature, botPos, pursuit.lookahead);
+  bot.draw();
 
   if (showRect) {
     c.beginPath();

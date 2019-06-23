@@ -37,8 +37,6 @@ class Bot {
 
     this.pos.x += this.vel.x;
     this.pos.y += this.vel.y;
-
-    this.draw();
   }
 
   draw() {
