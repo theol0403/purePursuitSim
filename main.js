@@ -82,7 +82,7 @@ function animate() {
 
 
   botPos = canvasPointToLocalPoint(bot.getPos());
-  let pursuit = update(path, new Vector(botPos.x, botPos.y), bot.getHeading(), 0.5);
+  let pursuit = update(path, new Vector(botPos.x, botPos.y), bot.getHeading(), 0.2);
   bot.tank(pursuit.left/maxVel, pursuit.right/maxVel);
   bot.update();
 
