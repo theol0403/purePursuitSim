@@ -119,12 +119,11 @@ function drawCurvature(curvature, currPos, lookahead) {
   // currPos = {x: 4, y: 6};
   // lookahead = {x: 5, y: 7};
   // curvature = 0.00001;
-let q = Math.sqrt(Math.pow(lookahead.x-currPos.x, 2) + Math.pow(lookahead.y-currPos.y, 2));
-let x3 = (currPos.x+lookahead.x)/2;
-let y3 = (currPos.y+lookahead.y)/2;
-let x = x3 + Math.sqrt(Math.pow(1/curvature, 2)-Math.pow(q/2, 2)) * (currPos.y-lookahead.y)/q * sgn(curvature);
-let y = y3 + Math.sqrt(Math.pow(1/curvature, 2)-Math.pow(q/2, 2)) * (currPos.x-lookahead.x)/q * sgn(curvature);
-  let canvasPoint = localPointToCanvasPoint({ x: x, y: y });
+  let x3 = (currPos.x + lookahead.x) / 2;
+  let y3 = (currPos.y + lookahead.y) / 2;
+  let q = Math.sqrt(Math.pow(currPos.x - lookahead.x, 2) + Math.pow(currPos.y - lookahead.y, 2));
+  let x = x3 - Math.sqrt(Math.pow(1/curvature, 2) - Math.pow(q / 2, 2)) * (currPos.y - lookahead.y)/q * sgn(curvature);
+  let y = y3 - Math.sqrt(Math.pow(1/curvature, 2) - Math.pow(q / 2, 2)) * (currPos.x - lookahead.x)/q * sgn(curvature);
   // x = Math.cos(-Math.PI / 2) * x;
   // y = Math.sin(-Math.PI / 2) * y;
   let canvasPoint = localPointToCanvasPoint({ x: x, y: y });
