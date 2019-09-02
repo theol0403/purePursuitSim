@@ -23,12 +23,6 @@ window.focus();
 
 
 let canvasScale = 80;
-const lineWidth = 1;
-
-const waypointWidth = 4;
-const pointWidth = 2;
-const lookaheadWidth = 3;
-
 const marginOffset = 9; //correction for canvas choords vs window choords. related to margin
 
 const minVel = 1;
@@ -56,7 +50,7 @@ function animate() {
   /* maintain canvas */
   canvas.width = window.innerWidth - marginOffset * 2;
   canvas.height = window.innerHeight - 80;
-  c.lineWidth = lineWidth;
+  c.lineWidth = 1;
 
   /* slider value calculations */
   let resolution = resolutionSlider.value / 1000;

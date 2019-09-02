@@ -17,7 +17,7 @@ class Bot {
     this.spd = { l: 0, r: 0 };
   }
 
-  tank(left, right) { this.spd = { l: left, r: right }; }
+  tank(left, right) { this.spd = { l: Math.abs(left) > 1 ? 1 * sgn(left) : left, r: Math.abs(right) > 1 ? 1 * sgn(right) : right }; }
 
   getPos() {
     return this.pos;

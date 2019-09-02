@@ -63,15 +63,20 @@ function findLookaheadPoint(path, start, end, currentPos, lookAheadDistance, onL
 
 
 function computeLookaheadArcCurvature(currentPos, heading, lookaheadPoint, lookAheadDistance) {
-  let a = -Math.tan(heading);
-  let b = 1;
-  let c = (Math.tan(heading) * currentPos.x) - currentPos.y;
-  let x = Math.abs(a * lookaheadPoint.x + b * lookaheadPoint.y + c) / Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
-  let cross = (Math.sin(heading) * (lookaheadPoint.x - currentPos.x)) - (Math.cos(heading) * (lookaheadPoint.y - currentPos.y));
-  let side = cross > 0 ? 1 : -1;
-  let curvature = (2 * x) / Math.pow(lookAheadDistance, 2);
+  // let a = -Math.tan(heading);
+  // let b = 1;
+  // let c = (Math.tan(heading) * currentPos.x) - currentPos.y;
+  // let x = Math.abs((a * lookaheadPoint.x) + (b * lookaheadPoint.y) + c) / Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+  // let cross = (Math.sin(heading) * (lookaheadPoint.x - currentPos.x)) - (Math.cos(heading) * (lookaheadPoint.y - currentPos.y));
+  // let side = cross > 0 ? 1 : -1;
+  // let curvature = (2 * x) / Math.pow(lookAheadDistance, 2);
+  // return curvature * side;
 
-  return curvature * side;
+  let side = sgn(Math.sin(heading)*(lookaheadPoint.x-currentPos.x) - Math.cos(heading)*(lookaheadPoint.y-currentPos.y))
+  let a = -Math.tan(heading)
+  let c = Math.tan(heading)*currentPos.x - currentPos.y
+  let x = Math.abs(a * lookaheadPoint.x + lookaheadPoint.y + c) / Math.sqrt(a**2 + 1)
+  return side * (2*x/(lookAheadDistance**2))
 }
 
 

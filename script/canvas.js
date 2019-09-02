@@ -1,5 +1,4 @@
 
-
 /*----Uility Functions----*/
 function perc2color(perc, min, max) {
   let base = max - min;
@@ -62,6 +61,11 @@ function perc2multcolor(perc, min, max) {
 function rgbToHex(rgb){
   return '#' + ((rgb[0] << 16) | (rgb[1] << 8) | rgb[2]).toString(16);
 };
+
+
+const waypointWidth = 4;
+const pointWidth = 2;
+const lookaheadWidth = 3;
 
 //gets a value from an variable nested in an array such as the min curvature
 function getAttr(array, compare, get) {
@@ -240,7 +244,9 @@ function click(e) {
     }
     dragging = true;
   } else if (e.button == 2) { //right click
-    if (hovering) {
+    if (e.ctrlKey) {
+      bot.pos = { x: e.clientX, y: e.clientY, a: 0};
+    } else if (hovering) {
       points.splice(dragIndex, 1);
       move(e);
     } else {
