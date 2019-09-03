@@ -1,16 +1,16 @@
 
-/**
- * Constants and Globals
- */
+///////////////////////////
+// Constants and Globals //
+///////////////////////////
 const waypointWidth = 4;
 const pointWidth = 2;
 const lookaheadWidth = 3;
 
 let sliders = { resolution: 0, curve: 0, tolerance: 0};
 
-/**
- * Utility Functions
- */
+///////////////////////
+// Utility Functions //
+///////////////////////
 function maintainCanvas() {
   canvas.width = window.innerWidth - marginOffset * 2;
   canvas.height = window.innerHeight - 80;
@@ -27,7 +27,13 @@ function maintainCanvas() {
   tolValue.innerHTML = sliders.tolerance;
 }
 
-
+/**
+ * Turn percentage into RGB range from yellow to red
+ * @param  {Number} perc value between min and max
+ * @param  {Number} min  
+ * @param  {Number} max  
+ * @return {String} RGB hex code
+ */
 function perc2color(perc, min, max) {
   let base = max - min;
   if (base == 0) { 
@@ -47,6 +53,13 @@ function perc2color(perc, min, max) {
   return '#' + ('000000' + h.toString(16)).slice(-6);
 }
 
+/**
+ * Turn percentage into RGB range rainbow
+ * @param  {Number} perc value between min and max
+ * @param  {Number} min  
+ * @param  {Number} max  
+ * @return {String} RGB hex code
+ */
 function perc2multcolor(perc, min, max) {
   let base = max - min;
   if (base == 0) { 
@@ -80,89 +93,54 @@ function perc2multcolor(perc, min, max) {
   return '#' + ('000000' + h.toString(16)).slice(-6);
 }
 
-function rgbToHex(rgb){
-  return '#' + ((rgb[0] << 16) | (rgb[1] << 8) | rgb[2]).toString(16);
-};
-
-
-//gets a value from an variable nested in an array such as the min curvature
+/**
+ * gets a value from an variable nested in an array such as the min curvature
+ * @param  {Array} Array
+ * @param  {Function} compare min or max
+ * @param  {Function} get     get nested element
+ * @return {Number}           get final value
+ */
 function getAttr(array, compare, get) {
   return array.reduce((a, b) => {
     return compare(a, get(b));
   }, get(array[0]));
 }
 
+//////////////////////
+// Canvas Functions //
+//////////////////////
 
+/**
+ * Scales coordenates from simulation coordenates to canvas coordenates
+ */
 function localToCanvas(point) {
   return { x: point.x * canvasScale, y: canvas.height - (point.y * canvasScale)};
 }
-
+/**
+ * Scales coordenates from canvas coordenates to simulation coordenates
+ */
 function canvasToLocal(point) {
   return { x: point.x / canvasScale, y: (canvas.height - point.y) / canvasScale};
 }
 
-
-/*----Canvas Display----*/
-function drawLookahead(lookahead, currPos) {
-  let cPoint = localToCanvas(lookahead);
-  c.fillStyle = "#ff0087";
-  c.strokeStyle = "#ff0087";
+/**
+ * Draws a line from origin to point, then draws a point
+ */
+function drawLineToPoint(origin, point) {
   c.beginPath();
-  c.arc(cPoint.x, cPoint.y, lookaheadWidth, 0, Math.PI * 2);
+  c.arc(point.x, point.y, lookaheadWidth, 0, Math.PI * 2);
   c.closePath();
   c.fill();
   c.beginPath();
-  c.moveTo(currPos.x, currPos.y);
-  c.lineTo(cPoint.x, cPoint.y);
+  c.moveTo(origin.x, origin.y);
+  c.lineTo(point.x, point.y);
   c.closePath();
   c.stroke();
 }
 
-function drawClosest(closest, currPos) {
-  let cPoint = localToCanvas(closest);
-  c.fillStyle = "#2b00ba";
-  c.strokeStyle = "#2b00ba";
-  c.beginPath();
-  c.arc(cPoint.x, cPoint.y, pointWidth, 0, Math.PI * 2);
-  c.closePath();
-  c.fill();
-  c.beginPath();
-  c.moveTo(currPos.x, currPos.y);
-  c.lineTo(cPoint.x, cPoint.y);
-  c.closePath();
-  c.stroke();
-}
-
-function drawCurvature(curvature, currPos, lookahead) {
-  // currPos = {x: 4, y: 6};
-  // lookahead = {x: 5, y: 7};
-  // curvature = 0.00001;
-  let x3 = (currPos.x + lookahead.x) / 2;
-  let y3 = (currPos.y + lookahead.y) / 2;
-  let q = Math.sqrt(Math.pow(currPos.x - lookahead.x, 2) + Math.pow(currPos.y - lookahead.y, 2));
-  let x = x3 - Math.sqrt(Math.pow(1/curvature, 2) - Math.pow(q / 2, 2)) * (currPos.y - lookahead.y)/q * sgn(curvature);
-  let y = y3 - Math.sqrt(Math.pow(1/curvature, 2) - Math.pow(q / 2, 2)) * (currPos.x - lookahead.x)/q * sgn(curvature);
-  // x = Math.cos(-Math.PI / 2) * x;
-  // y = Math.sin(-Math.PI / 2) * y;
-  let canvasPoint = localToCanvas({ x: x, y: y });
-  // console.log(canvasPoint)
-
-  c.beginPath();
-  c.arc(canvasPoint.x, canvasPoint.y, Math.abs(1/curvature*canvasScale), 0, Math.PI * 2);
-  c.closePath();
-  c.stroke();
- // c.fill();
-
-  // c.beginPath();
-//   let radius = isNaN(1/curvature) ? 0 : 1/curvature;
-// // console.log(radius)
-// let x = currPos.x + radius * (lookahead.x - currPos.x);
-// //let y = currPos.y + radius * Math.sin(0);
-// c.arc(x, currPos.y, Math.abs(radius), 0, Math.PI * 2);
-// c.closePath();
-// c.stroke();
-}
-
+/**
+ * Draws array of points
+ */
 function drawWaypoints(points) {
   c.fillStyle = "#ff7f00";
   points.forEach((node, i) => {
@@ -224,7 +202,52 @@ function drawPath(path, colorGet, min, max) {
 }
 
 
-/*----Canvas Interaction----*/
+function drawLookahead(currPos, lookahead) {
+  c.fillStyle = "#ff0087";
+  c.strokeStyle = "#ff0087";
+  drawLineToPoint(currPos, localToCanvas(lookahead));
+}
+
+function drawClosest(currPos, closest) {
+  c.fillStyle = "#2b00ba";
+  c.strokeStyle = "#2b00ba";
+  drawLineToPoint(currPos, localToCanvas(closest));
+}
+
+function drawCurvature(curvature, currPos, lookahead) {
+  // currPos = {x: 4, y: 6};
+  // lookahead = {x: 5, y: 7};
+  // curvature = 0.00001;
+  let x3 = (currPos.x + lookahead.x) / 2;
+  let y3 = (currPos.y + lookahead.y) / 2;
+  let q = Math.sqrt(Math.pow(currPos.x - lookahead.x, 2) + Math.pow(currPos.y - lookahead.y, 2));
+  let x = x3 - Math.sqrt(Math.pow(1/curvature, 2) - Math.pow(q / 2, 2)) * (currPos.y - lookahead.y)/q * sgn(curvature);
+  let y = y3 - Math.sqrt(Math.pow(1/curvature, 2) - Math.pow(q / 2, 2)) * (currPos.x - lookahead.x)/q * sgn(curvature);
+  // x = Math.cos(-Math.PI / 2) * x;
+  // y = Math.sin(-Math.PI / 2) * y;
+  let canvasPoint = localToCanvas({ x: x, y: y });
+  // console.log(canvasPoint)
+
+  c.beginPath();
+  c.arc(canvasPoint.x, canvasPoint.y, Math.abs(1/curvature*canvasScale), 0, Math.PI * 2);
+  c.closePath();
+  c.stroke();
+  // c.fill();
+
+  // c.beginPath();
+  //   let radius = isNaN(1/curvature) ? 0 : 1/curvature;
+  // // console.log(radius)
+  // let x = currPos.x + radius * (lookahead.x - currPos.x);
+  // //let y = currPos.y + radius * Math.sin(0);
+  // c.arc(x, currPos.y, Math.abs(radius), 0, Math.PI * 2);
+  // c.closePath();
+  // c.stroke();
+}
+
+
+////////////////////////
+// Canvas Interaction //
+////////////////////////
 let showRect = false;
 let rectangle = [{ x: 0, y: 0 }, { x: 0, y: 0 }];
 let deleteIndexes = [];
@@ -257,12 +280,13 @@ function click(e) {
     } else if (!hovering) {
       lastCoord = canvasEventToLocalCoord(e);
       points.push(lastCoord);
+      // dragging = true;
       move(e);
     }
     dragging = true;
   } else if (e.button == 2) { //right click
     if (e.ctrlKey) {
-      bot.pos = { x: e.clientX, y: e.clientY, a: 0};
+      bots.push(new Bot(e.clientX, e.clientY, 0));
     } else if (hovering) {
       points.splice(dragIndex, 1);
       move(e);

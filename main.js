@@ -35,7 +35,7 @@ canvas.height = window.innerHeight - 80;
 /**
  * Pursuit Constants
  */
-const minVel = 1;
+const minVel = 2;
 const maxVel = 8;
 const maxAccel = 10;
 const turnK = 10;
@@ -49,33 +49,40 @@ let points = [
 { x: 9, y: 2 },
 ];
 
-let bot = new Bot(localToCanvas(points[0]).x, localToCanvas(points[0]).y, 0);
+let bots = [new Bot(localToCanvas(points[0]).x, localToCanvas(points[0]).y, 0)];
+let path = [];
 
 function animate() {
 
   maintainCanvas();
 
-  /* path calculations */
-  let path = [];
+  /**
+   * Pure Pursuit Algorithm
+   */
   path = insertPoints(points, sliders.resolution);
   path = smoothen(path, sliders.curve, sliders.tolerance);
+
   path = computeDistances(path);
   path = computeCurvatures(path);
   path = computeVelocity(path, maxVel, maxAccel, turnK);
-  path = limitVelocity(path, minVel, maxAccel);
+  // path = limitVelocity(path, minVel, maxVel);
 
-  let pursuit = update(path, bot.getLocalPos(), bot.getHeading(), 0.5);
-  bot.tank(pursuit.left/maxVel, pursuit.right/maxVel);
-  bot.update();
+  bots.forEach((bot) => {
+    let pursuit = update(path, bot.getLocalPos(), bot.getHeading(), 0.5);
+    bot.tank(pursuit.left/maxVel, pursuit.right/maxVel);
+    bot.update();
 
-  /* draw waypoints and path */
+    drawLookahead(bot.getCanvasPos(), pursuit.lookahead);
+    drawClosest(bot.getCanvasPos(), pursuit.closest);
+    // drawCurvature(pursuit.curvature, canvasPos, pursuit.lookahead);
+    bot.draw();
+  });
+
+  /**
+   * Canvas Drawing
+   */
   drawWaypoints(points);
   drawPath(path, a => a.velocity, minVel, maxVel);
-
-  drawLookahead(pursuit.lookahead, bot.getCanvasPos());
-  drawClosest(pursuit.closest, bot.getCanvasPos());
-  // drawCurvature(pursuit.curvature, canvasPos, pursuit.lookahead);
-  bot.draw();
 
   if (showRect) {
     c.beginPath();
