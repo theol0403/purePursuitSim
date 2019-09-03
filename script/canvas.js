@@ -54,36 +54,30 @@ function perc2multcolor(perc, min, max) {
   } else {
     perc = (perc - min) / base * 100; 
   }
-  let r, g, b = 0
-
+  let r, g, b = 0;
   if (perc >= 0 && perc <= 20) {
-    r = 255
-    g = Math.round(12.75 * perc)
-    b = 0
+    r = 255;
+    g = Math.round(12.75 * perc);
+    b = 0;
+  } else if (perc > 20 && perc <= 40) {
+    r = Math.round(-12.75 * perc + 510);
+    g = 255;
+    b = 0;
+  } else if (perc > 40 && perc <= 60) {
+    r = 0;
+    g = 255;
+    b = Math.round(12.75 * perc) - 510;
+  } else if (perc > 60 && perc <= 80) {
+    r = 0;
+    g = Math.round(-12.75 * perc + 1020);
+    b = 255;
+  } else {
+    r = Math.round(12.75 * perc - 1020);
+    g = 0;
+    b = 255;
   }
-  else if (perc > 20 && perc <= 40) {
-    r = Math.round(-12.75 * perc + 510)
-    g = 255
-    b = 0
-  }
-  else if (perc > 40 && perc <= 60) {
-    r = 0
-    g = 255
-    b = Math.round(12.75 * perc) - 510
-  }
-  else if (perc > 60 && perc <= 80) {
-    r = 0
-    g = Math.round(-12.75 * perc + 1020)
-    b = 255
-  }
-  else {
-    r = Math.round(12.75 * perc - 1020)
-    g = 0
-    b = 255
-  }
-
-  let h = r * 0x10000 + g * 0x100 + b * 0x1
-  return '#' + ('000000' + h.toString(16)).slice(-6)
+  let h = r * 0x10000 + g * 0x100 + b * 0x1;
+  return '#' + ('000000' + h.toString(16)).slice(-6);
 }
 
 function rgbToHex(rgb){
@@ -99,18 +93,18 @@ function getAttr(array, compare, get) {
 }
 
 
-function localPointToCanvasPoint(point) {
+function localToCanvas(point) {
   return { x: point.x * canvasScale, y: canvas.height - (point.y * canvasScale)};
 }
 
-function canvasPointToLocalPoint(point) {
+function canvasToLocal(point) {
   return { x: point.x / canvasScale, y: (canvas.height - point.y) / canvasScale};
 }
 
 
 /*----Canvas Display----*/
 function drawLookahead(lookahead, currPos) {
-  let cPoint = localPointToCanvasPoint(lookahead);
+  let cPoint = localToCanvas(lookahead);
   c.fillStyle = "#ff0087";
   c.strokeStyle = "#ff0087";
   c.beginPath();
@@ -125,7 +119,7 @@ function drawLookahead(lookahead, currPos) {
 }
 
 function drawClosest(closest, currPos) {
-  let cPoint = localPointToCanvasPoint(closest);
+  let cPoint = localToCanvas(closest);
   c.fillStyle = "#2b00ba";
   c.strokeStyle = "#2b00ba";
   c.beginPath();
@@ -150,7 +144,7 @@ function drawCurvature(curvature, currPos, lookahead) {
   let y = y3 - Math.sqrt(Math.pow(1/curvature, 2) - Math.pow(q / 2, 2)) * (currPos.x - lookahead.x)/q * sgn(curvature);
   // x = Math.cos(-Math.PI / 2) * x;
   // y = Math.sin(-Math.PI / 2) * y;
-  let canvasPoint = localPointToCanvasPoint({ x: x, y: y });
+  let canvasPoint = localToCanvas({ x: x, y: y });
   // console.log(canvasPoint)
 
   c.beginPath();
@@ -173,7 +167,7 @@ function drawWaypoints(points) {
   c.fillStyle = "#ff7f00";
   points.forEach((node, i) => {
     c.beginPath();
-    let cPoint = localPointToCanvasPoint(node);
+    let cPoint = localToCanvas(node);
     c.arc(cPoint.x, cPoint.y, waypointWidth, 0, Math.PI * 2);
     c.closePath();
     c.fill();
@@ -246,7 +240,7 @@ let nodeIndex = -1;
 function canvasEventToLocalCoord(e) {
   let screenX = e.clientX - marginOffset;
   let screenY = e.clientY - marginOffset;
-  return canvasPointToLocalPoint({ x: screenX, y: screenY });
+  return canvasToLocal({ x: screenX, y: screenY });
 }
 
 
@@ -315,8 +309,8 @@ function move(e) {
   } else if (dragIndex == -3) {
     showRect = true;
     let goal = canvasEventToLocalCoord(e);
-    rectangle[0] = localPointToCanvasPoint(lastCoord);
-    rectangle[1] = localPointToCanvasPoint(goal);
+    rectangle[0] = localToCanvas(lastCoord);
+    rectangle[1] = localToCanvas(goal);
     deleteIndexes = [];
     points.forEach(function (node, i) {
       let orginX = Math.min(lastCoord.x, goal.x);

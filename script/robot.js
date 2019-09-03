@@ -19,7 +19,11 @@ class Bot {
 
   tank(left, right) { this.spd = { l: Math.abs(left) > 1 ? 1 * sgn(left) : left, r: Math.abs(right) > 1 ? 1 * sgn(right) : right }; }
 
-  getPos() {
+  getLocalPos() {
+    return canvasToLocal(this.pos);
+  }
+
+  getCanvasPos() {
     return this.pos;
   }
 
