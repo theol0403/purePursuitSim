@@ -1,5 +1,33 @@
 
-/*----Uility Functions----*/
+/**
+ * Constants and Globals
+ */
+const waypointWidth = 4;
+const pointWidth = 2;
+const lookaheadWidth = 3;
+
+let sliders = { resolution: 0, curve: 0, tolerance: 0};
+
+/**
+ * Utility Functions
+ */
+function maintainCanvas() {
+  canvas.width = window.innerWidth - marginOffset * 2;
+  canvas.height = window.innerHeight - 80;
+  c.lineWidth = 1;
+
+  /* slider value calculations */
+  sliders.resolution = resolutionSlider.value / 1000;
+  resValue.innerHTML = sliders.resolution;
+
+  sliders.curve = curveSlider.value / 1000;
+  curveValue.innerHTML = sliders.curve;
+
+  sliders.tolerance = Math.pow(10, -toleranceSlider.value / 100) * 100;
+  tolValue.innerHTML = sliders.tolerance;
+}
+
+
 function perc2color(perc, min, max) {
   let base = max - min;
   if (base == 0) { 
@@ -62,10 +90,6 @@ function rgbToHex(rgb){
   return '#' + ((rgb[0] << 16) | (rgb[1] << 8) | rgb[2]).toString(16);
 };
 
-
-const waypointWidth = 4;
-const pointWidth = 2;
-const lookaheadWidth = 3;
 
 //gets a value from an variable nested in an array such as the min curvature
 function getAttr(array, compare, get) {

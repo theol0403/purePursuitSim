@@ -1,4 +1,7 @@
 
+/**
+ * Canvas DOM setup
+ */
 const canvas = document.getElementById("c");
 const c = canvas.getContext("2d");
 
@@ -21,17 +24,22 @@ window.addEventListener("keyup", keyup);
 $(window).bind('mousewheel DOMMouseScroll', zoom);
 window.focus();
 
-
-let canvasScale = 80;
+/**
+ * Canvas Constants
+ */
+let canvasScale = 80; //ratio between simulated position and canvas position
 const marginOffset = 9; //correction for canvas choords vs window choords. related to margin
+canvas.width = window.innerWidth - marginOffset * 2;
+canvas.height = window.innerHeight - 80;
 
+/**
+ * Pursuit Constants
+ */
 const minVel = 1;
 const maxVel = 8;
 const maxAccel = 10;
 const turnK = 10;
 
-canvas.width = window.innerWidth - marginOffset * 2;
-canvas.height = window.innerHeight - 80;
 
 let points = [
 { x: 1, y: 1 },
@@ -47,32 +55,15 @@ let bot = new Bot(botPos.x, botPos.y, 0);
 
 function animate() {
 
-  /* maintain canvas */
-  canvas.width = window.innerWidth - marginOffset * 2;
-  canvas.height = window.innerHeight - 80;
-  c.lineWidth = 1;
-
-  /* slider value calculations */
-  let resolution = resolutionSlider.value / 1000;
-  resValue.innerHTML = resolution;
-
-  let curve = curveSlider.value / 1000;
-  curveValue.innerHTML = curve;
-
-  let tolerance = Math.pow(10, -toleranceSlider.value / 100) * 100;
-  tolValue.innerHTML = tolerance;
-
+  maintainCanvas();
 
   /* path calculations */
-  path = insertPoints(points, resolution);
-  path = smoothen(path, curve, tolerance);
+  path = insertPoints(points, sliders.resolution);
+  path = smoothen(path, sliders.curve, sliders.tolerance);
   path = computeDistances(path);
   path = computeCurvatures(path);
   path = computeVelocity(path, maxVel, maxAccel, turnK);
   path = limitVelocity(path, minVel, maxAccel);
-  // for (let i = 0; i < path.length; i++) {
-  //   console.log(i, path[i].loc);
-  // }
 
 
   botPos = canvasPointToLocalPoint(bot.getPos());
