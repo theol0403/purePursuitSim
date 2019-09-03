@@ -80,13 +80,13 @@ function computeCurvatures(path) {
     let prevPoint = path[i - 1];
     let nextPoint = path[i + 1];
 
-    let distanceOne = distWaypoint(point, prevPoint);
-    let distanceTwo = distWaypoint(point, nextPoint);
-    let distanceThree = distWaypoint(nextPoint, prevPoint);
+    let distOne = distWaypoint(point, prevPoint);
+    let distTwo = distWaypoint(point, nextPoint);
+    let distThree = distWaypoint(nextPoint, prevPoint);
 
-    let productOfSides = distanceOne * distanceTwo * distanceThree;
-    let semiPerimeter = (distanceOne + distanceTwo + distanceThree) / 2;
-    let triangleArea = Math.sqrt(semiPerimeter * (semiPerimeter - distanceOne) * (semiPerimeter - distanceTwo) * (semiPerimeter - distanceThree));
+    let productOfSides = distOne * distTwo * distThree;
+    let semiPerimeter = (distOne + distTwo + distThree) / 2;
+    let triangleArea = Math.sqrt(semiPerimeter * (semiPerimeter - distOne) * (semiPerimeter - distTwo) * (semiPerimeter - distThree));
 
     let r = (productOfSides) / (4 * triangleArea);
     let curvature = isNaN(1/r) ? 0 : 1/r;
@@ -96,7 +96,6 @@ function computeCurvatures(path) {
   path[path.length - 1].setCurvature(0) ;
   return path;
 }
-
 
 
 function computeVelocity(path, maxVel, maxRate, k) {

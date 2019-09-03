@@ -268,9 +268,9 @@ function canvasEventToLocalCoord(e) {
 
 
 function click(e) {
+  window.focus();
   //left click
   if (e.button == 0) {
-    window.focus();
     if (e.ctrlKey) {
       dragIndex = -2;
     } else if(nodeIndex != -1 && !hovering) {
