@@ -4,7 +4,6 @@
 ///////////////////////////
 const waypointWidth = 4;
 const pointWidth = 2;
-const lookaheadWidth = 3;
 
 let sliders = { resolution: 0, curve: 0, tolerance: 0};
 
@@ -134,9 +133,9 @@ function canvasToLocal(point) {
 /**
  * Draws a line from origin to point, then draws a point
  */
-function drawLineToPoint(origin, point) {
+function drawLineToPoint(origin, point, width) {
   c.beginPath();
-  c.arc(point.x, point.y, lookaheadWidth, 0, Math.PI * 2);
+  c.arc(point.x, point.y, width, 0, Math.PI * 2);
   c.closePath();
   c.fill();
   c.beginPath();
@@ -213,8 +212,10 @@ function drawPath(path, colorGet, min, max) {
 function drawLookahead(currPos, lookahead) {
   c.fillStyle = "#ff0087";
   c.strokeStyle = "#ff0087";
-  drawLineToPoint(currPos, localToCanvas(lookahead));
+  c.lineWidth = "3";
+  drawLineToPoint(currPos, localToCanvas(lookahead), 5);
   c.strokeStyle = "#000";
+  c.lineWidth = "2";
   c.beginPath();
   c.arc(currPos.x, currPos.y, Vector.dist(currPos, localToCanvas(lookahead)), 0, Math.PI * 2);
   c.closePath();
@@ -224,7 +225,7 @@ function drawLookahead(currPos, lookahead) {
 function drawClosest(currPos, closest) {
   c.fillStyle = "#2b00ba";
   c.strokeStyle = "#2b00ba";
-  drawLineToPoint(currPos, localToCanvas(closest));
+  drawLineToPoint(currPos, localToCanvas(closest), 3);
 }
 
 function drawCurvature(curvature, p1, p2) {
