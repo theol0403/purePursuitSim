@@ -43,13 +43,8 @@ const turnK = 10;
 /**
  * Starting points
  */
-let points = [
-{ x: 1, y: 1 },
-{ x: 5, y: 4 },
-{ x: 9, y: 2 },
-];
-
-let bots = [new Bot(localToCanvas(points[0]).x, localToCanvas(points[0]).y, 0)];
+let points = [];
+let bots = [];
 let path = [];
 
 function animate() {
@@ -84,17 +79,57 @@ function animate() {
   drawWaypoints(points);
   drawPath(path, a => a.velocity, minVel, maxVel);
 
-  if (showRect) {
-    c.beginPath();
-    c.lineWidth = "2";
-    c.strokeStyle = "#000";
-    c.rect(rectangle[0].x, rectangle[0].y, rectangle[1].x - rectangle[0].x, rectangle[1].y - rectangle[0].y);
-    c.stroke();
-  }
-
   // debugger;
   requestAnimationFrame(animate);
 }
 
+function test() {
 
-window.onload = animate;
+  maintainCanvas();
+
+  drawWaypoints(points);
+
+  let curvature = computeSingleCurvature(new WayPoint(points[0].x, points[0].y), new WayPoint(points[1].x, points[1].y), new WayPoint(points[2].x, points[2].y));
+  drawCurvature(curvature, points[1], points[2]);
+
+  points[0] = {x:points[2].x,y:points[2].y - (points[2].y - points[1].y) * 2};
+
+  c.beginPath();
+  c.moveTo(localToCanvas(points[1]).x, localToCanvas(points[1]).y);
+  c.lineTo(localToCanvas(points[1]).x + 1/curvature * canvasScale, localToCanvas(points[1]).y);
+  c.closePath();
+  c.stroke();
+
+
+  bots.forEach((bot) => {
+    // let pursuit = update(path, bot.getLocalPos(), bot.getHeading(), 0.5);
+    // bot.tank(pursuit.left/maxVel, pursuit.right/maxVel);
+    // bot.update();
+    // drawLookahead(bot.getCanvasPos(), pursuit.lookahead);
+    // drawClosest(bot.getCanvasPos(), pursuit.closest);
+    bot.draw();
+  });
+
+  // debugger;
+  requestAnimationFrame(test);
+}
+
+
+
+
+
+function main() {
+  // points.push({ x: 1, y: 1 });
+  // points.push({ x: 5, y: 4 });
+  // points.push({ x: 9, y: 2 });
+  // bots.push(new Bot(localToCanvas(points[0]).x, localToCanvas(points[0]).y, 0));
+  // animate();
+
+  points.push({x:4, y:1});
+  points.push({x:2, y:3});
+  points.push({x:4, y:5});
+  bots.push(new Bot(localToCanvas(points[1]).x, localToCanvas(points[1]).y, -0.5 * PI));
+  test();
+}
+
+window.onload = main;

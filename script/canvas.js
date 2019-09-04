@@ -25,6 +25,14 @@ function maintainCanvas() {
 
   sliders.tolerance = Math.pow(10, -toleranceSlider.value / 100) * 100;
   tolValue.innerHTML = sliders.tolerance;
+
+  if (showRect) {
+    c.beginPath();
+    c.lineWidth = "2";
+    c.strokeStyle = "#000";
+    c.rect(rectangle[0].x, rectangle[0].y, rectangle[1].x - rectangle[0].x, rectangle[1].y - rectangle[0].y);
+    c.stroke();
+  }
 }
 
 /**
@@ -144,8 +152,8 @@ function drawLineToPoint(origin, point) {
 function drawWaypoints(points) {
   c.fillStyle = "#ff7f00";
   points.forEach((node, i) => {
-    c.beginPath();
     let cPoint = localToCanvas(node);
+    c.beginPath();
     c.arc(cPoint.x, cPoint.y, waypointWidth, 0, Math.PI * 2);
     c.closePath();
     c.fill();
@@ -215,33 +223,23 @@ function drawClosest(currPos, closest) {
 }
 
 function drawCurvature(curvature, currPos, lookahead) {
-  // currPos = {x: 4, y: 6};
-  // lookahead = {x: 5, y: 7};
-  // curvature = 0.00001;
   let x3 = (currPos.x + lookahead.x) / 2;
   let y3 = (currPos.y + lookahead.y) / 2;
   let q = Math.sqrt(Math.pow(currPos.x - lookahead.x, 2) + Math.pow(currPos.y - lookahead.y, 2));
+
   let x = x3 - Math.sqrt(Math.pow(1/curvature, 2) - Math.pow(q / 2, 2)) * (currPos.y - lookahead.y)/q * sgn(curvature);
   let y = y3 - Math.sqrt(Math.pow(1/curvature, 2) - Math.pow(q / 2, 2)) * (currPos.x - lookahead.x)/q * sgn(curvature);
-  // x = Math.cos(-Math.PI / 2) * x;
-  // y = Math.sin(-Math.PI / 2) * y;
-  let canvasPoint = localToCanvas({ x: x, y: y });
-  // console.log(canvasPoint)
+  let canvasPoint = localToCanvas({ x: x, y: y});
+
+  c.beginPath();
+  c.arc(canvasPoint.x, canvasPoint.y, 10, 0, Math.PI * 2);
+  c.closePath();
+  c.fill();
 
   c.beginPath();
   c.arc(canvasPoint.x, canvasPoint.y, Math.abs(1/curvature*canvasScale), 0, Math.PI * 2);
   c.closePath();
   c.stroke();
-  // c.fill();
-
-  // c.beginPath();
-  //   let radius = isNaN(1/curvature) ? 0 : 1/curvature;
-  // // console.log(radius)
-  // let x = currPos.x + radius * (lookahead.x - currPos.x);
-  // //let y = currPos.y + radius * Math.sin(0);
-  // c.arc(x, currPos.y, Math.abs(radius), 0, Math.PI * 2);
-  // c.closePath();
-  // c.stroke();
 }
 
 

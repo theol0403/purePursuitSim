@@ -71,28 +71,26 @@ function computeDistances(path) {
   return path;
 }
 
+function computeSingleCurvature(prevPoint, point, nextPoint) {
+  let distOne = distWaypoint(point, prevPoint);
+  let distTwo = distWaypoint(point, nextPoint);
+  let distThree = distWaypoint(nextPoint, prevPoint);
+
+  let productOfSides = distOne * distTwo * distThree;
+  let semiPerimeter = (distOne + distTwo + distThree) / 2;
+  let triangleArea = Math.sqrt(semiPerimeter * (semiPerimeter - distOne) * (semiPerimeter - distTwo) * (semiPerimeter - distThree));
+
+  let r = (productOfSides) / (4 * triangleArea);
+  let curvature = isNaN(1/r) ? 0 : 1/r;
+  return curvature;
+}
 
 function computeCurvatures(path) {
   path[0].setCurvature(0);
-
   for (let i = 1; i < path.length - 1; i++) {
-    let point = path[i];
-    let prevPoint = path[i - 1];
-    let nextPoint = path[i + 1];
-
-    let distOne = distWaypoint(point, prevPoint);
-    let distTwo = distWaypoint(point, nextPoint);
-    let distThree = distWaypoint(nextPoint, prevPoint);
-
-    let productOfSides = distOne * distTwo * distThree;
-    let semiPerimeter = (distOne + distTwo + distThree) / 2;
-    let triangleArea = Math.sqrt(semiPerimeter * (semiPerimeter - distOne) * (semiPerimeter - distTwo) * (semiPerimeter - distThree));
-
-    let r = (productOfSides) / (4 * triangleArea);
-    let curvature = isNaN(1/r) ? 0 : 1/r;
+    let curvature = computeSingleCurvature(path[i - 1], path[i], path[i + 1]);
     path[i].setCurvature(curvature);
   }
-
   path[path.length - 1].setCurvature(0) ;
   return path;
 }
