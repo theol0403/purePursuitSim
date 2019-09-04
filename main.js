@@ -83,27 +83,41 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
+function computeTestCurvature(prevPoint, point, nextPoint) {
+  let distOne = distWaypoint(point, prevPoint);
+  let distTwo = distWaypoint(point, nextPoint);
+  let distThree = distWaypoint(nextPoint, prevPoint);
+
+  let productOfSides = distOne * distTwo * distThree;
+  let semiPerimeter = (distOne + distTwo + distThree) / 2;
+  let triangleArea = Math.sqrt(semiPerimeter * (semiPerimeter - distOne) * (semiPerimeter - distTwo) * (semiPerimeter - distThree));
+
+  let r = (productOfSides) / (4 * triangleArea);
+  let curvature = isNaN(1/r) ? 0 : 1/r;
+  return curvature;
+}
+
 function test() {
 
   maintainCanvas();
 
   drawWaypoints(points);
 
-  let curvature = computeSingleCurvature(new WayPoint(points[0].x, points[0].y), new WayPoint(points[1].x, points[1].y), new WayPoint(points[2].x, points[2].y));
-  // drawCurvature(curvature, points[1], points[2]);
+  let side = sgn(Math.sin(PI/2) * (points[2].x-points[1].x) - Math.cos(PI/2) * (points[2].y-points[1].y));
 
-  points[0] = {x:points[2].x,y:points[2].y - (points[2].y - points[1].y) * 2};
+  let curvature = computeTestCurvature(new WayPoint(points[0].x, points[0].y), new WayPoint(points[1].x, points[1].y), new WayPoint(points[2].x, points[2].y));
+  drawCurvature(curvature * side, points[1], points[2]);
 
   c.beginPath();
   c.moveTo(localToCanvas(points[1]).x, localToCanvas(points[1]).y);
-  c.lineTo(localToCanvas(points[1]).x + 1/curvature*canvasScale, localToCanvas(points[1]).y);
+  c.lineTo(localToCanvas(points[1]).x + 1/curvature*canvasScale * side, localToCanvas(points[1]).y);
   c.closePath();
   c.stroke();
 
-  c.beginPath();
-  c.arc(localToCanvas(points[1]).x + 1/curvature*canvasScale, localToCanvas(points[1]).y, Math.abs(1/curvature*canvasScale), 0, Math.PI * 2);
-  c.closePath();
-  c.stroke();
+  // c.beginPath();
+  // c.arc(localToCanvas(points[1]).x + 1/curvature*canvasScale, localToCanvas(points[1]).y, Math.abs(1/curvature*canvasScale), 0, Math.PI * 2);
+  // c.closePath();
+  // c.stroke();
 
 
   bots.forEach((bot) => {
@@ -114,6 +128,8 @@ function test() {
     // drawClosest(bot.getCanvasPos(), pursuit.closest);
     bot.draw();
   });
+
+  points[0] = {x:points[2].x,y:points[2].y - (points[2].y - points[1].y) * 2};
 
   // debugger;
   requestAnimationFrame(test);

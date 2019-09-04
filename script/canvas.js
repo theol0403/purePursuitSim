@@ -222,24 +222,58 @@ function drawClosest(currPos, closest) {
   drawLineToPoint(currPos, localToCanvas(closest));
 }
 
-function drawCurvature(curvature, currPos, lookahead) {
-  let x3 = (currPos.x + lookahead.x) / 2;
-  let y3 = (currPos.y + lookahead.y) / 2;
-  let q = Math.sqrt(Math.pow(currPos.x - lookahead.x, 2) + Math.pow(currPos.y - lookahead.y, 2));
+function drawCurvature(curvature, p1, p2) {
+  let radius = Math.abs(1/curvature);
 
-  let x = x3 - Math.sqrt(Math.pow(1/curvature, 2) - Math.pow(q / 2, 2)) * (currPos.y - lookahead.y)/q * sgn(curvature);
-  let y = y3 - Math.sqrt(Math.pow(1/curvature, 2) - Math.pow(q / 2, 2)) * (currPos.x - lookahead.x)/q * sgn(curvature);
-  let canvasPoint = localToCanvas({ x: x, y: y});
+  let x3 = (p1.x + p2.x) / 2;
+  let y3 = (p1.y + p2.y) / 2;
+  let q = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
 
-  c.beginPath();
-  c.arc(canvasPoint.x, canvasPoint.y, 10, 0, Math.PI * 2);
-  c.closePath();
-  c.fill();
+  // let x = x3 + Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2)) * (p1.y - p2.y)/q;
+  // let y = y3 + Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2)) * (p1.x - p2.x)/q;
 
-  c.beginPath();
-  c.arc(canvasPoint.x, canvasPoint.y, Math.abs(1/curvature*canvasScale), 0, Math.PI * 2);
-  c.closePath();
-  c.stroke();
+
+  let b = Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2));
+
+  {
+    let x = x3 + b * (p2.y - p1.y)/q;
+    let y = y3 + b * (p1.x - p2.x)/q;
+
+    let canvasPoint = localToCanvas({ x: x, y: y});
+
+    c.beginPath();
+    c.arc(canvasPoint.x, canvasPoint.y, Math.abs(1/curvature*canvasScale), 0, Math.PI * 2);
+    c.closePath();
+    c.stroke();
+  }
+
+  {
+    let x = x3 - b * (p2.y - p1.y)/q;
+    let y = y3 - b * (p1.x - p2.x)/q;
+
+    let canvasPoint = localToCanvas({ x: x, y: y});
+
+    c.beginPath();
+    c.arc(canvasPoint.x, canvasPoint.y, Math.abs(1/curvature*canvasScale), 0, Math.PI * 2);
+    c.closePath();
+    c.stroke();
+  }
+
+  
+
+  // c.fillStyle = "#6adce2";
+  // c.beginPath();
+  // c.arc(localToCanvas({ x: x3, y: y3}).x, localToCanvas({ x: x3, y: y3}).y, 5, 0, Math.PI * 2);
+  // c.closePath();
+  // c.fill();
+
+  // c.fillStyle = "#e26a9e";
+  // c.beginPath();
+  // c.arc(canvasPoint.x, canvasPoint.y, 7, 0, Math.PI * 2);
+  // c.closePath();
+  // c.fill();
+
+
 }
 
 
