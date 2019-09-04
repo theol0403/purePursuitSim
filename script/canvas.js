@@ -232,48 +232,17 @@ function drawCurvature(curvature, p1, p2) {
   // let x = x3 + Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2)) * (p1.y - p2.y)/q;
   // let y = y3 + Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2)) * (p1.x - p2.x)/q;
 
-
   let b = Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2));
 
-  {
-    let x = x3 + b * (p2.y - p1.y)/q;
-    let y = y3 + b * (p1.x - p2.x)/q;
+  let x = x3 - b * (p1.y - p2.y)/q * sgn(curvature);
+  let y = y3 - b * (p2.x - p1.x)/q * sgn(curvature);
 
-    let canvasPoint = localToCanvas({ x: x, y: y});
+  let canvasPoint = localToCanvas({ x: x, y: y});
 
-    c.beginPath();
-    c.arc(canvasPoint.x, canvasPoint.y, Math.abs(1/curvature*canvasScale), 0, Math.PI * 2);
-    c.closePath();
-    c.stroke();
-  }
-
-  {
-    let x = x3 - b * (p2.y - p1.y)/q;
-    let y = y3 - b * (p1.x - p2.x)/q;
-
-    let canvasPoint = localToCanvas({ x: x, y: y});
-
-    c.beginPath();
-    c.arc(canvasPoint.x, canvasPoint.y, Math.abs(1/curvature*canvasScale), 0, Math.PI * 2);
-    c.closePath();
-    c.stroke();
-  }
-
-  
-
-  // c.fillStyle = "#6adce2";
-  // c.beginPath();
-  // c.arc(localToCanvas({ x: x3, y: y3}).x, localToCanvas({ x: x3, y: y3}).y, 5, 0, Math.PI * 2);
-  // c.closePath();
-  // c.fill();
-
-  // c.fillStyle = "#e26a9e";
-  // c.beginPath();
-  // c.arc(canvasPoint.x, canvasPoint.y, 7, 0, Math.PI * 2);
-  // c.closePath();
-  // c.fill();
-
-
+  c.beginPath();
+  c.arc(canvasPoint.x, canvasPoint.y, Math.abs(1/curvature*canvasScale), 0, Math.PI * 2);
+  c.closePath();
+  c.stroke();
 }
 
 
