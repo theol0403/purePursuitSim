@@ -90,13 +90,18 @@ function test() {
   drawWaypoints(points);
 
   let curvature = computeSingleCurvature(new WayPoint(points[0].x, points[0].y), new WayPoint(points[1].x, points[1].y), new WayPoint(points[2].x, points[2].y));
-  drawCurvature(curvature, points[1], points[2]);
+  // drawCurvature(curvature, points[1], points[2]);
 
   points[0] = {x:points[2].x,y:points[2].y - (points[2].y - points[1].y) * 2};
 
   c.beginPath();
   c.moveTo(localToCanvas(points[1]).x, localToCanvas(points[1]).y);
-  c.lineTo(localToCanvas(points[1]).x + 1/curvature * canvasScale, localToCanvas(points[1]).y);
+  c.lineTo(localToCanvas(points[1]).x + 1/curvature*canvasScale, localToCanvas(points[1]).y);
+  c.closePath();
+  c.stroke();
+
+  c.beginPath();
+  c.arc(localToCanvas(points[1]).x + 1/curvature*canvasScale, localToCanvas(points[1]).y, Math.abs(1/curvature*canvasScale), 0, Math.PI * 2);
   c.closePath();
   c.stroke();
 
