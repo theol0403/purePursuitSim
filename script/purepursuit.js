@@ -1,6 +1,5 @@
 
 var lastClosestPointIndex = 0;
-var robotTrack = 2;
 
 
 function findclosestPointIndex(path, currentPos) {
@@ -80,12 +79,12 @@ function computeLookaheadArcCurvature(currentPos, heading, lookaheadPoint, lookA
 }
 
 
-function computeLeftTargetVel(targetVel, curvature) {
+function computeLeftTargetVel(targetVel, curvature, robotTrack) {
   return targetVel * (2 + robotTrack * curvature) / 2;
 }
 
 
-function computeRightTargetVel(targetVel, curvature) {
+function computeRightTargetVel(targetVel, curvature, robotTrack) {
   return targetVel * (2 - robotTrack * curvature) / 2;
 }
 
@@ -110,8 +109,8 @@ function update(path, currentPos, heading, lookAheadDistance) {
   }
 
   let curvature = computeLookaheadArcCurvature(currentPos, heading, lookaheadPoint, lookAheadDistance);
-  let leftTargetVel = computeLeftTargetVel(path[closestPointIndex].velocity, curvature);
-  let rightTargetVel = computeRightTargetVel(path[closestPointIndex].velocity, curvature);
+  let leftTargetVel = computeLeftTargetVel(path[closestPointIndex].velocity, curvature, 1/12.8);
+  let rightTargetVel = computeRightTargetVel(path[closestPointIndex].velocity, curvature, 1/12.8);
 
   return {left: leftTargetVel, right: rightTargetVel, lookahead: lookaheadPoint, curvature: curvature, closest: path[closestPointIndex].vector()};
 }

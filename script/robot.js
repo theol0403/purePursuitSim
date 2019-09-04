@@ -1,6 +1,5 @@
 
 const SPEED_LIM = 1;
-const TURN_MAG = 3;
 
 const PI = Math.PI;
 const TAU = Math.PI * 2;

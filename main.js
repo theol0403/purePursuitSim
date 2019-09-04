@@ -35,10 +35,10 @@ canvas.height = window.innerHeight - 80;
 /**
  * Pursuit Constants
  */
-const minVel = 2;
+const minVel = 5;
 const maxVel = 8;
 const maxAccel = 10;
-const turnK = 10;
+const turnK = 30;
 
 /**
  * Starting points
@@ -96,17 +96,12 @@ function test() {
   let curvature = computeSingleCurvature(new WayPoint(points[0].x, points[0].y), new WayPoint(points[1].x, points[1].y), new WayPoint(points[2].x, points[2].y));
   drawCurvature(curvature * side, points[1], points[2]);
 
-  c.beginPath();
-  c.moveTo(localToCanvas(points[1]).x, localToCanvas(points[1]).y);
-  c.lineTo(localToCanvas(points[1]).x + 1/curvature*canvasScale * side, localToCanvas(points[1]).y);
-  c.closePath();
-  c.stroke();
-
-
   bots.forEach((bot) => {
     // let pursuit = update(path, bot.getLocalPos(), bot.getHeading(), 0.5);
-    // bot.tank(pursuit.left/maxVel, pursuit.right/maxVel);
-    // bot.update();
+    let leftTargetVel = computeLeftTargetVel(0.5, curvature, 1 / 12.8);
+    let rightTargetVel = computeRightTargetVel(0.5, curvature, 1 / 12.8);
+    bot.tank(leftTargetVel, rightTargetVel);
+    bot.update();
     // drawLookahead(bot.getCanvasPos(), pursuit.lookahead);
     // drawClosest(bot.getCanvasPos(), pursuit.closest);
     bot.draw();
@@ -126,13 +121,14 @@ function main() {
   points.push({ x: 1, y: 1 });
   points.push({ x: 5, y: 4 });
   points.push({ x: 9, y: 2 });
-  bots.push(new Bot(localToCanvas(points[0]).x, localToCanvas(points[0]).y, 0));
+  bots.push(new Bot(localToCanvas(points[0]).x, localToCanvas(points[0]).y, -0.5 * PI));
   animate();
 
-  // points.push({x:4, y:1});
-  // points.push({x:2, y:3});
-  // points.push({x:4, y:5});
+  // points.push({x:6, y:1});
+  // points.push({x:3.5, y:2});
+  // points.push({x:6, y:5});
   // bots.push(new Bot(localToCanvas(points[1]).x, localToCanvas(points[1]).y, -0.5 * PI));
+  // bots.push(new Bot(localToCanvas(points[2]).x, localToCanvas(points[2]).y, -0.06 * PI));
   // test();
 }
 
