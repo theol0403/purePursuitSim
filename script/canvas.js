@@ -214,6 +214,11 @@ function drawLookahead(currPos, lookahead) {
   c.fillStyle = "#ff0087";
   c.strokeStyle = "#ff0087";
   drawLineToPoint(currPos, localToCanvas(lookahead));
+  c.strokeStyle = "#000";
+  c.beginPath();
+  c.arc(currPos.x, currPos.y, Vector.dist(currPos, localToCanvas(lookahead)), 0, Math.PI * 2);
+  c.closePath();
+  c.stroke();
 }
 
 function drawClosest(currPos, closest) {
@@ -229,13 +234,13 @@ function drawCurvature(curvature, p1, p2) {
   let y3 = (p1.y + p2.y) / 2;
   let q = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
 
-  // let x = x3 + Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2)) * (p1.y - p2.y)/q;
-  // let y = y3 + Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2)) * (p1.x - p2.x)/q;
+  let x = x3 + Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2)) * (p1.y - p2.y)/q * sgn(curvature);
+  let y = y3 + Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2)) * (p2.x - p1.x)/q * sgn(curvature);
 
-  let b = Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2));
+  // let b = Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2));
 
-  let x = x3 - b * (p1.y - p2.y)/q * sgn(curvature);
-  let y = y3 - b * (p2.x - p1.x)/q * sgn(curvature);
+  // let x = x3 - b * (p1.y - p2.y)/q * sgn(curvature);
+  // let y = y3 - b * (p2.x - p1.x)/q * sgn(curvature);
 
   let canvasPoint = localToCanvas({ x: x, y: y});
 

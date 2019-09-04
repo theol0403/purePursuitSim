@@ -1,5 +1,5 @@
 
-const SPEED_LIM = 1;
+const SPEED_LIM = 3;
 
 const PI = Math.PI;
 const TAU = Math.PI * 2;
@@ -59,6 +59,7 @@ class Bot {
     c.closePath();
     c.stroke();
 
+    c.lineWidth = "2";
     c.strokeStyle = "#0F0";
     c.beginPath();
     c.moveTo(

@@ -35,10 +35,10 @@ canvas.height = window.innerHeight - 80;
 /**
  * Pursuit Constants
  */
-const minVel = 5;
+const minVel = 2;
 const maxVel = 10;
-const maxAccel = 10;
-const turnK = 30;
+const maxAccel = 5;
+const turnK = 20;
 
 /**
  * Starting points
@@ -70,16 +70,16 @@ function animate() {
   path = computeDistances(path);
   path = computeCurvatures(path);
   path = computeVelocity(path, maxVel, maxAccel, turnK);
-  // path = limitVelocity(path, minVel, maxVel);
+  path = limitVelocity(path, minVel, maxVel);
 
   bots.forEach((bot) => {
-    let pursuit = update(path, bot.getLocalPos(), bot.getHeading(), 0.5);
+    let pursuit = update(path, bot.getLocalPos(), bot.getHeading(), 0.2);
     bot.tank(pursuit.left/maxVel, pursuit.right/maxVel);
     bot.update();
 
     drawLookahead(bot.getCanvasPos(), pursuit.lookahead);
     drawClosest(bot.getCanvasPos(), pursuit.closest);
-    drawCurvature(pursuit.curvature, bot.getLocalPos(), pursuit.lookahead);
+    // drawCurvature(pursuit.curvature, bot.getLocalPos(), pursuit.lookahead);
     bot.draw();
   });
 
