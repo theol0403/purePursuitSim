@@ -5,9 +5,11 @@ Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
 const distWaypoint = (a, b) => dist(a.x(), a.y(), b.x(), b.y());
 
 
-function insertPoints(points, resolution) {
+function insertPoints(points, angles, resolution) {
   let path = [];
   let numPoints = points.length;
+
+  console.log(h1(0));
 
   for (let i = 0; i < numPoints - 1; i++) {
     let start = points[i];
@@ -16,16 +18,21 @@ function insertPoints(points, resolution) {
     let xNet = end.x - start.x;
     let yNet = end.y - start.y;
 
-    let mag = Math.sqrt(Math.pow(xNet, 2) + Math.pow(yNet, 2));
+    let mag = Math.sqrt(Math.pow(xNet, 2) + Math.pow(yNet, 2)) / 3;
 
-    let numInsert = Math.ceil(mag / resolution);
+    let numInsert = (1 / resolution);
+
+    let startV = new WayPoint( start.x + (mag * Math.sin(90 - angles[i])), start.y + (mag * Math.sin(angles[i])));
+    let endV = new WayPoint( end.x + (mag * Math.sin(90 - angles[i])), end.y + (mag * Math.sin(angles[i])));
 
     let xStep = xNet / numInsert;
     let yStep = yNet / numInsert;
     // let xStep = xNet / mag * resolution;
     // let yStep = yNet / mag * resolution;
 
-    for (let j = 0; j < numInsert; j++) {
+    for (let j = 0; j < 1; j+=numInsert) {
+      //let xNew = h(j, start.x, startV.x, end.x, endV.x);
+      //let yNew = h(j, start.y, startV.y, end.y, endV.y);
       let xNew = start.x + xStep * j;
       let yNew = start.y + yStep * j;
       let newPoint = new WayPoint(xNew, yNew);
@@ -34,13 +41,37 @@ function insertPoints(points, resolution) {
     }
   }
 
-  if (numPoints > 0) {
-    path.push(new WayPoint(points[numPoints - 1].x, points[numPoints - 1].y));
-  }
+//  if (numPoints > 0) {
+//    path.push(new WayPoint(points[numPoints - 1].x, points[numPoints - 1].y));
+//  }
 
   return path;
 }
 
+function h(j, start, startV, end, endV){
+    let output =  h1(j) * start + 
+                  h2(j) * startV + 
+                  h3(j) * end +
+                  h4(j) * endV;
+    console.log(output);
+    return  output;
+}
+
+function h1(x){
+  return (2 * Math.pow(x, 3)) - (3 * Math.pow(x,2)) + 1;
+}
+
+function h2(x){
+  return (Math.pow(x, 3)) - (2 * Math.pow(x,2)) + x;
+}
+
+function h3(x){
+  return (-2 * Math.pow(x, 3)) + (3 * Math.pow(x,2));
+}
+
+function h4(x){
+  return (Math.pow(x, 3)) - ( Math.pow(x,2));
+}
 
 function smoothen(inp, dataWeight, tolerance) {
   let path = _.cloneDeep(inp); //copy

@@ -44,6 +44,7 @@ const turnK = 30;
  * Starting points
  */
 let points = [];
+let angles = [];
 let bots = [];
 let path = [];
 
@@ -52,6 +53,9 @@ function main() {
   points.push({ x: 1, y: 1 });
   points.push({ x: 5, y: 4 });
   points.push({ x: 9, y: 2 });
+  angles.push({yaw: 0});
+  angles.push({yaw: 1.5});
+  angles.push({yaw: 1.5});
   bots.push(new Bot(localToCanvas(points[0]).x, localToCanvas(points[0]).y, -0.5 * PI));
   animate();
 }
@@ -64,11 +68,11 @@ function animate() {
   /**
    * Pure Pursuit Algorithm
    */
-  path = insertPoints(points, sliders.resolution);
+  path = insertPoints(points, angles, 100);
   path = smoothen(path, sliders.curve, sliders.tolerance);
 
-  path = computeDistances(path);
-  path = computeCurvatures(path);
+//  path = computeDistances(path);
+//  path = computeCurvatures(path);
   path = computeVelocity(path, maxVel, maxAccel, turnK);
   // path = limitVelocity(path, minVel, maxVel);
 
