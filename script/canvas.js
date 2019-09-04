@@ -287,7 +287,7 @@ function click(e) {
     dragging = true;
   } else if (e.button == 2) { //right click
     if (e.ctrlKey) {
-      bots.push(new Bot(e.clientX, e.clientY, 0));
+      bots.push(new Bot(e.clientX, e.clientY, -0.5 * PI));
     } else if (hovering) {
       points.splice(dragIndex, 1);
       move(e);
