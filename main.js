@@ -69,7 +69,7 @@ function animate() {
    */
   if( points.length = vectors.length ){
     for( let i = 0; i <= points.length; i++ ){
-      for( let ij = 0; ij <= 1; ij += 1/5 ){
+      for( let ij = 0; ij <= 1; ij += 1/20 ){
         let newPoint = findHermitePoint( ij, points[0], vectors[0], points[1], vectors[1] );
 //        console.log(newPoint);
         path.push(newPoint);
@@ -87,7 +87,7 @@ function animate() {
   path = limitVelocity(path, minVel, maxVel);
 
   bots.forEach((bot) => {
-    let pursuit = update(path, bot.getLocalPos(), bot.getHeading(), 0.2);
+    let pursuit = update(path, bot.getLocalPos(), bot.getHeading(), 0.4);
     bot.tank(pursuit.left/maxVel, pursuit.right/maxVel);
     bot.update();
 
