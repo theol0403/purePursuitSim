@@ -19,7 +19,7 @@ function insertPoints(points, angles, resolution) {
 
     let numInsert = (1 / resolution);
 
-    console.log("Mag / Num Insert", mag, numInsert);
+//    console.log("Mag / Num Insert", mag, numInsert);
 
     let startV = new WayPoint( start.x + (mag * Math.sin(1.5707963268 - angles[i])), start.y + (mag * Math.sin(angles[i])));
     let endV = new WayPoint( end.x + (mag * Math.sin(1.5707963268 - angles[i + 1])), end.y + (mag * Math.sin(angles[i + 1])));
@@ -47,7 +47,7 @@ function findHermitePoint( ij, start, startV, end, endV ){
   let j = _.cloneDeep(ij);
   let x = h(j, start.x, startV.x, end.x, endV.x);
   let y = h(j, start.y, startV.y, end.y, endV.y);
-  console.log("Point Generated", x, y);
+//  console.log("Point Generated", x, y);
   return new WayPoint( x, y );
 }
 
@@ -58,8 +58,8 @@ function h(j, start, startV, end, endV){
                   h4(j) * endV;
 //    console.log(start, startV);
 //    console.log(end, endV);
-    console.log(h1(j));
-    console.log(output);
+//    console.log(h1(j));
+//    console.log(output);
     return  output;
 }
 

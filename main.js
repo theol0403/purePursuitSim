@@ -60,6 +60,7 @@ function main() {
 }
 
 function animate() {
+  path = [];
 
   maintainCanvas();
 
@@ -68,14 +69,14 @@ function animate() {
    */
   if( points.length = vectors.length ){
     for( let i = 0; i <= points.length; i++ ){
-      for( let ij = 0; ij <= 1; ij += 1/100 ){
+      for( let ij = 0; ij <= 1; ij += 1/5 ){
         let newPoint = findHermitePoint( ij, points[0], vectors[0], points[1], vectors[1] );
 //        console.log(newPoint);
         path.push(newPoint);
       }
     }
   }else{
-    console.log( "Error: Line 70 in main.js: Initialize a vector point for each point." )
+//    console.log( "Error: Line 70 in main.js: Initialize a vector point for each point." )
   }
   
 //  path = smoothen(path, sliders.curve, sliders.tolerance);
@@ -105,7 +106,5 @@ function animate() {
   // debugger;
   requestAnimationFrame(animate);
 }
-
-
 
 window.onload = main;
