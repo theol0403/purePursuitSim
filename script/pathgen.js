@@ -1,5 +1,4 @@
 
-
 const dist = (ax, ay, bx, by) =>
 Math.sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
 const distWaypoint = (a, b) => dist(a.x(), a.y(), b.x(), b.y());
@@ -8,8 +7,6 @@ const distWaypoint = (a, b) => dist(a.x(), a.y(), b.x(), b.y());
 function insertPoints(points, angles, resolution) {
   let path = [];
   let numPoints = points.length;
-
-  console.log(h1(0));
 
   for (let i = 0; i < numPoints - 1; i++) {
     let start = points[i];
@@ -22,20 +19,18 @@ function insertPoints(points, angles, resolution) {
 
     let numInsert = (1 / resolution);
 
-    let startV = new WayPoint( start.x + (mag * Math.sin(90 - angles[i])), start.y + (mag * Math.sin(angles[i])));
-    let endV = new WayPoint( end.x + (mag * Math.sin(90 - angles[i])), end.y + (mag * Math.sin(angles[i])));
+    console.log("Mag / Num Insert", mag, numInsert);
 
-    let xStep = xNet / numInsert;
-    let yStep = yNet / numInsert;
+    let startV = new WayPoint( start.x + (mag * Math.sin(1.5707963268 - angles[i])), start.y + (mag * Math.sin(angles[i])));
+    let endV = new WayPoint( end.x + (mag * Math.sin(1.5707963268 - angles[i + 1])), end.y + (mag * Math.sin(angles[i + 1])));
+
+    //let xStep = xNet / numInsert;
+    //let yStep = yNet / numInsert;
     // let xStep = xNet / mag * resolution;
     // let yStep = yNet / mag * resolution;
 
     for (let j = 0; j < 1; j+=numInsert) {
-      //let xNew = h(j, start.x, startV.x, end.x, endV.x);
-      //let yNew = h(j, start.y, startV.y, end.y, endV.y);
-      let xNew = start.x + xStep * j;
-      let yNew = start.y + yStep * j;
-      let newPoint = new WayPoint(xNew, yNew);
+      let newPoint = new WayPoint( findHermitePoint( j, start, startV, end, endV ) );
       newPoint.setSegment(i);
       path.push(newPoint);
     }
@@ -48,11 +43,22 @@ function insertPoints(points, angles, resolution) {
   return path;
 }
 
+function findHermitePoint( ij, start, startV, end, endV ){
+  let j = _.cloneDeep(ij);
+  let x = h(j, start.x, startV.x, end.x, endV.x);
+  let y = h(j, start.y, startV.y, end.y, endV.y);
+  console.log("Point Generated", x, y);
+  return new WayPoint( x, y );
+}
+
 function h(j, start, startV, end, endV){
     let output =  h1(j) * start + 
                   h2(j) * startV + 
                   h3(j) * end +
                   h4(j) * endV;
+//    console.log(start, startV);
+//    console.log(end, endV);
+    console.log(h1(j));
     console.log(output);
     return  output;
 }

@@ -44,22 +44,20 @@ const turnK = 30;
  * Starting points
  */
 let points = [];
-let angles = [];
+let vectors = [];
 let bots = [];
 let path = [];
-
 
 function main() {
   points.push({ x: 1, y: 1 });
   points.push({ x: 5, y: 4 });
   points.push({ x: 9, y: 2 });
-  angles.push({yaw: 0});
-  angles.push({yaw: 1.5});
-  angles.push({yaw: 1.5});
+  vectors.push({ x: 1.001, y: 3 });
+  vectors.push({ x: 5.001, y: 2 });
+  vectors.push({ x: 7.001, y: 2 });
   bots.push(new Bot(localToCanvas(points[0]).x, localToCanvas(points[0]).y, -0.5 * PI));
   animate();
 }
-
 
 function animate() {
 
@@ -68,13 +66,24 @@ function animate() {
   /**
    * Pure Pursuit Algorithm
    */
-  path = insertPoints(points, angles, 100);
-  path = smoothen(path, sliders.curve, sliders.tolerance);
+  if( points.length = vectors.length ){
+    for( let i = 0; i <= points.length; i++ ){
+      for( let ij = 0; ij <= 1; ij += 1/100 ){
+        let newPoint = findHermitePoint( ij, points[0], vectors[0], points[1], vectors[1] );
+//        console.log(newPoint);
+        path.push(newPoint);
+      }
+    }
+  }else{
+    console.log( "Error: Line 70 in main.js: Initialize a vector point for each point." )
+  }
+  
+//  path = smoothen(path, sliders.curve, sliders.tolerance);
 
-//  path = computeDistances(path);
-//  path = computeCurvatures(path);
+  path = computeDistances(path);
+  path = computeCurvatures(path);
   path = computeVelocity(path, maxVel, maxAccel, turnK);
-  // path = limitVelocity(path, minVel, maxVel);
+  path = limitVelocity(path, minVel, maxVel);
 
   bots.forEach((bot) => {
     let pursuit = update(path, bot.getLocalPos(), bot.getHeading(), 0.5);
