@@ -1,7 +1,7 @@
 
 let Point = { x: 0, y: 0 };
 
-class WayPoint {
+class PathPoint {
 
   constructor(ix, iy) {
     this.loc = [ ix, iy ];

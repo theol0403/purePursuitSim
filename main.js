@@ -49,9 +49,9 @@ let path = [];
 
 
 function main() {
-  points.push({ x: 1, y: 1 });
-  points.push({ x: 5, y: 4 });
-  points.push({ x: 9, y: 2 });
+  points.push(new Vector(1, 1));
+  points.push(new Vector(5, 4));
+  points.push(new Vector(9, 2));
   bots.push(new Bot(localToCanvas(points[0]).x, localToCanvas(points[0]).y, -0.5 * PI));
   animate();
 }
