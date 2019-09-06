@@ -1,7 +1,36 @@
 
-///////////////////////////
-// Constants and Globals //
-///////////////////////////
+/**
+ * Canvas DOM setup
+ */
+const canvas = document.getElementById("c");
+const c = canvas.getContext("2d");
+
+const resolutionSlider = document.getElementById('resolutionSlider');
+const curveSlider = document.getElementById('curveSlider');
+const toleranceSlider = document.getElementById('toleranceSlider');
+
+const resValue = document.getElementById('resValue');
+const curveValue = document.getElementById('curveValue');
+const tolValue = document.getElementById('tolValue');
+
+var tooltip = document.getElementById('tooltip-span');
+
+canvas.addEventListener("mousedown", click);
+canvas.addEventListener("mousemove", move);
+canvas.addEventListener("mouseup", end);
+canvas.addEventListener("contextmenu", right);
+window.addEventListener("keydown", keydown);
+window.addEventListener("keyup", keyup);
+$(window).bind('mousewheel DOMMouseScroll', zoom);
+window.focus();
+
+
+//////////////////////////////////
+// Canvas Constants and Globals //
+//////////////////////////////////
+let canvasScale = 80; //ratio between simulated position and canvas position
+const marginOffset = 9; //correction for canvas choords vs window choords. related to margin
+
 const waypointWidth = 4;
 const pointWidth = 2;
 
