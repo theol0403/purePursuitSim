@@ -229,19 +229,18 @@ function drawClosest(currPos, closest) {
 }
 
 function drawCurvature(curvature, p1, p2) {
+  if(Math.abs(curvature) < 0.005) 
+    curvature = 0.005;// * sgn(curvature);
+
   let radius = Math.abs(1/curvature);
 
   let x3 = (p1.x + p2.x) / 2;
   let y3 = (p1.y + p2.y) / 2;
   let q = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
 
-  let x = x3 + Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2)) * (p1.y - p2.y)/q * sgn(curvature);
-  let y = y3 + Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2)) * (p2.x - p1.x)/q * sgn(curvature);
-
-  // let b = Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2));
-
-  // let x = x3 - b * (p1.y - p2.y)/q * sgn(curvature);
-  // let y = y3 - b * (p2.x - p1.x)/q * sgn(curvature);
+  let b = Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2));
+  let x = x3 - b * (p1.y - p2.y)/q * sgn(curvature);
+  let y = y3 - b * (p2.x - p1.x)/q * sgn(curvature);
 
   let canvasPoint = localToCanvas({ x: x, y: y});
 
