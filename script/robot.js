@@ -8,11 +8,15 @@ const sgn = v => (v > 0 ? 1 : v < 0 ? -1 : 0);
 const rollAngle360 = angle => angle - TAU * Math.floor(angle / TAU);
 const rollAngle180 = angle => angle - TAU * Math.floor((angle + PI) / TAU);
 
+const slew = (input, last, slewRate) => {
+  if(Math.abs(input - last) > slewRate) input = last + slewRate * sgn(input - last); 
+  return input;
+}
+
 class Bot {
   constructor(x, y, a) {
     this.pos = { x: x, y: y, a: a };
     this.vel = { x: 0, y: 0 };
-    this.acc = { x: 0, y: 0 };
     this.spd = { l: 0, r: 0 };
   }
 
@@ -20,13 +24,7 @@ class Bot {
     let nLeft = Math.abs(left) > 1 ? 1 * sgn(left) : left;
     let nRight = Math.abs(right) > 1 ? 1 * sgn(right) : right;
 
-    let leftDiff = nLeft - this.spd.l;
-    if(Math.abs(leftDiff) > 0.1) nLeft = this.spd.l + 0.1 * sgn(leftDiff);
-
-    let rightDiff = nRight - this.spd.r;
-    if(Math.abs(rightDiff) > 0.1) nRight = this.spd.r + 0.1 * sgn(rightDiff);
-
-    this.spd = { l: nLeft, r:  nRight}; 
+    this.spd = {l: slew(nLeft, this.spd.l, 0.1), r: slew(nRight, this.spd.r, 0.1)}; 
   }
 
   getLocalPos() {
@@ -46,8 +44,11 @@ class Bot {
     this.pos.a -= dA;
     this.pos.a = rollAngle180(this.pos.a);
 
-    this.vel.x = Math.cos(this.pos.a) * (this.spd.r + this.spd.l) * SPEED_LIM;
-    this.vel.y = Math.sin(this.pos.a) * (this.spd.r + this.spd.l) * SPEED_LIM;
+    let xVel = Math.cos(this.pos.a) * (this.spd.r + this.spd.l) * SPEED_LIM;
+    let yVel = Math.sin(this.pos.a) * (this.spd.r + this.spd.l) * SPEED_LIM;
+
+    this.vel.x = slew(xVel, this.vel.x, 0.1);
+    this.vel.y = slew(yVel, this.vel.y, 0.1);;
 
     this.pos.x += this.vel.x;
     this.pos.y += this.vel.y;
