@@ -1,5 +1,5 @@
 
-const SPEED_LIM = 3;
+const SPEED_LIM = 2;
 
 const PI = Math.PI;
 const TAU = Math.PI * 2;
@@ -16,7 +16,18 @@ class Bot {
     this.spd = { l: 0, r: 0 };
   }
 
-  tank(left, right) { this.spd = { l: Math.abs(left) > 1 ? 1 * sgn(left) : left, r: Math.abs(right) > 1 ? 1 * sgn(right) : right }; }
+  tank(left, right) { 
+    let nLeft = Math.abs(left) > 1 ? 1 * sgn(left) : left;
+    let nRight = Math.abs(right) > 1 ? 1 * sgn(right) : right;
+
+    let leftDiff = nLeft - this.spd.l;
+    if(Math.abs(leftDiff) > 0.1) nLeft = this.spd.l + 0.1 * sgn(leftDiff);
+
+    let rightDiff = nRight - this.spd.r;
+    if(Math.abs(rightDiff) > 0.1) nRight = this.spd.r + 0.1 * sgn(rightDiff);
+
+    this.spd = { l: nLeft, r:  nRight}; 
+  }
 
   getLocalPos() {
     return canvasToLocal(this.pos);
