@@ -60,29 +60,27 @@ function findIntersectionPoint(segmentStart, segmentEnd, currentPos, lookaheadDi
   return null;
 }
 
-function findLookahead(path, currentPos, closestIndex, lookaheadDistance) {
-  let lookaheadPoint = path[closestIndex].vector();
+var lastLookahead = {index: 0, point: null};
 
-  for (let i = closestIndex; i < path.length; i++) {
+function findLookahead(path, currentPos, lookaheadDistance) {
+
+  for (let i = lastLookahead.index; i < path.length - 1; i++) {
     let segmentStart = path[i].vector();
     let segmentEnd = path[i + 1].vector();
 
-    let lookaheadPointTemp = null;
+    let newIntersectionT = findIntersectionT(segmentStart, segmentEnd, currentPos, lookaheadDistance);
 
-    // if on last segment
-    if (i == path.length - 1) {
-      lookaheadPointTemp = path[path.length-1].vector();
-    } else {
-      lookaheadPointTemp = findIntersectionPoint(segmentStart, segmentEnd, currentPos, lookaheadDistance);
-    }
-
-    // if intersection point found
-    if (lookaheadPointTemp != null) {
-      lookaheadPoint = lookaheadPointTemp;
-      break;
-    }
+    if(newIntersectionT != null) {
+        let intersect = Vector.sub(segmentEnd, segmentStart);
+        let segment = Vector.scalarMult(intersect, newIntersectionT);
+        let point = Vector.add(segmentStart, segment);
+        lastLookahead.index = i;
+        lastLookahead.point = point;
+        break;
+      }
   }
-  return lookaheadPoint;
+
+  return lastLookahead.point;
 }
 
 
@@ -115,7 +113,7 @@ function computeRightVel(targetVel, curvature, robotTrack) {
 
 function update(path, currentPos, heading, lookaheadDistance) {
   let closestIndex = findClosestIndex(path, currentPos);
-  let lookaheadPoint = findLookahead(path, currentPos, closestIndex, lookaheadDistance);
+  let lookaheadPoint = findLookahead(path, currentPos, lookaheadDistance);
 
   let curvature = findLookaheadCurvature(currentPos, heading, lookaheadPoint, lookaheadDistance);
   let leftVel = computeLeftVel(path[closestIndex].velocity, curvature, 1/12.8);
