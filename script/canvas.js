@@ -5,13 +5,13 @@
 const canvas = document.getElementById("c");
 const c = canvas.getContext("2d");
 
-const resolutionSlider = document.getElementById('resolutionSlider');
-const curveSlider = document.getElementById('curveSlider');
-const toleranceSlider = document.getElementById('toleranceSlider');
+const slider1 = document.getElementById('slider1');
+const slider2 = document.getElementById('slider2');
+const slider3 = document.getElementById('slider3');
 
-const resValue = document.getElementById('resValue');
-const curveValue = document.getElementById('curveValue');
-const tolValue = document.getElementById('tolValue');
+const slider1_val = document.getElementById('slider1_val');
+const slider2_val = document.getElementById('slider2_val');
+const slider3_val = document.getElementById('slider3_val');
 
 var tooltip = document.getElementById('tooltip-span');
 
@@ -45,14 +45,14 @@ function maintainCanvas() {
   c.lineWidth = 1;
 
   /* slider value calculations */
-  sliders.resolution = resolutionSlider.value / 1000;
-  resValue.innerHTML = sliders.resolution;
+  sliders.resolution = slider1.value / 1000;
+  slider1_val.innerHTML = sliders.resolution;
 
-  sliders.curve = curveSlider.value / 1000;
-  curveValue.innerHTML = sliders.curve;
+  sliders.curve = slider2.value / 1000;
+  slider2_val.innerHTML = sliders.curve;
 
-  sliders.tolerance = Math.pow(10, -toleranceSlider.value / 100) * 100;
-  tolValue.innerHTML = sliders.tolerance;
+  sliders.tolerance = Math.pow(10, -slider3.value / 100) * 100;
+  slider3_val.innerHTML = sliders.tolerance;
 
   if (showRect) {
     c.beginPath();
