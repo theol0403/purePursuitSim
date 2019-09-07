@@ -60,28 +60,58 @@ function findIntersectionPoint(segmentStart, segmentEnd, currentPos, lookaheadDi
   return null;
 }
 
-var lastLookahead = {index: 0, point: null};
+var lastLookahead = {i: 0, t: null};
+
+// function findLookahead(path, currentPos, lookaheadDistance) {
+//   let intersectionT = null;
+//   for (let i = lastLookahead.i; i < path.length - 1; i++) {
+//     let segmentStart = path[i].vector();
+//     let segmentEnd = path[i + 1].vector();
+
+//     let newIntersectionT = findIntersectionT(segmentStart, segmentEnd, currentPos, lookaheadDistance);
+
+//     if(newIntersectionT > intersectionT) {
+//       intersectionT = newIntersectionT;
+//         let intersect = Vector.sub(segmentEnd, segmentStart);
+//         let segment = Vector.scalarMult(intersect, intersectionT);
+//         let point = Vector.add(segmentStart, segment);
+//         lastLookahead.i = i;
+//         lastLookahead.point = point;
+//       }
+//   }
+
+//   return lastLookahead.point;
+// }
 
 function findLookahead(path, currentPos, lookaheadDistance) {
-  let intersectionT = null;
-  for (let i = lastLookahead.index; i < path.length - 1; i++) {
+
+  for(let i = lastLookahead.i; i < path.length - 1; i++) {
     let segmentStart = path[i].vector();
     let segmentEnd = path[i + 1].vector();
 
-    let newIntersectionT = findIntersectionT(segmentStart, segmentEnd, currentPos, lookaheadDistance);
-
-    if(newIntersectionT > intersectionT) {
-      intersectionT = newIntersectionT;
+    let intersectionT = findIntersectionT(segmentStart, segmentEnd, currentPos, lookaheadDistance);
+    if(intersectionT != null) {
+      // If the segment is further along or the fractional index is greater, then this is the correct point
+      if(i > lastLookahead.i || intersectionT > lastLookahead.t) {
+        lastLookahead.i = i;
+        lastLookahead.t = intersectionT;
         let intersect = Vector.sub(segmentEnd, segmentStart);
         let segment = Vector.scalarMult(intersect, intersectionT);
         let point = Vector.add(segmentStart, segment);
-        lastLookahead.index = i;
-        lastLookahead.point = point;
+        return point;
       }
+    }
   }
 
-  return lastLookahead.point;
+  // Just return last look ahead result
+  let segmentStart = path[lastLookahead.i].vector();
+  let segmentEnd = path[lastLookahead.i + 1].vector();
+  let intersect = Vector.sub(segmentEnd, segmentStart);
+  let segment = Vector.scalarMult(intersect, lastLookahead.t);
+  let point = Vector.add(segmentStart, segment);
+  return point;
 }
+
 
 
 function findLookaheadCurvature(currentPos, heading, lookaheadPoint, lookaheadDistance) {
