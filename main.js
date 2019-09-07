@@ -35,7 +35,7 @@ function animate() {
    * Pure Pursuit Algorithm
    */
   path = insertPoints(points, sliders.resolution);
-  path = smoothen(path, 0.25, 1e-8);
+  path = smoothen(path, 0.25, 1e-15);
 
   path = computeDistances(path);
   path = computeCurvatures(path);
@@ -47,7 +47,7 @@ function animate() {
     bot.tank(pursuit.left/maxVel, pursuit.right/maxVel);
     bot.update();
 
-    drawLookahead(bot.getCanvasPos(), pursuit.lookahead);
+    drawLookahead(bot.getCanvasPos(), pursuit.lookahead, sliders.lookahead);
     drawClosest(bot.getCanvasPos(), pursuit.closest);
     drawCurvature(pursuit.curvature, bot.getLocalPos(), pursuit.lookahead);
     bot.draw();

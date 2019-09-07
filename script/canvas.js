@@ -238,7 +238,7 @@ function drawPath(path, colorGet, min, max) {
 }
 
 
-function drawLookahead(currPos, lookahead) {
+function drawLookahead(currPos, lookahead, lookaheadDist) {
   c.fillStyle = "#ff0087";
   c.strokeStyle = "#ff0087";
   c.lineWidth = "3";
@@ -246,7 +246,7 @@ function drawLookahead(currPos, lookahead) {
   c.strokeStyle = "#000";
   c.lineWidth = "2";
   c.beginPath();
-  c.arc(currPos.x, currPos.y, Vector.dist(currPos, localToCanvas(lookahead)), 0, Math.PI * 2);
+  c.arc(currPos.x, currPos.y, lookaheadDist * canvasScale, 0, Math.PI * 2);
   c.closePath();
   c.stroke();
 }
