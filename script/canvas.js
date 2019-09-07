@@ -34,7 +34,7 @@ const marginOffset = 9; //correction for canvas choords vs window choords. relat
 const waypointWidth = 4;
 const pointWidth = 2;
 
-let sliders = { resolution: 0, curve: 0, tolerance: 0};
+let sliders = {resolution: 0, lookahead: 0};
 
 ///////////////////////
 // Utility Functions //
@@ -48,11 +48,11 @@ function maintainCanvas() {
   sliders.resolution = slider1.value / 1000;
   slider1_val.innerHTML = sliders.resolution;
 
-  sliders.curve = slider2.value / 1000;
-  slider2_val.innerHTML = sliders.curve;
+  sliders.lookahead = slider2.value / 1000;
+  slider2_val.innerHTML = sliders.lookahead;
 
-  sliders.tolerance = Math.pow(10, -slider3.value / 100) * 100;
-  slider3_val.innerHTML = sliders.tolerance;
+  // sliders.tolerance = Math.pow(10, -slider3.value / 100) * 100;
+  // slider3_val.innerHTML = sliders.tolerance;
 
   if (showRect) {
     c.beginPath();
