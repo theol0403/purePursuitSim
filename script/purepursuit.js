@@ -104,11 +104,11 @@ function findLookaheadCurvature(currentPos, heading, lookaheadPoint, lookaheadDi
 }
 
 
-function computeLeftTargetVel(targetVel, curvature, robotTrack) {
+function computeLeftVel(targetVel, curvature, robotTrack) {
   return targetVel * (2 + robotTrack * curvature) / 2;
 }
 
-function computeRightTargetVel(targetVel, curvature, robotTrack) {
+function computeRightVel(targetVel, curvature, robotTrack) {
   return targetVel * (2 - robotTrack * curvature) / 2;
 }
 
@@ -118,8 +118,8 @@ function update(path, currentPos, heading, lookaheadDistance) {
   let lookaheadPoint = findLookahead(path, currentPos, closestIndex, lookaheadDistance);
 
   let curvature = findLookaheadCurvature(currentPos, heading, lookaheadPoint, lookaheadDistance);
-  let leftTargetVel = computeLeftTargetVel(path[closestIndex].velocity, curvature, 1/12.8);
-  let rightTargetVel = computeRightTargetVel(path[closestIndex].velocity, curvature, 1/12.8);
+  let leftVel = computeLeftVel(path[closestIndex].velocity, curvature, 1/12.8);
+  let rightVel = computeRightVel(path[closestIndex].velocity, curvature, 1/12.8);
 
-  return {left: leftTargetVel, right: rightTargetVel, lookahead: lookaheadPoint, curvature: curvature, closest: path[closestIndex].vector()};
+  return {left: leftVel, right: rightVel, lookahead: lookaheadPoint, curvature: curvature, closest: path[closestIndex].vector()};
 }
