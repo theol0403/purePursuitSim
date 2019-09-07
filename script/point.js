@@ -1,6 +1,4 @@
 
-let Point = { x: 0, y: 0 };
-
 class PathPoint {
 
   constructor(ix, iy) {
