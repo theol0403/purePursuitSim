@@ -1,11 +1,7 @@
 
-var lastClosestPointIndex = 0;
-
 function findClosestIndex(path, currentPos) {
   let closestDist = Number.POSITIVE_INFINITY;
-  let closestIndex = lastClosestPointIndex - 1; // if it really wants, it will slowly move the index backwards along the path
-
-  if(closestIndex >= path.length || closestIndex < 0) closestIndex = 0;
+  let closestIndex = 0;
 
   for (let i = closestIndex; i < path.length; i++) {
     let distance = Vector.dist(currentPos, path[i].vector());    
@@ -14,8 +10,7 @@ function findClosestIndex(path, currentPos) {
       closestIndex = i;
     }
   }
-
-  lastClosestPointIndex = closestIndex;
+  
   return closestIndex;
 }
 
