@@ -63,20 +63,20 @@ function findIntersectionPoint(segmentStart, segmentEnd, currentPos, lookaheadDi
 var lastLookahead = {index: 0, point: null};
 
 function findLookahead(path, currentPos, lookaheadDistance) {
-
+  let intersectionT = null;
   for (let i = lastLookahead.index; i < path.length - 1; i++) {
     let segmentStart = path[i].vector();
     let segmentEnd = path[i + 1].vector();
 
     let newIntersectionT = findIntersectionT(segmentStart, segmentEnd, currentPos, lookaheadDistance);
 
-    if(newIntersectionT != null) {
+    if(newIntersectionT > intersectionT) {
+      intersectionT = newIntersectionT;
         let intersect = Vector.sub(segmentEnd, segmentStart);
-        let segment = Vector.scalarMult(intersect, newIntersectionT);
+        let segment = Vector.scalarMult(intersect, intersectionT);
         let point = Vector.add(segmentStart, segment);
         lastLookahead.index = i;
         lastLookahead.point = point;
-        break;
       }
   }
 
