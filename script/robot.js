@@ -9,8 +9,7 @@ const rollAngle360 = angle => angle - TAU * Math.floor(angle / TAU);
 const rollAngle180 = angle => angle - TAU * Math.floor((angle + PI) / TAU);
 
 const slew = (input, last, slewRate) => {
-  if(Math.abs(input - last) > slewRate) input = last + slewRate * sgn(input - last); 
-  return input;
+  return _.clamp(input, last - slewRate, last + slewRate);
 }
 
 class Bot {

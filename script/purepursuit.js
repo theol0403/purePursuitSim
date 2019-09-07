@@ -79,8 +79,8 @@ function findLookaheadCurvature(currentPos, heading, lookaheadPoint, lookaheadDi
   let side = sgn(Math.sin(heading)*(lookaheadPoint.x-currentPos.x) - Math.cos(heading)*(lookaheadPoint.y-currentPos.y))
   let a = -Math.tan(heading)
   let c = Math.tan(heading)*currentPos.x - currentPos.y
-  let x = Math.abs(a * lookaheadPoint.x + lookaheadPoint.y + c) / Math.sqrt(a**2 + 1)
-  return side * (2*x/(lookaheadDistance**2))
+  let x = Math.abs(a * lookaheadPoint.x + lookaheadPoint.y + c) / Math.sqrt(Math.pow(a, 2) + 1)
+  return side * (2*x/(Math.pow(lookaheadDistance, 2)))
 }
 
 
