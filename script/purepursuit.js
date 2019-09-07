@@ -53,11 +53,10 @@ function findLookahead(path, currentPos, lookaheadDistance) {
       // If the segment is further along or the fractional index is greater, then this is the correct point
       if(i > lastLook.i || t > lastLook.t) {
         lastLook = {i: i, t: t};
-        return Vector.add(segmentStart, Vector.scalarMult(Vector.sub(segmentEnd, segmentStart), t));
+        break;
       }
     }
   }
-
   // Just return last look ahead result
   if(lastLook.i >= path.length - 1) lastLook.i = path.length - 2;
   let segmentStart = path[lastLook.i].vector();
