@@ -6,9 +6,7 @@ function findclosestPointIndex(path, currentPos) {
   let closestDist = Number.POSITIVE_INFINITY;
   let closestPointIndex = lastClosestPointIndex;
 
-    if(closestPointIndex >= path.length) {
-    closestPointIndex = 0;
-  }
+  if(closestPointIndex >= path.length) closestPointIndex = 0;
 
   for (let i = closestPointIndex; i < path.length; i++) {
     let distance = Vector.dist(currentPos, path[i].vector());    
@@ -23,7 +21,7 @@ function findclosestPointIndex(path, currentPos) {
 }
 
 
-function findIntersection(segmentStart, segmentEnd, currentPos, lookaheadDistance) {
+function findIntersectionT(segmentStart, segmentEnd, currentPos, lookaheadDistance) {
   let d = Vector.sub(segmentEnd, segmentStart);
   let f = Vector.sub(segmentStart, currentPos);
 
@@ -49,18 +47,17 @@ function findIntersection(segmentStart, segmentEnd, currentPos, lookaheadDistanc
 }
 
 
-function findLookaheadPoint(path, start, end, currentPos, lookaheadDistance, onLastSegment) {
-  let tVal = findIntersection(start, end, currentPos, lookaheadDistance);
-  if (onLastSegment) {
-    return path[path.length-1].vector();
-  } else if (tVal == null) {
-    return null;
-  } else {
-    let intersect = Vector.sub(end, start);
-    let segment = Vector.scalarMult(intersect, tVal);
-    let point = Vector.add(start, segment);
+function findIntersectionPoint(segmentStart, segmentEnd, currentPos, lookaheadDistance) {
+  let intersection = findIntersectionT(segmentStart, segmentEnd, currentPos, lookaheadDistance);
+  if (intersection != null) {
+    let intersect = Vector.sub(segmentEnd, segmentStart);
+    let segment = Vector.scalarMult(intersect, intersection);
+    let point = Vector.add(segmentStart, segment);
     return point;
   }
+
+  //no intersection on this interval
+  return null;
 }
 
 
@@ -101,10 +98,16 @@ function update(path, currentPos, heading, lookaheadDistance) {
     let startPoint = path[i-1].vector();
     let endPoint = path[i].vector();
 
-    onLastSegment = i == (path.length - 1);
+    let lookaheadPointTemp = null;
 
-    let lookaheadPointTemp = findLookaheadPoint(path, startPoint, endPoint, currentPos, lookaheadDistance, onLastSegment);
+    // if on last segment
+    if (i == path.length - 1) {
+      lookaheadPointTemp = path[path.length-1].vector();
+    } else {
+      lookaheadPointTemp = findIntersectionPoint(startPoint, endPoint, currentPos, lookaheadDistance);
+    }
 
+    // if intersection point found
     if (lookaheadPointTemp != null) {
       lookaheadPoint = lookaheadPointTemp;
       break;
