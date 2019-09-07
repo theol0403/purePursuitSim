@@ -2,22 +2,22 @@
 var lastClosestPointIndex = 0;
 
 
-function findclosestPointIndex(path, currentPos) {
+function findClosestIndex(path, currentPos) {
   let closestDist = Number.POSITIVE_INFINITY;
-  let closestPointIndex = lastClosestPointIndex;
+  let closestIndex = lastClosestPointIndex;
 
-  if(closestPointIndex >= path.length) closestPointIndex = 0;
+  if(closestIndex >= path.length) closestIndex = 0;
 
-  for (let i = closestPointIndex; i < path.length; i++) {
+  for (let i = closestIndex; i < path.length; i++) {
     let distance = Vector.dist(currentPos, path[i].vector());    
     if(distance < closestDist) {
       closestDist = distance;
-      closestPointIndex = i;
+      closestIndex = i;
     }
   }
 
-  lastClosestPointIndex = closestPointIndex;
-  return closestPointIndex;
+  lastClosestPointIndex = closestIndex;
+  return closestIndex;
 }
 
 
@@ -60,8 +60,33 @@ function findIntersectionPoint(segmentStart, segmentEnd, currentPos, lookaheadDi
   return null;
 }
 
+function findLookahead(path, currentPos, closestIndex, lookaheadDistance) {
+  let lookaheadPoint = path[closestIndex].vector();
 
-function computeLookaheadArcCurvature(currentPos, heading, lookaheadPoint, lookaheadDistance) {
+  for (let i = closestIndex; i < path.length; i++) {
+    let segmentStart = path[i].vector();
+    let segmentEnd = path[i + 1].vector();
+
+    let lookaheadPointTemp = null;
+
+    // if on last segment
+    if (i == path.length - 1) {
+      lookaheadPointTemp = path[path.length-1].vector();
+    } else {
+      lookaheadPointTemp = findIntersectionPoint(segmentStart, segmentEnd, currentPos, lookaheadDistance);
+    }
+
+    // if intersection point found
+    if (lookaheadPointTemp != null) {
+      lookaheadPoint = lookaheadPointTemp;
+      break;
+    }
+  }
+  return lookaheadPoint;
+}
+
+
+function findLookaheadCurvature(currentPos, heading, lookaheadPoint, lookaheadDistance) {
   // let a = -Math.tan(heading);
   // let b = 1;
   // let c = (Math.tan(heading) * currentPos.x) - currentPos.y;
@@ -83,40 +108,18 @@ function computeLeftTargetVel(targetVel, curvature, robotTrack) {
   return targetVel * (2 + robotTrack * curvature) / 2;
 }
 
-
 function computeRightTargetVel(targetVel, curvature, robotTrack) {
   return targetVel * (2 - robotTrack * curvature) / 2;
 }
 
 
 function update(path, currentPos, heading, lookaheadDistance) {
-  let onLastSegment = false;
-  let closestPointIndex = findclosestPointIndex(path, currentPos);
-  let lookaheadPoint = new Vector(0, 0);
+  let closestIndex = findClosestIndex(path, currentPos);
+  let lookaheadPoint = findLookahead(path, currentPos, closestIndex, lookaheadDistance);
 
-  for (let i = closestPointIndex + 1; i < path.length; i++) {
-    let startPoint = path[i-1].vector();
-    let endPoint = path[i].vector();
+  let curvature = findLookaheadCurvature(currentPos, heading, lookaheadPoint, lookaheadDistance);
+  let leftTargetVel = computeLeftTargetVel(path[closestIndex].velocity, curvature, 1/12.8);
+  let rightTargetVel = computeRightTargetVel(path[closestIndex].velocity, curvature, 1/12.8);
 
-    let lookaheadPointTemp = null;
-
-    // if on last segment
-    if (i == path.length - 1) {
-      lookaheadPointTemp = path[path.length-1].vector();
-    } else {
-      lookaheadPointTemp = findIntersectionPoint(startPoint, endPoint, currentPos, lookaheadDistance);
-    }
-
-    // if intersection point found
-    if (lookaheadPointTemp != null) {
-      lookaheadPoint = lookaheadPointTemp;
-      break;
-    }
-  }
-
-  let curvature = computeLookaheadArcCurvature(currentPos, heading, lookaheadPoint, lookaheadDistance);
-  let leftTargetVel = computeLeftTargetVel(path[closestPointIndex].velocity, curvature, 1/12.8);
-  let rightTargetVel = computeRightTargetVel(path[closestPointIndex].velocity, curvature, 1/12.8);
-
-  return {left: leftTargetVel, right: rightTargetVel, lookahead: lookaheadPoint, curvature: curvature, closest: path[closestPointIndex].vector()};
+  return {left: leftTargetVel, right: rightTargetVel, lookahead: lookaheadPoint, curvature: curvature, closest: path[closestIndex].vector()};
 }
