@@ -1,12 +1,9 @@
 
 var lastClosestPointIndex = 0;
 
-
 function findClosestIndex(path, currentPos) {
   let closestDist = Number.POSITIVE_INFINITY;
-  let closestIndex = lastClosestPointIndex;
-
-  if(closestIndex >= path.length) closestIndex = 0;
+  let closestIndex = Math.round(lastClosestPointIndex / 2);
 
   for (let i = closestIndex; i < path.length; i++) {
     let distance = Vector.dist(currentPos, path[i].vector());    
@@ -46,70 +43,29 @@ function findIntersectionT(segmentStart, segmentEnd, currentPos, lookaheadDistan
   return null;
 }
 
-
-function findIntersectionPoint(segmentStart, segmentEnd, currentPos, lookaheadDistance) {
-  let intersection = findIntersectionT(segmentStart, segmentEnd, currentPos, lookaheadDistance);
-  if (intersection != null) {
-    let intersect = Vector.sub(segmentEnd, segmentStart);
-    let segment = Vector.scalarMult(intersect, intersection);
-    let point = Vector.add(segmentStart, segment);
-    return point;
-  }
-
-  //no intersection on this interval
-  return null;
-}
-
-var lastLookahead = {i: 0, t: null};
-
-// function findLookahead(path, currentPos, lookaheadDistance) {
-//   let intersectionT = null;
-//   for (let i = lastLookahead.i; i < path.length - 1; i++) {
-//     let segmentStart = path[i].vector();
-//     let segmentEnd = path[i + 1].vector();
-
-//     let newIntersectionT = findIntersectionT(segmentStart, segmentEnd, currentPos, lookaheadDistance);
-
-//     if(newIntersectionT > intersectionT) {
-//       intersectionT = newIntersectionT;
-//         let intersect = Vector.sub(segmentEnd, segmentStart);
-//         let segment = Vector.scalarMult(intersect, intersectionT);
-//         let point = Vector.add(segmentStart, segment);
-//         lastLookahead.i = i;
-//         lastLookahead.point = point;
-//       }
-//   }
-
-//   return lastLookahead.point;
-// }
+var lastLook = {i: 0, t: null};
 
 function findLookahead(path, currentPos, lookaheadDistance) {
 
-  for(let i = lastLookahead.i; i < path.length - 1; i++) {
+  for(let i = lastLook.i; i < path.length - 1; i++) {
     let segmentStart = path[i].vector();
     let segmentEnd = path[i + 1].vector();
 
-    let intersectionT = findIntersectionT(segmentStart, segmentEnd, currentPos, lookaheadDistance);
-    if(intersectionT != null) {
+    let t = findIntersectionT(segmentStart, segmentEnd, currentPos, lookaheadDistance);
+    if(t != null) {
       // If the segment is further along or the fractional index is greater, then this is the correct point
-      if(i > lastLookahead.i || intersectionT > lastLookahead.t) {
-        lastLookahead.i = i;
-        lastLookahead.t = intersectionT;
-        let intersect = Vector.sub(segmentEnd, segmentStart);
-        let segment = Vector.scalarMult(intersect, intersectionT);
-        let point = Vector.add(segmentStart, segment);
-        return point;
+      if(i > lastLook.i || t > lastLook.t) {
+        lastLook = {i: i, t: t};
+        return Vector.add(segmentStart, Vector.scalarMult(Vector.sub(segmentEnd, segmentStart), t));
       }
     }
   }
 
   // Just return last look ahead result
-  let segmentStart = path[lastLookahead.i].vector();
-  let segmentEnd = path[lastLookahead.i + 1].vector();
-  let intersect = Vector.sub(segmentEnd, segmentStart);
-  let segment = Vector.scalarMult(intersect, lastLookahead.t);
-  let point = Vector.add(segmentStart, segment);
-  return point;
+  if(lastLook.i >= path.length - 1) lastLook.i = path.length - 2;
+  let segmentStart = path[lastLook.i].vector();
+  let segmentEnd = path[lastLook.i + 1].vector();
+  return Vector.add(segmentStart, Vector.scalarMult(Vector.sub(segmentEnd, segmentStart), lastLook.t));
 }
 
 

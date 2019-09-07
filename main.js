@@ -3,9 +3,9 @@
 /**
  * Pursuit Constants
  */
-const minVel = 1;
+const minVel = 2;
 const maxVel = 8;
-const maxAccel = 6;
+const maxAccel = 5;
 const turnK = 20;
 
 /**
