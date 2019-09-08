@@ -22,7 +22,7 @@ function main() {
   points.push(new Vector(1, 1));
   points.push(new Vector(5, 4));
   points.push(new Vector(9, 2));
-  bots.push(new Bot(localToCanvas(points[0]).x, localToCanvas(points[0]).y, -0.5 * PI));
+  bots.push(new PurePursuit(points[0]));
   animate();
 }
 
@@ -43,7 +43,11 @@ function animate() {
   path = limitVelocity(path, minVel, maxAccel**2);
 
   bots.forEach((bot) => {
+    bot.setPath(path);
+    bot.setLookDistance(sliders.lookahead);
+    bot.setRobotTrack(1/12.8);
 
+    bot.update();
   });
 
   /**

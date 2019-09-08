@@ -1,41 +1,49 @@
 
 class PurePursuit {
 
-  constructor(path, lookDistance, robotTrack, pos) {
-    this.path = path;
-    this.lookDistance = lookDistance;
-    this.robotTrack = robotTrack;
+  constructor(pos) {
+    this.path = undefined;
+    this.lookDistance = undefined;
+    this.robotTrack = undefined;
 
-    if(pos == undefined) pos = path[0].vector(); 
-    this.bot = new Bot(localToCanvas(pos[0]).x, localToCanvas(pos[0]).y, -PI/2);
+    // if(pos == undefined) pos = path[0].vector(); 
+    this.bot = new Bot(localToCanvas({x:pos.x}).x, localToCanvas({y:pos.y}).y, -PI/2);
 
     this.lastLookIndex = 0;
     this.lastLookT = null;
+  }
+
+  setPath(path) {
+    this.path = path;
   }
 
   setLookDistance(lookDistance) {
     this.lookDistance = lookDistance;
   }
 
+  setRobotTrack(robotTrack) {
+    this.robotTrack = robotTrack;
+  }
+
   update() {
     let currentPos = this.bot.getLocalPos();
     let heading = this.bot.getHeading();
 
-    let closestIndex = findClosestIndex(currentPos);
+    let closestIndex = this.findClosestIndex(currentPos);
     let closestPoint = this.path[closestIndex];
     let targetVel = closestPoint.velocity;
 
-    let lookPoint = findLookahead(currentPos);
-    let curvature = findLookaheadCurvature(currentPos, heading, lookPoint);
+    let lookPoint = this.findLookahead(currentPos);
+    let curvature = this.findLookaheadCurvature(currentPos, heading, lookPoint);
 
-    let leftVel = computeLeftVel(targetVel, curvature, this.robotTrack);
-    let rightVel = computeRightVel(targetVel, curvature, this.robotTrack);
+    let leftVel = this.computeLeftVel(targetVel, curvature, this.robotTrack);
+    let rightVel = this.computeRightVel(targetVel, curvature, this.robotTrack);
 
     this.bot.tank(leftVel/maxVel, rightVel/maxVel);
     this.bot.update();
 
-    drawLookahead(bot.getCanvasPos(), lookPoint, this.lookDistance);
-    drawClosest(bot.getCanvasPos(), closestPoint.vector());
+    drawLookahead(this.bot.getCanvasPos(), lookPoint, this.lookDistance);
+    drawClosest(this.bot.getCanvasPos(), closestPoint.vector());
     drawCurvature(curvature, this.bot.getLocalPos(), lookPoint);
     this.bot.draw();
   }
@@ -89,8 +97,8 @@ class PurePursuit {
       let segmentStart = this.path[i].vector();
       let segmentEnd = this.path[i + 1].vector();
 
-      let intersectionT = findIntersectionT(segmentStart, segmentEnd, currentPos, this.lookDistance);
-      if(t != null) {
+      let intersectionT = this.findIntersectionT(segmentStart, segmentEnd, currentPos, this.lookDistance);
+      if(intersectionT != null) {
         // If the segment is further along or the fractional index is greater, then this is the correct point
         if(i > this.lastLookIndex || intersectionT > this.lastLookT) {
           this.lastLookIndex = i;
@@ -107,7 +115,6 @@ class PurePursuit {
     let segmentEnd = this.path[this.lastLookIndex + 1].vector();
     return Vector.add(segmentStart, Vector.scalarMult(Vector.sub(segmentEnd, segmentStart), this.lastLookT));
   }
-
 
 
   findLookaheadCurvature(currentPos, heading, lookPoint) {
