@@ -8,22 +8,14 @@ function insertPoints(points, resolution) {
   for (let i = 0; i < numPoints - 1; i++) {
     let start = points[i];
     let end = points[i + 1];
-
-    let xNet = end.x - start.x;
-    let yNet = end.y - start.y;
-
-    let mag = Math.sqrt(Math.pow(xNet, 2) + Math.pow(yNet, 2));
-
-    let numInsert = Math.ceil(mag / resolution);
-
-    let xStep = xNet / numInsert;
-    let yStep = yNet / numInsert;
-    // let xStep = xNet / mag * resolution;
-    // let yStep = yNet / mag * resolution;
+    
+    let diff = Vector.sub(end, start); // start - end
+    let numInsert = Math.ceil(Vector.mag(diff) / resolution); // number of points needed
+    let step = Vector.scalarMult(diff, 1 / numInsert); // how much to increment each point
 
     for (let j = 0; j < numInsert; j++) {
-      let xNew = start.x + xStep * j;
-      let yNew = start.y + yStep * j;
+      let xNew = start.x + step.x * j;
+      let yNew = start.y + step.y * j;
       let newPoint = new PathPoint(xNew, yNew);
       newPoint.setSegment(i);
       path.push(newPoint);
