@@ -304,16 +304,15 @@ function canvasEventToLocalCoord(e) {
 
 function click(e) {
   window.focus();
+  lastCoord = canvasEventToLocalCoord(e);
   //left click
   if (e.button == 0) {
     if (e.ctrlKey) {
       dragIndex = -2;
     } else if(nodeIndex != -1 && !hovering) {
-      lastCoord = canvasEventToLocalCoord(e);
       points.splice(path[nodeIndex].segment + 1, 0, lastCoord);
       move(e);
     } else if (!hovering) {
-      lastCoord = canvasEventToLocalCoord(e);
       points.push(lastCoord);
       // dragging = true;
       move(e);
@@ -321,7 +320,7 @@ function click(e) {
     dragging = true;
   } else if (e.button == 2) { //right click
     if (e.ctrlKey) {
-      bots.push(new Bot(e.clientX, e.clientY, -0.5 * PI));
+      bots.push(new PurePursuit(lastCoord));
     } else if (hovering) {
       points.splice(dragIndex, 1);
       move(e);
