@@ -3,7 +3,7 @@
 /**
  * Pursuit Constants
  */
-const minVel = 2;
+const minVel = 1.5;
 const maxVel = 8;
 const maxAccel = 5;
 const turnK = 20;
@@ -35,7 +35,7 @@ function animate() {
    * Pure Pursuit Algorithm
    */
   path = insertPoints(points, sliders.resolution);
-  path = smoothen(path, 0.25, 1e-15);
+  path = smoothen(path, 0.25, 1e-10);
 
   path = computeDistances(path);
   path = computeCurvatures(path);
