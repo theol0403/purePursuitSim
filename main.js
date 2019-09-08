@@ -43,14 +43,7 @@ function animate() {
   path = limitVelocity(path, minVel, maxAccel**2);
 
   bots.forEach((bot) => {
-    let pursuit = update(path, bot.getLocalPos(), bot.getHeading(), sliders.lookahead);
-    bot.tank(pursuit.left/maxVel, pursuit.right/maxVel);
-    bot.update();
 
-    drawLookahead(bot.getCanvasPos(), pursuit.lookahead, sliders.lookahead);
-    drawClosest(bot.getCanvasPos(), pursuit.closest);
-    drawCurvature(pursuit.curvature, bot.getLocalPos(), pursuit.lookahead);
-    bot.draw();
   });
 
   /**
