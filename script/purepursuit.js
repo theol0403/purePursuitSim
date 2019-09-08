@@ -35,7 +35,8 @@ class PurePursuit {
     let targetVel = closestPoint.velocity;
 
     let lookPoint = this.findLookahead(currentPos);
-    let curvature = this.findLookaheadCurvature(currentPos, heading, lookPoint);
+    let projectedLookPoint = Vector.add(Vector.scalarMult(Vector.normalize(Vector.sub(lookPoint, currentPos)), this.lookDistance), currentPos);
+    let curvature = this.findLookaheadCurvature(currentPos, heading, projectedLookPoint);
 
     this.isFinished = (closestIndex >= path.length - 1) && (this.lastLookIndex >= path.length - 2) && (Vector.dist(currentPos, lookPoint) < this.lookDistance);
 
@@ -49,7 +50,7 @@ class PurePursuit {
     this.bot.tank(leftVel/maxVel, rightVel/maxVel);
     this.bot.update();
 
-    drawLookahead(this.bot.getCanvasPos(), lookPoint, this.lookDistance);
+    drawLookahead(this.bot.getCanvasPos(), lookPoint, this.lookDistance, projectedLookPoint);
     drawClosest(this.bot.getCanvasPos(), closestPoint.vector());
     drawCurvature(curvature, this.bot.getLocalPos(), lookPoint);
     this.bot.draw();
@@ -125,20 +126,11 @@ class PurePursuit {
 
 
   findLookaheadCurvature(currentPos, heading, lookPoint) {
-    // let a = -Math.tan(heading);
-    // let b = 1;
-    // let c = (Math.tan(heading) * currentPos.x) - currentPos.y;
-    // let x = Math.abs((a * lookPoint.x) + (b * lookPoint.y) + c) / Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
-    // let cross = (Math.sin(heading) * (lookPoint.x - currentPos.x)) - (Math.cos(heading) * (lookPoint.y - currentPos.y));
-    // let side = cross > 0 ? 1 : -1;
-    // let curvature = (2 * x) / Math.pow(this.lookDistance, 2);
-    // return curvature * side;
-
-    let side = sgn(Math.sin(heading)*(lookPoint.x-currentPos.x) - Math.cos(heading)*(lookPoint.y-currentPos.y));
+    let side = sgn(Math.sin(heading)*(lookPoint.x - currentPos.x) - Math.cos(heading)*(lookPoint.y - currentPos.y));
     let a = -Math.tan(heading);
     let c = Math.tan(heading)*currentPos.x - currentPos.y;
     let x = Math.abs(a * lookPoint.x + lookPoint.y + c) / Math.sqrt(Math.pow(a, 2) + 1);
-    return side * (2*x/(Math.pow(this.lookDistance, 2)))
+    return side * ((2*x) / Math.pow(this.lookDistance, 2));
   }
 
   computeLeftVel(targetVel, curvature) {

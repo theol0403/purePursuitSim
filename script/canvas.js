@@ -208,7 +208,7 @@ function drawPath(path, colorGet, min, max) {
     fullMin = min;
     fullMax = max;
   }
-
+  c.lineWidth = "2";
   path.forEach((node, i) => {
    let canvasX = node.x() * canvasScale;
    let canvasY = node.y() * canvasScale;
@@ -238,12 +238,15 @@ function drawPath(path, colorGet, min, max) {
 }
 
 
-function drawLookahead(currPos, lookahead, lookaheadDist) {
+function drawLookahead(currPos, lookahead, lookaheadDist, projectedLookahead) {
   c.fillStyle = "#ff0087";
   c.strokeStyle = "#ff0087";
   c.lineWidth = "3";
   drawLineToPoint(currPos, localToCanvas(lookahead), 5);
+  c.fillStyle = "#000";
   c.strokeStyle = "#000";
+  c.lineWidth = "1";
+  drawLineToPoint(currPos, localToCanvas(projectedLookahead), 5);
   c.lineWidth = "2";
   c.beginPath();
   c.arc(currPos.x, currPos.y, lookaheadDist * canvasScale, 0, Math.PI * 2);

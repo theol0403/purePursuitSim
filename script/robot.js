@@ -47,8 +47,8 @@ class Bot {
     let xVel = Math.cos(this.pos.a) * (this.spd.r + this.spd.l) * SPEED_LIM;
     let yVel = Math.sin(this.pos.a) * (this.spd.r + this.spd.l) * SPEED_LIM;
 
-    this.vel.x = slew(xVel, this.vel.x, 0.1);
-    this.vel.y = slew(yVel, this.vel.y, 0.1);;
+    this.vel.x = slew(xVel, this.vel.x, 0.2);
+    this.vel.y = slew(yVel, this.vel.y, 0.2);;
 
     this.pos.x += this.vel.x;
     this.pos.y += this.vel.y;
