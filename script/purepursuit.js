@@ -37,7 +37,7 @@ class PurePursuit {
     let lookPoint = this.findLookahead(currentPos);
     let curvature = this.findLookaheadCurvature(currentPos, heading, lookPoint);
 
-    this.isFinished = (closestIndex >= path.length - 1);
+    this.isFinished = (closestIndex >= path.length - 1) && (this.lastLookIndex >= path.length - 2) && (Vector.dist(currentPos, lookPoint) < this.lookDistance);
 
     let leftVel = 0;
     let rightVel = 0;
@@ -134,13 +134,12 @@ class PurePursuit {
     // let curvature = (2 * x) / Math.pow(this.lookDistance, 2);
     // return curvature * side;
 
-    let side = sgn(Math.sin(heading)*(lookPoint.x-currentPos.x) - Math.cos(heading)*(lookPoint.y-currentPos.y))
-    let a = -Math.tan(heading)
-    let c = Math.tan(heading)*currentPos.x - currentPos.y
-    let x = Math.abs(a * lookPoint.x + lookPoint.y + c) / Math.sqrt(Math.pow(a, 2) + 1)
+    let side = sgn(Math.sin(heading)*(lookPoint.x-currentPos.x) - Math.cos(heading)*(lookPoint.y-currentPos.y));
+    let a = -Math.tan(heading);
+    let c = Math.tan(heading)*currentPos.x - currentPos.y;
+    let x = Math.abs(a * lookPoint.x + lookPoint.y + c) / Math.sqrt(Math.pow(a, 2) + 1);
     return side * (2*x/(Math.pow(this.lookDistance, 2)))
   }
-
 
   computeLeftVel(targetVel, curvature) {
     return targetVel * (2 + this.robotTrack * curvature) / 2;
@@ -151,7 +150,4 @@ class PurePursuit {
   }
 
 }
-
-
-
 

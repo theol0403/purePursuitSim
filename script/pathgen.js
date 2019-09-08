@@ -87,7 +87,7 @@ function computeCurvatures(path) {
     let curvature = computeSingleCurvature(path[i - 1], path[i], path[i + 1]);
     path[i].setCurvature(curvature);
   }
-  path[path.length - 1].setCurvature(0) ;
+  path[path.length - 1].setCurvature(0);
   return path;
 }
 
