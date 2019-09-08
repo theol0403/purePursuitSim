@@ -87,10 +87,11 @@ class PurePursuit {
       let t1 = (-b - discriminant) / (2 * a);
       let t2 = (-b + discriminant) / (2 * a);
 
-      if (t1 >= 0 && t1 <= 1) {
-        return t1;
-      } if (t2 >= 0 && t2 <= 1) {
+      // prioritize further down path
+      if (t2 >= 0 && t2 <= 1) {
         return t2;
+      } else if (t1 >= 0 && t1 <= 1) {
+        return t1;
       }
     }
 

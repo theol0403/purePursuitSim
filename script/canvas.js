@@ -246,7 +246,7 @@ function drawLookahead(currPos, lookahead, lookaheadDist, projectedLookahead) {
   c.fillStyle = "#000";
   c.strokeStyle = "#000";
   c.lineWidth = "1";
-  drawLineToPoint(currPos, localToCanvas(projectedLookahead), 5);
+  drawLineToPoint(currPos, localToCanvas(projectedLookahead), 4);
   c.lineWidth = "2";
   c.beginPath();
   c.arc(currPos.x, currPos.y, lookaheadDist * canvasScale, 0, Math.PI * 2);
