@@ -11,6 +11,7 @@ class PurePursuit {
 
     this.lastLookIndex = 0;
     this.lastLookT = null;
+    this.isFinished = false;
   }
 
   setPath(path) {
@@ -36,8 +37,14 @@ class PurePursuit {
     let lookPoint = this.findLookahead(currentPos);
     let curvature = this.findLookaheadCurvature(currentPos, heading, lookPoint);
 
-    let leftVel = this.computeLeftVel(targetVel, curvature, this.robotTrack);
-    let rightVel = this.computeRightVel(targetVel, curvature, this.robotTrack);
+    this.isFinished = (closestIndex >= path.length - 1);
+
+    let leftVel = 0;
+    let rightVel = 0;
+    if(!this.isFinished) {
+      leftVel = this.computeLeftVel(targetVel, curvature, this.robotTrack)
+      rightVel = this.computeRightVel(targetVel, curvature, this.robotTrack)
+    }
 
     this.bot.tank(leftVel/maxVel, rightVel/maxVel);
     this.bot.update();

@@ -42,12 +42,15 @@ function animate() {
   path = computeVelocity(path, maxVel, maxAccel, turnK);
   path = limitVelocity(path, minVel, maxAccel**2);
 
-  bots.forEach((bot) => {
+  bots.forEach((bot, i) => {
     bot.setPath(path);
     bot.setLookDistance(sliders.lookahead);
     bot.setRobotTrack(1/12.8);
 
     bot.update();
+    if(bot.isFinished) {
+      bots.splice(i, 1);
+    }
   });
 
   /**
