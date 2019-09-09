@@ -322,7 +322,7 @@ function click(e) {
     }
     dragging = true;
   } else if (e.button == 2) { //right click
-    if (e.ctrlKey) {
+    if (!e.ctrlKey) {
       bots.push(new PurePursuit(lastCoord));
     } else if (hovering) {
       points.splice(dragIndex, 1);
@@ -347,9 +347,7 @@ function move(e) {
       && lastCoord.y <= node.y + waypointWidth / canvasScale;
     });
 
-    if (e.ctrlKey) {
-      document.body.style.cursor = "move";
-    } else if (dragIndex == -1) {
+    if (dragIndex == -1) {
       document.body.style.cursor = "auto";
       hovering = false;
     } else {
@@ -435,7 +433,6 @@ function keydown(e) {
   if (e.code != "ControlLeft") return;
   if (!key && !dragging) {
     key = true;
-    document.body.style.cursor = "move";
   }
 }
 
