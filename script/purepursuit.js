@@ -9,6 +9,7 @@ class PurePursuit {
     // if(pos == undefined) pos = path[0].vector(); 
     this.bot = new Bot(localToCanvas({x:pos.x}).x, localToCanvas({y:pos.y}).y, -PI/2);
 
+    this.lastClosestIndex = 0;
     this.lastLookIndex = 0;
     this.lastLookT = null;
     this.isFinished = false;
@@ -52,7 +53,7 @@ class PurePursuit {
 
     drawLookahead(this.bot.getCanvasPos(), lookPoint, this.lookDistance, projectedLookPoint);
     drawClosest(this.bot.getCanvasPos(), closestPoint.vector());
-    drawCurvature(curvature, this.bot.getLocalPos(), lookPoint);
+    drawCurvature(curvature, this.bot.getLocalPos(), projectedLookPoint);
     this.bot.draw();
   }
 
@@ -69,6 +70,7 @@ class PurePursuit {
       }
     }
 
+    this.lastClosestIndex = closestIndex;
     return closestIndex;
   }
 
@@ -117,11 +119,14 @@ class PurePursuit {
       }
     }
 
-    // check if path got smaller
-    if(this.lastLookIndex > this.path.length-2) this.lastLookIndex = this.path.length-2;
-    // Just return last look ahead result
-    let segmentStart = this.path[this.lastLookIndex].vector();
-    let segmentEnd = this.path[this.lastLookIndex + 1].vector();
+    let lookAheadIndex = this.lastLookIndex;
+    // lookahead can't be behind closest
+    if(lookAheadIndex < this.lastClosestIndex) lookAheadIndex = this.lastClosestIndex; // add here to push lookahead forward
+    // make sure index is not beyond path
+    if(lookAheadIndex > this.path.length-2) lookAheadIndex = this.path.length-2;
+
+    let segmentStart = this.path[lookAheadIndex].vector();
+    let segmentEnd = this.path[lookAheadIndex + 1].vector();
     return Vector.add(segmentStart, Vector.scalarMult(Vector.sub(segmentEnd, segmentStart), this.lastLookT));
   }
 
