@@ -110,6 +110,9 @@ class PurePursuit {
 
 
   findLookahead(currentPos) {
+    // used for optimizing number of intersection searches
+    let lastIntersection = 0;
+
     // loop through every segment looking for intersection
     for(let i = this.lastLookIndex; i < this.path.length - 1; i++) {
       let segmentStart = this.path[i].vector();
@@ -121,14 +124,22 @@ class PurePursuit {
         if(i > this.lastLookIndex || intersectionT > this.lastLookT) {
           this.lastLookIndex = i;
           this.lastLookT = intersectionT;
-          break;
+          // if this is the second intersection that was found, we are done
+          if(lastIntersection > 0) break;
+          // record the index of the first intersection
+          lastIntersection = i;
         }
       }
+
+      // if an intersection has already been found, and it has been too long since it was last found, we are done.
+      // specifically, the amount of segments we wait for a second match to occur
+      // is the amount of segments that fill the lookahead distance
+      if((lastIntersection > 0) && (i-lastIntersection) >= (Math.ceil(this.lookDistance/sliders.resolution*2))) break;
     }
 
     let lookAheadIndex = this.lastLookIndex;
     // lookahead can't be behind closest
-    // if(lookAheadIndex < this.lastClosestIndex) lookAheadIndex = this.lastClosestIndex; // add here to push lookahead forward
+    if(lookAheadIndex < this.lastClosestIndex) lookAheadIndex = this.lastClosestIndex; // add here to push lookahead forward
     // make sure index is not beyond path
     if(lookAheadIndex > this.path.length-2) lookAheadIndex = this.path.length-2;
 

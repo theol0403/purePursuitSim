@@ -261,6 +261,8 @@ function drawClosest(currPos, closest) {
 }
 
 function drawCurvature(curvature, p1, p2) {
+  c.lineWidth = "0.5";
+  c.strokeStyle = "#000"
   if(Math.abs(curvature) < 0.005) 
     curvature = 0.005;// * sgn(curvature);
 
