@@ -225,12 +225,12 @@ function drawPath(path, colorGet, min, max) {
     c.closePath();
     c.fill();
     //draw lines
-    if (i > 0) {
-      let lastX = path[i - 1].x() * canvasScale;
-      let lastY = path[i - 1].y() * canvasScale;
+    if (i < path.length - 1) {
+      let lastX = path[i + 1].x() * canvasScale;
+      let lastY = path[i + 1].y() * canvasScale;
       c.beginPath();
-      c.moveTo(lastX, canvas.height - lastY);
-      c.lineTo(canvasX, canvas.height - canvasY);
+      c.moveTo(canvasX, canvas.height - canvasY);
+      c.lineTo(lastX, canvas.height - lastY);
       c.closePath();
       c.stroke();
     }
