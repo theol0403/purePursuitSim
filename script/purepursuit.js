@@ -128,7 +128,7 @@ class PurePursuit {
 
     let lookAheadIndex = this.lastLookIndex;
     // lookahead can't be behind closest
-    if(lookAheadIndex < this.lastClosestIndex) lookAheadIndex = this.lastClosestIndex; // add here to push lookahead forward
+    // if(lookAheadIndex < this.lastClosestIndex) lookAheadIndex = this.lastClosestIndex; // add here to push lookahead forward
     // make sure index is not beyond path
     if(lookAheadIndex > this.path.length-2) lookAheadIndex = this.path.length-2;
 
