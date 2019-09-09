@@ -5,6 +5,7 @@ class PurePursuit {
     this.path = undefined;
     this.lookDistance = undefined;
     this.robotTrack = undefined;
+    this.followBackward = false;
 
     // if(pos == undefined) pos = path[0].vector(); 
     this.bot = new Bot(localToCanvas({x:pos.x}).x, localToCanvas({y:pos.y}).y, -PI/2);
@@ -30,6 +31,7 @@ class PurePursuit {
   update() {
     let currentPos = this.bot.getLocalPos();
     let heading = this.bot.getHeading();
+    if(this.followBackward) heading -= PI;
 
     let closestIndex = this.findClosestIndex(currentPos);
     let closestPoint = this.path[closestIndex];
@@ -44,8 +46,13 @@ class PurePursuit {
     let leftVel = 0;
     let rightVel = 0;
     if(!this.isFinished) {
-      leftVel = this.computeLeftVel(targetVel, curvature, this.robotTrack)
-      rightVel = this.computeRightVel(targetVel, curvature, this.robotTrack)
+      if(!this.followBackward) {
+        leftVel = this.computeLeftVel(targetVel, curvature, this.robotTrack);
+        rightVel = this.computeRightVel(targetVel, curvature, this.robotTrack);
+      } else {
+        leftVel = -this.computeRightVel(targetVel, curvature, this.robotTrack);
+        rightVel = -this.computeLeftVel(targetVel, curvature, this.robotTrack);
+      }
     }
 
     this.bot.tank(leftVel/maxVel, rightVel/maxVel);
