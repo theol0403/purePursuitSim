@@ -21,10 +21,37 @@ class Bot {
   }
 
   tank(left, right) { 
-    let nLeft = Math.abs(left) > 1 ? 1 * sgn(left) : left;
-    let nRight = Math.abs(right) > 1 ? 1 * sgn(right) : right;
 
-    this.spd = {l: slew(nLeft, this.spd.l, 0.1), r: slew(nRight, this.spd.r, 0.1)}; 
+    ///////////
+    // Clamp //
+    ///////////
+    left = _.clamp(left, -1, 1);
+    right = _.clamp(right, -1, 1);
+
+    ////////////////
+    // Scale down //
+    //////////////
+    // let maxMag = Math.max(Math.abs(left), Math.abs(right));
+    // if (maxMag > 1) {
+    //   left /= maxMag;
+    //   right /= maxMag;
+    // }
+
+    /////////////////////////////////
+    // Subtract overflow from both //
+    /////////////////////////////////
+    // let maxMag;
+    // if(Math.abs(left) > Math.abs(right)) {
+    //   maxMag = left;
+    // } else {
+    //   maxMag = right;
+    // }
+    // if(Math.abs(maxMag) > 1) {
+    //   left -= (Math.abs(maxMag) - 1) * sgn(maxMag);
+    //   right -= (Math.abs(maxMag) - 1) * sgn(maxMag);
+    // }
+
+    this.spd = {l: left, r: right}; 
   }
 
   getLocalPos() {
