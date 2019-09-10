@@ -8,7 +8,7 @@ class PurePursuit {
     this.followBackward = false;
 
     // if(pos == undefined) pos = path[0].vector(); 
-    this.bot = new Bot(localToCanvas({x:pos.x}).x, localToCanvas({y:pos.y}).y, -PI/2);
+    this.bot = new Bot(localToCanvas({x:pos.x}).x, localToCanvas({y:pos.y}).y, ((Math.random()*2)-1)*2*PI);
 
     this.segmentsPerLookahead = 0;
     this.lastClosestIndex = 0;
