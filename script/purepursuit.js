@@ -10,6 +10,7 @@ class PurePursuit {
     // if(pos == undefined) pos = path[0].vector(); 
     this.bot = new Bot(localToCanvas({x:pos.x}).x, localToCanvas({y:pos.y}).y, -PI/2);
 
+    this.segmentsPerLookahead = 0;
     this.lastClosestIndex = 0;
     this.lastLookIndex = 0;
     this.lastLookT = null;
@@ -29,6 +30,14 @@ class PurePursuit {
   }
 
   update() {
+
+    // make sure indexes are not beyond path
+    if(this.lastLookIndex > this.path.length-2) this.lastLookIndex = this.path.length-2;
+    if(this.lastClosestIndex > this.path.length-1) this.lastClosestIndex = this.path.length-1;
+
+    // the amount of segments that fill the lookahead circle diamiter
+    this.segmentsPerLookahead = Math.ceil(this.lookDistance/sliders.resolution*2);
+
     let currentPos = this.bot.getLocalPos();
     let heading = this.bot.getHeading();
     if(this.followBackward) heading -= PI;
@@ -41,7 +50,8 @@ class PurePursuit {
     let projectedLookPoint = Vector.add(Vector.scalarMult(Vector.normalize(Vector.sub(lookPoint, currentPos)), this.lookDistance), currentPos);
     let curvature = this.findLookaheadCurvature(currentPos, heading, projectedLookPoint);
 
-    this.isFinished = (closestIndex >= path.length - 1) && (this.lastLookIndex >= path.length - 2) && (Vector.dist(currentPos, lookPoint) < this.lookDistance);
+    // finished if closest point is target, if lookahead is target, and if distance to point is closer than a segment width
+    this.isFinished = (closestIndex >= path.length - 1) && (this.lastLookIndex >= path.length - 2) && (Vector.dist(currentPos, lookPoint) < this.lookDistance / this.segmentsPerLookahead);
 
     let leftVel = 0;
     let rightVel = 0;
@@ -67,9 +77,16 @@ class PurePursuit {
 
   findClosestIndex(currentPos) {
     let closestDist = Number.POSITIVE_INFINITY;
-    let closestIndex = 0;
+    let closestIndex = this.lastClosestIndex;
 
-    for (let i = closestIndex; i < this.path.length; i++) {
+    // limit the progression of the closest point
+    // it considers the last closest point, and all the options up to the lookahead + 1
+    // if the lookahead is 0, then new options will never be discovered unless the closest searches beyond
+    // so it searches one point beyond the lookahead, and if that's closer, it will choose that
+    // then later the lookahead will be bumped so it's not behind closest
+    // this makes it so the closest can consider pushing the lookahead forward
+    // the reason it does not scan all options so that the closest won't catch a much further point in an intersection 
+    for (let i = closestIndex; i <= this.lastLookIndex + 1; i++) {
       let distance = Vector.dist(currentPos, this.path[i].vector());    
       if(distance < closestDist) {
         closestDist = distance;
@@ -134,17 +151,15 @@ class PurePursuit {
       // if an intersection has already been found, and it has been too long since it was last found, we are done.
       // specifically, the amount of segments we wait for a second match to occur
       // is the amount of segments that fill the lookahead distance
-      if((lastIntersection > 0) && (i-lastIntersection) >= (Math.ceil(this.lookDistance/sliders.resolution*2))) break;
+      if(lastIntersection > 0 && i-lastIntersection >= this.segmentsPerLookahead) break;
     }
 
-    let lookAheadIndex = this.lastLookIndex;
     // lookahead can't be behind closest
-    if(lookAheadIndex < this.lastClosestIndex) lookAheadIndex = this.lastClosestIndex; // add here to push lookahead forward
+    if(this.lastLookIndex < this.lastClosestIndex) this.lastLookIndex = this.lastClosestIndex; // add here to push lookahead forward
     // make sure index is not beyond path
-    if(lookAheadIndex > this.path.length-2) lookAheadIndex = this.path.length-2;
-
-    let segmentStart = this.path[lookAheadIndex].vector();
-    let segmentEnd = this.path[lookAheadIndex + 1].vector();
+    if(this.lastLookIndex > this.path.length-2) this.lastLookIndex = this.path.length-2;
+    let segmentStart = this.path[this.lastLookIndex].vector();
+    let segmentEnd = this.path[this.lastLookIndex + 1].vector();
     return Vector.add(segmentStart, Vector.scalarMult(Vector.sub(segmentEnd, segmentStart), this.lastLookT));
   }
 
