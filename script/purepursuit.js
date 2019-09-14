@@ -44,14 +44,25 @@ class PurePursuit {
 
     let closestIndex = this.findClosestIndex(currentPos);
     let closestPoint = this.path[closestIndex];
-    let targetVel = closestPoint.velocity;
+    let onPath = (Vector.dist(currentPos, closestPoint.vector()) < this.lookDistance);
 
     let lookPoint = this.findLookahead(currentPos);
-    let projectedLookPoint = Vector.add(Vector.scalarMult(Vector.normalize(Vector.sub(lookPoint, currentPos)), this.lookDistance), currentPos);
+    let projectedLookPoint = onPath ? lookPoint : Vector.add(Vector.scalarMult(Vector.normalize(Vector.sub(lookPoint, currentPos)), this.lookDistance), currentPos);
     let curvature = this.findLookaheadCurvature(currentPos, heading, projectedLookPoint);
 
-    // finished if closest point is target, if lookahead is target, and if distance to point is closer than a segment width
-    this.isFinished = (closestIndex >= path.length - 1) && (this.lastLookIndex >= path.length - 2) && (Vector.dist(currentPos, lookPoint) < this.lookDistance / this.segmentsPerLookahead);
+    // finished if closest point is target, if lookahead is target, on path, and if distance to point is closer than a segment width
+    this.isFinished = 
+    (closestIndex >= path.length - 1) && 
+    (this.lastLookIndex >= path.length - 2) &&
+    onPath &&
+    Vector.dist(currentPos, lookPoint) < this.lookDistance / this.segmentsPerLookahead;
+
+    let targetVel = 0;
+    if(onPath) {
+      targetVel = Math.min(closestPoint.velocity, turnK / Math.abs(curvature));
+    } else {
+      targetVel = Math.min(maxVel, turnK / Math.abs(curvature));
+    }
 
     let leftVel = 0;
     let rightVel = 0;
@@ -155,9 +166,15 @@ class PurePursuit {
     }
 
     // lookahead can't be behind closest
-    if(this.lastLookIndex < this.lastClosestIndex) this.lastLookIndex = this.lastClosestIndex; // add here to push lookahead forward
+    if(this.lastLookIndex < this.lastClosestIndex) {
+      this.lastLookIndex = this.lastClosestIndex; // add here to push lookahead forward
+      this.lastLookT = 1; // assume lookahead is furthest along segment
+    }
     // make sure index is not beyond path
-    if(this.lastLookIndex > this.path.length-2) this.lastLookIndex = this.path.length-2;
+    if(this.lastLookIndex > this.path.length-2) {
+      this.lastLookIndex = this.path.length-2;
+      this.lastLookT = 1; // assume lookahead is furthest along segment, as it was trying to go further anyway
+    }
     let segmentStart = this.path[this.lastLookIndex].vector();
     let segmentEnd = this.path[this.lastLookIndex + 1].vector();
     return Vector.add(segmentStart, Vector.scalarMult(Vector.sub(segmentEnd, segmentStart), this.lastLookT));
