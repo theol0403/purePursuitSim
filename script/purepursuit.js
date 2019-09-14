@@ -186,7 +186,7 @@ class PurePursuit {
     let a = -Math.tan(heading);
     let c = Math.tan(heading)*currentPos.x - currentPos.y;
     let x = Math.abs(a * lookPoint.x + lookPoint.y + c) / Math.sqrt(Math.pow(a, 2) + 1);
-    return side * ((2*x) / Math.pow(this.lookDistance, 2));
+    return side * ((2*x) / Math.pow(Vector.dist(currentPos, lookPoint), 2));
   }
 
   computeLeftVel(targetVel, curvature) {
