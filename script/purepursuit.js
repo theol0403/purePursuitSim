@@ -15,6 +15,9 @@ class PurePursuit {
     this.lastLookIndex = 0;
     this.lastLookT = null;
     this.isFinished = false;
+
+    this.lastPos = this.bot.getLocalPos();
+    this.lastVelocity = minVel;
   }
 
   setPath(path) {
@@ -62,6 +65,12 @@ class PurePursuit {
     } else {
       targetVel = Math.min(maxVel, turnK / Math.abs(curvature));
     }
+
+    targetVel = Math.max(targetVel, minVel);
+    let velDt = targetVel - this.lastVelocity;
+    targetVel = this.lastVelocity + Math.sqrt( Math.min( Math.pow(velDt, 2), 2 * maxAccel * Vector.dist(this.lastPos, currentPos) ) ) * sgn(velDt);
+    this.lastPos = currentPos;
+    this.lastVelocity = targetVel;
 
     let leftVel = 0;
     let rightVel = 0;

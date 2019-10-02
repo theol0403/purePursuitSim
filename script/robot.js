@@ -1,5 +1,5 @@
 
-const SPEED_LIM = 2;
+const SPEED_LIM = 1;
 
 const PI = Math.PI;
 const TAU = Math.PI * 2;

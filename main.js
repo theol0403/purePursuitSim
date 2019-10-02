@@ -40,7 +40,7 @@ function animate() {
   path = computeDistances(path);
   path = computeCurvatures(path);
   path = computeVelocity(path, maxVel, maxAccel, turnK);
-  path = limitVelocity(path, minVel, maxAccel**2);
+  // path = limitVelocity(path, minVel, maxAccel);
 
   bots.forEach((bot, i) => {
     bot.setPath(path);
