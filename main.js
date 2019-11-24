@@ -39,8 +39,6 @@ function animate() {
 
   path = computeCurvatures(path);
   path = computeVelocity(path, maxVel, maxAccel, turnK);
-  // path = limitVelocity(path, minVel, maxAccel**2);
-  path = minVelocity(path, minVel);
 
   bots.forEach((bot, i) => {
     bot.setPath(path);

@@ -86,23 +86,3 @@ function computeVelocity(path, maxVel, maxRate, k) {
   }
   return path;
 }
-
-function limitVelocity(path, minVel, maxRate) {
-  path[0].setVelocity(minVel);
-  for (let i = 0; i < path.length - 1; i++) {
-    let start = path[i];
-    let end = path[i + 1];
-    let distance = distPathPoint(start, end);
-    let wantedVel = Math.min(end.velocity, Math.sqrt(Math.pow(start.velocity, 2) + (2 * maxRate * distance)));
-    let newVel = Math.max(wantedVel, minVel);
-    path[i + 1].setVelocity(newVel);
-  }
-  return path;
-}
-
-function minVelocity(path, minVel) {
-  for (let i = 0; i < path.length ; i++) {
-    path[i].setVelocity(Math.max(minVel, path[i].velocity));
-  }
-  return path;
-}
