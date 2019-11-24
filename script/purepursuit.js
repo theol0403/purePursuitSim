@@ -160,16 +160,6 @@ class PurePursuit {
       }
     }
 
-    // lookahead can't be behind closest
-    if(this.lastLookIndex < this.lastClosestIndex) {
-      this.lastLookIndex = this.lastClosestIndex; // add here to push lookahead forward
-      this.lastLookT = 1; // assume lookahead is furthest along segment
-    }
-    // make sure index is not beyond path
-    if(this.lastLookIndex > this.path.length-2) {
-      this.lastLookIndex = this.path.length-2;
-      this.lastLookT = 1; // assume lookahead is furthest along segment, as it was trying to go further anyway
-    }
     let segmentStart = this.path[this.lastLookIndex].vector();
     let segmentEnd = this.path[this.lastLookIndex + 1].vector();
     return Vector.add(segmentStart, Vector.scalarMult(Vector.sub(segmentEnd, segmentStart), this.lastLookT));
