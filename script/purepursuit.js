@@ -30,10 +30,6 @@ class PurePursuit {
 
   update() {
 
-    // make sure indexes are not beyond path
-    if(this.lastLookIndex > this.path.length-2) this.lastLookIndex = this.path.length-2;
-    if(this.lastClosestIndex > this.path.length-1) this.lastClosestIndex = this.path.length-1;
-
     let currentPos = this.bot.getLocalPos();
     let heading = this.bot.getHeading();
     if(this.followBackward) heading -= PI;
