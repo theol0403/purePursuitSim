@@ -99,3 +99,10 @@ function limitVelocity(path, minVel, maxRate) {
   }
   return path;
 }
+
+function minVelocity(path, minVel) {
+  for (let i = 0; i < path.length ; i++) {
+    path[i].setVelocity(Math.max(minVel, path[i].velocity));
+  }
+  return path;
+}
