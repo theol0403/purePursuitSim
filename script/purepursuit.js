@@ -10,7 +10,6 @@ class PurePursuit {
     // if(pos == undefined) pos = path[0].vector(); 
     this.bot = new Bot(localToCanvas({x:pos.x}).x, localToCanvas({y:pos.y}).y, ((Math.random()*2)-1)*2*PI);
 
-    this.segmentsPerLookahead = 0;
     this.lastClosestIndex = 0;
     this.lastLookIndex = 0;
     this.lastLookT = null;
@@ -35,9 +34,6 @@ class PurePursuit {
     if(this.lastLookIndex > this.path.length-2) this.lastLookIndex = this.path.length-2;
     if(this.lastClosestIndex > this.path.length-1) this.lastClosestIndex = this.path.length-1;
 
-    // the amount of segments that fill the lookahead circle diamiter
-    this.segmentsPerLookahead = Math.ceil(this.lookDistance/sliders.resolution*2);
-
     let currentPos = this.bot.getLocalPos();
     let heading = this.bot.getHeading();
     if(this.followBackward) heading -= PI;
@@ -52,10 +48,8 @@ class PurePursuit {
     let curvature = this.findLookaheadCurvature(currentPos, heading, finalLookPoint);
 
     // finished if on path, closest point is target, if lookahead is target, and if distance to point is closer than a segment width
-    this.isFinished = onPath &&
-    (closestIndex >= path.length - 1) && 
-    (this.lastLookIndex >= path.length - 2) &&
-    Vector.dist(currentPos, lookPoint) < this.lookDistance / this.segmentsPerLookahead;
+    this.isFinished = onPath && (closestIndex >= path.length - 1) &&
+                      this.lastLookIndex >= path.length - 2;
 
     let targetVel = 0;
     if(onPath) {
