@@ -59,9 +59,18 @@ class PurePursuit {
       targetVel = Math.min(maxVel, turnK / Math.abs(curvature));
     }
 
+    // minimum velocity
     targetVel = Math.max(targetVel, minVel);
+    // get change in velocity
     let velDt = targetVel - this.lastVelocity;
-    targetVel = this.lastVelocity + Math.sqrt( Math.min( Math.pow(velDt, 2), 2 * maxAccel * Vector.dist(this.lastPos, currentPos) ) ) * sgn(velDt);
+    // get distance from last loop
+    let distDt = Vector.dist(this.lastPos, currentPos);
+    // get maximum allowable change in velocity
+    let maxChange = Math.sqrt(Math.min(Math.pow(velDt, 2), 2 * maxAccel * distDt));
+
+    // target velocity is last velocity plus maximum allowable change in velocity given distance
+    if(velDt > maxChange) targetVel = this.lastVelocity + maxChange;
+
     this.lastPos = currentPos;
     this.lastVelocity = targetVel;
 
