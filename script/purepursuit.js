@@ -47,8 +47,9 @@ class PurePursuit {
     let onPath = (Vector.dist(currentPos, closestPoint.vector()) < this.lookDistance);
 
     let lookPoint = this.findLookahead(currentPos);
-    let projectedLookPoint = onPath ? lookPoint : Vector.add(Vector.scalarMult(Vector.normalize(Vector.sub(lookPoint, currentPos)), this.lookDistance), currentPos);
-    let curvature = this.findLookaheadCurvature(currentPos, heading, projectedLookPoint);
+    let projectedLookPoint = Vector.add(Vector.scalarMult(Vector.normalize(Vector.sub(lookPoint, currentPos)), this.lookDistance), currentPos);
+    let finalLookPoint = onPath && Vector.dist(currentPos, lookPoint) < Vector.dist(currentPos, projectedLookPoint) ? lookPoint : projectedLookPoint;
+    let curvature = this.findLookaheadCurvature(currentPos, heading, finalLookPoint);
 
     // finished if on path, closest point is target, if lookahead is target, and if distance to point is closer than a segment width
     this.isFinished = onPath &&
@@ -78,9 +79,9 @@ class PurePursuit {
     this.bot.tank(leftVel/maxVel, rightVel/maxVel);
     this.bot.update();
 
-    drawLookahead(this.bot.getCanvasPos(), lookPoint, this.lookDistance, projectedLookPoint);
+    drawLookahead(this.bot.getCanvasPos(), lookPoint, this.lookDistance, finalLookPoint);
     drawClosest(this.bot.getCanvasPos(), closestPoint.vector());
-    drawCurvature(curvature, this.bot.getLocalPos(), projectedLookPoint);
+    drawCurvature(curvature, this.bot.getLocalPos(), finalLookPoint);
     this.bot.draw();
   }
 
