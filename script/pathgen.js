@@ -49,16 +49,6 @@ function smoothen(inp, dataWeight, tolerance) {
   return path;
 }
 
-
-function computeDistances(path) {
-  path[0].setDistance(0);
-  for (let i = 0; i < path.length - 1; i++) {
-    let distance = path[i].distance + distPathPoint(path[i], path[i + 1]);
-    path[i + 1].setDistance(distance);
-  }
-  return path;
-}
-
 function computeSingleCurvature(prevPoint, point, nextPoint) {
   let distOne = distPathPoint(point, prevPoint);
   let distTwo = distPathPoint(point, nextPoint);

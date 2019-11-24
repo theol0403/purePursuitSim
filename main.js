@@ -37,7 +37,6 @@ function animate() {
   path = insertPoints(points, sliders.resolution);
   path = smoothen(path, 0.25, 1e-10);
 
-  path = computeDistances(path);
   path = computeCurvatures(path);
   path = computeVelocity(path, maxVel, maxAccel, turnK);
   path = limitVelocity(path, minVel, maxAccel**2);
