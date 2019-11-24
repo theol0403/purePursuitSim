@@ -41,11 +41,13 @@ class PurePursuit {
     let lookPoint = this.findLookahead(currentPos);
     let projectedLookPoint = Vector.add(Vector.scalarMult(Vector.normalize(Vector.sub(lookPoint, currentPos)), this.lookDistance), currentPos);
     let finalLookPoint = onPath && Vector.dist(currentPos, lookPoint) < Vector.dist(currentPos, projectedLookPoint) ? lookPoint : projectedLookPoint;
+
     let curvature = this.findLookaheadCurvature(currentPos, heading, finalLookPoint);
 
-    // finished if on path, closest point is target, if lookahead is target, and if distance to point is closer than a segment width
-    this.isFinished = onPath && (closestIndex >= path.length - 1) &&
-                      this.lastLookIndex >= path.length - 2;
+    // finished if on path, closest point is target, if lookahead is target, and if distance to
+    // point is closer than a segment width
+    this.isFinished =
+        onPath && (closestIndex >= path.length - 1) && this.lastLookIndex >= path.length - 2;
 
     let targetVel = 0;
     if(onPath) {
@@ -80,6 +82,7 @@ class PurePursuit {
     let closestDist = Number.POSITIVE_INFINITY;
     let closestIndex = this.lastClosestIndex;
 
+    // Optimization:
     // limit the progression of the closest point
     // it considers the last closest point, and all the options up to the lookahead + 1
     // if the lookahead is 0, then new options will never be discovered unless the closest searches beyond
@@ -149,10 +152,12 @@ class PurePursuit {
         }
       }
 
-      // if an intersection has already been found, and it has been too long since it was last found, we are done.
-      // specifically, the amount of segments we wait for a second match to occur
-      // is the amount of segments that fill the lookahead distance
-      if(lastIntersection > 0 && i-lastIntersection >= this.segmentsPerLookahead) break;
+      // Optimization: if an intersection has been found, and the loop is checking distances from
+      // the last intersection that are further than the lookahead, we are done.
+      if(lastIntersect > 0 &&
+         Vector.dist(this.path[i].vector(), this.path[lastIntersect].vector()) >= this.lookDistance) {
+        break;
+      }
     }
 
     // lookahead can't be behind closest
