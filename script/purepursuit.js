@@ -90,7 +90,7 @@ class PurePursuit {
     // then later the lookahead will be bumped so it's not behind closest
     // this makes it so the closest can consider pushing the lookahead forward
     // the reason it does not scan all options so that the closest won't catch a much further point in an intersection 
-    for (let i = closestIndex; i <= this.lastLookIndex + 1; i++) {
+    for (let i = closestIndex; i < this.lastLookIndex + 2; i++) {
       let distance = Vector.dist(currentPos, this.path[i].vector());    
       if(distance < closestDist) {
         closestDist = distance;
@@ -103,7 +103,7 @@ class PurePursuit {
   }
 
 
-  findIntersectionT(segmentStart, segmentEnd, currentPos) {
+  findIntersectT(segmentStart, segmentEnd, currentPos) {
     let d = Vector.sub(segmentEnd, segmentStart);
     let f = Vector.sub(segmentStart, currentPos);
 
@@ -132,23 +132,23 @@ class PurePursuit {
 
   findLookahead(currentPos) {
     // used for optimizing number of intersection searches
-    let lastIntersection = 0;
+    let lastIntersect = 0;
 
     // loop through every segment looking for intersection
     for(let i = this.lastLookIndex; i < this.path.length - 1; i++) {
       let segmentStart = this.path[i].vector();
       let segmentEnd = this.path[i + 1].vector();
 
-      let intersectionT = this.findIntersectionT(segmentStart, segmentEnd, currentPos, this.lookDistance);
+      let intersectionT = this.findIntersectT(segmentStart, segmentEnd, currentPos, this.lookDistance);
       if(intersectionT != null) {
         // If the segment is further along or the fractional index is greater, then this is the correct point
         if(i > this.lastLookIndex || intersectionT > this.lastLookT) {
           this.lastLookIndex = i;
           this.lastLookT = intersectionT;
           // if this is the second intersection that was found, we are done
-          if(lastIntersection > 0) break;
+          if(lastIntersect > 0) break;
           // record the index of the first intersection
-          lastIntersection = i;
+          lastIntersect = i;
         }
       }
 
