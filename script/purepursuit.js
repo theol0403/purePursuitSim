@@ -171,19 +171,19 @@ class PurePursuit {
       // Optimization: if an intersection has been found, and the loop is checking distances from
       // the last intersection that are further than the lookahead, we are done.
       if(lastIntersect > 0 &&
-       Vector.dist(this.path[i].vector(), this.path[lastIntersect].vector()) >= this.lookDistance*2) {
+         Vector.dist(this.path[i].vector(), this.path[lastIntersect].vector()) >= this.lookDistance * 2)
         break;
     }
-  }
 
-  let segmentStart = this.path[this.lastLookIndex].vector();
-  let segmentEnd = this.path[this.lastLookIndex + 1].vector();
-  let lookPoint = Vector.add(segmentStart, Vector.scalarMult(Vector.sub(segmentEnd, segmentStart), this.lastLookT));
+    let segmentStart = this.path[this.lastLookIndex].vector();
+    let segmentEnd = this.path[this.lastLookIndex + 1].vector();
+    let lookPoint = Vector.add(
+      segmentStart, Vector.scalarMult(Vector.sub(segmentEnd, segmentStart), this.lastLookT));
 
-  if(Vector.dist(lookPoint, this.path[this.path.length - 1].vector()) <= this.lookDistance * 2) {
-    this.lastLookIndex = this.path.length - 2;
-    this.lastLookT = 1;
-    return this.path[this.path.length - 1].vector();
+    if(Vector.dist(currentPos, this.path[this.path.length - 1].vector()) <= this.lookDistance) {
+      this.lastLookIndex = this.path.length - 2;
+      this.lastLookT = 1;
+  
   } else {
     return lookPoint;
   }
