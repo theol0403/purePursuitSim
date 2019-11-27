@@ -147,6 +147,14 @@ class PurePursuit {
 
 
   findLookahead(currentPos) {
+
+    // return the end of the path if it is within the lookahead
+    if(Vector.dist(currentPos, this.path[this.path.length - 1].vector()) <= this.lookDistance) {
+      this.lastLookIndex = this.path.length - 2;
+      this.lastLookT = 1;
+      return this.path[this.path.length - 1].vector();
+    }
+
     // used for optimizing number of intersection searches
     let lastIntersect = 0;
 
