@@ -150,7 +150,7 @@ class PurePursuit {
     let lastIntersect = 0;
 
     // loop through every segment looking for intersection
-    for(let i = this.lastLookIndex; i < this.path.length - 1; i++) {
+    for(let i = Math.max(this.lastLookIndex, this.lastClosestIndex); i < this.path.length - 1; i++) {
       let segmentStart = this.path[i].vector();
       let segmentEnd = this.path[i + 1].vector();
 
@@ -170,7 +170,7 @@ class PurePursuit {
       // Optimization: if an intersection has been found, and the loop is checking distances from
       // the last intersection that are further than the lookahead, we are done.
       if(lastIntersect > 0 &&
-       Vector.dist(this.path[i].vector(), this.path[lastIntersect].vector()) >= this.lookDistance) {
+       Vector.dist(this.path[i].vector(), this.path[lastIntersect].vector()) >= this.lookDistance*2) {
         break;
     }
   }
