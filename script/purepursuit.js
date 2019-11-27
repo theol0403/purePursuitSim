@@ -170,32 +170,32 @@ class PurePursuit {
       // Optimization: if an intersection has been found, and the loop is checking distances from
       // the last intersection that are further than the lookahead, we are done.
       if(lastIntersect > 0 &&
-         Vector.dist(this.path[i].vector(), this.path[lastIntersect].vector()) >= this.lookDistance) {
+       Vector.dist(this.path[i].vector(), this.path[lastIntersect].vector()) >= this.lookDistance) {
         break;
-      }
     }
-
-    let segmentStart = this.path[this.lastLookIndex].vector();
-    let segmentEnd = this.path[this.lastLookIndex + 1].vector();
-    return Vector.add(segmentStart, Vector.scalarMult(Vector.sub(segmentEnd, segmentStart), this.lastLookT));
   }
 
+  let segmentStart = this.path[this.lastLookIndex].vector();
+  let segmentEnd = this.path[this.lastLookIndex + 1].vector();
+  return Vector.add(segmentStart, Vector.scalarMult(Vector.sub(segmentEnd, segmentStart), this.lastLookT));
+}
 
-  findLookaheadCurvature(currentPos, heading, lookPoint) {
-    let side = sgn(Math.sin(heading)*(lookPoint.x - currentPos.x) - Math.cos(heading)*(lookPoint.y - currentPos.y));
-    let a = -Math.tan(heading);
-    let c = Math.tan(heading)*currentPos.x - currentPos.y;
-    let x = Math.abs(a * lookPoint.x + lookPoint.y + c) / Math.sqrt(Math.pow(a, 2) + 1);
-    return side * ((2*x) / Math.pow(Vector.dist(currentPos, lookPoint), 2));
-  }
 
-  computeLeftVel(targetVel, curvature) {
-    return targetVel * (2 + this.robotTrack * curvature) / 2;
-  }
+findLookaheadCurvature(currentPos, heading, lookPoint) {
+  let side = sgn(Math.sin(heading)*(lookPoint.x - currentPos.x) - Math.cos(heading)*(lookPoint.y - currentPos.y));
+  let a = -Math.tan(heading);
+  let c = Math.tan(heading)*currentPos.x - currentPos.y;
+  let x = Math.abs(a * lookPoint.x + lookPoint.y + c) / Math.sqrt(Math.pow(a, 2) + 1);
+  return side * ((2*x) / Math.pow(Vector.dist(currentPos, lookPoint), 2));
+}
 
-  computeRightVel(targetVel, curvature) {
-    return targetVel * (2 - this.robotTrack * curvature) / 2;
-  }
+computeLeftVel(targetVel, curvature) {
+  return targetVel * (2 + this.robotTrack * curvature) / 2;
+}
+
+computeRightVel(targetVel, curvature) {
+  return targetVel * (2 - this.robotTrack * curvature) / 2;
+}
 
 }
 
