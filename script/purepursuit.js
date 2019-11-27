@@ -106,6 +106,7 @@ class PurePursuit {
     // this makes it so the closest can consider pushing the lookahead forward
     // the reason it does not scan all options so that the closest won't catch a much further point in an intersection 
     for (let i = closestIndex; i < this.lastLookIndex + 2; i++) {
+      if(i >= this.path.length) break;
       let distance = Vector.dist(currentPos, this.path[i].vector());    
       if(distance < closestDist) {
         closestDist = distance;
