@@ -1,4 +1,11 @@
 
+const angleBetweenPoints = (target, current) =>
+rollAngle180(Math.atan2(target.y - current.y, target.x - current.x));
+
+const angleToPoint = (target, current, heading) =>
+rollAngle180(angleBetweenPoints(target, current) - heading);
+
+
 class PurePursuit {
 
   constructor(pos) {
@@ -35,7 +42,6 @@ class PurePursuit {
 
     let currentPos = this.bot.getLocalPos();
     let heading = this.bot.getHeading();
-    if(this.followBackward) heading -= PI;
 
     let closestIndex = this.findClosestIndex(currentPos);
     let closestPoint = this.path[closestIndex];
@@ -45,6 +51,10 @@ class PurePursuit {
     let projectedLookPoint = Vector.add(Vector.scalarMult(Vector.normalize(Vector.sub(lookPoint, currentPos)), this.lookDistance), currentPos);
     let finalLookPoint = onPath && Vector.dist(currentPos, lookPoint) < Vector.dist(currentPos, projectedLookPoint) ? lookPoint : projectedLookPoint;
 
+    let angleToLook = angleToPoint(lookPoint, currentPos, heading); 
+    this.followBackward = Math.abs(angleToLook) > Math.PI / 2;
+
+    if(this.followBackward) heading -= PI;
     let curvature = this.findLookaheadCurvature(currentPos, heading, finalLookPoint);
 
     // finished if on path, closest point is target, if lookahead is target, and if distance to
@@ -179,7 +189,7 @@ class PurePursuit {
       // Optimization: if an intersection has been found, and the loop is checking distances from
       // the last intersection that are further than the lookahead, we are done.
       if(lastIntersect > 0 &&
-         Vector.dist(this.path[i].vector(), this.path[lastIntersect].vector()) >= this.lookDistance * 2)
+       Vector.dist(this.path[i].vector(), this.path[lastIntersect].vector()) >= this.lookDistance * 2)
         break;
     }
 
@@ -190,29 +200,29 @@ class PurePursuit {
 
     if(Vector.dist(currentPos, this.path[this.path.length - 1].vector()) <= this.lookDistance) {
       this.lastLookIndex = this.path.length - 2;
-      this.lastLookT = 1;
-  
-  } else {
-    return lookPoint;
+        this.lastLookT = 1;
+    
+    } else {
+      return lookPoint;
+    }
   }
-}
 
 
-findLookaheadCurvature(currentPos, heading, lookPoint) {
-  let side = sgn(Math.sin(heading)*(lookPoint.x - currentPos.x) - Math.cos(heading)*(lookPoint.y - currentPos.y));
-  let a = -Math.tan(heading);
-  let c = Math.tan(heading)*currentPos.x - currentPos.y;
-  let x = Math.abs(a * lookPoint.x + lookPoint.y + c) / Math.sqrt(Math.pow(a, 2) + 1);
-  return side * ((2*x) / Math.pow(Vector.dist(currentPos, lookPoint), 2));
-}
+  findLookaheadCurvature(currentPos, heading, lookPoint) {
+    let side = sgn(Math.sin(heading)*(lookPoint.x - currentPos.x) - Math.cos(heading)*(lookPoint.y - currentPos.y));
+    let a = -Math.tan(heading);
+    let c = Math.tan(heading)*currentPos.x - currentPos.y;
+    let x = Math.abs(a * lookPoint.x + lookPoint.y + c) / Math.sqrt(Math.pow(a, 2) + 1);
+    return side * ((2*x) / Math.pow(Vector.dist(currentPos, lookPoint), 2));
+  }
 
-computeLeftVel(targetVel, curvature) {
-  return targetVel * (2 + this.robotTrack * curvature) / 2;
-}
+  computeLeftVel(targetVel, curvature) {
+    return targetVel * (2 + this.robotTrack * curvature) / 2;
+  }
 
-computeRightVel(targetVel, curvature) {
-  return targetVel * (2 - this.robotTrack * curvature) / 2;
-}
+  computeRightVel(targetVel, curvature) {
+    return targetVel * (2 - this.robotTrack * curvature) / 2;
+  }
 
 }
 
