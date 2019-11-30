@@ -92,8 +92,8 @@ class Bot {
     c.beginPath();
     c.moveTo(this.pos.x, this.pos.y);
     c.lineTo(
-      this.pos.x + Math.cos(this.pos.a) * 10,
-      this.pos.y + Math.sin(this.pos.a) * 10
+      this.pos.x + Math.cos(this.pos.a) * 15,
+      this.pos.y + Math.sin(this.pos.a) * 15
       );
     c.closePath();
     c.stroke();
