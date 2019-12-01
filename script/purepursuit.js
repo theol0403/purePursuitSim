@@ -205,13 +205,7 @@ class PurePursuit {
     let lookPoint = Vector.add(
       segmentStart, Vector.scalarMult(Vector.sub(segmentEnd, segmentStart), this.lastLookT));
 
-    if(Vector.dist(currentPos, this.path[this.path.length - 1].vector()) <= this.lookDistance) {
-      this.lastLookIndex = this.path.length - 2;
-      this.lastLookT = 1;
-
-    } else {
-      return lookPoint;
-    }
+    return Vector.add(segmentStart, Vector.scalarMult(Vector.sub(segmentEnd, segmentStart), this.lastLookT));
   }
 
 
