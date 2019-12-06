@@ -53,3 +53,14 @@ function negPiToPi(angle) {
 
   return angle;
 }
+
+function evalSpline(t, coeffs, xOffset=0) {
+  let order = coeffs.length;
+  let sum = 0;
+
+  for(let i = 0; i < order; i++) {
+    sum += coeffs[i] * Math.pow(t, i);
+  }
+
+  return sum;
+}
