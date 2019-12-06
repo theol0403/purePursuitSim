@@ -33,10 +33,10 @@ function generateSpline(point0, theta0, point1, theta1) {
   let y0p = Math.tan(theta0Diff);
   let y1p = Math.tan(theta1Diff);
 
-  let a = y0p;
-  let b = - (2*y0p + y1p) / dist;
-  let c = (y1p + y0p) / Math.pow(dist, 2);
-  let d = yOffset;
+  let a = yOffset;
+  let b = (y1p + y0p) / Math.pow(dist, 2);
+  let c = - (2*y0p + y1p) / dist;
+  let d = y0p;
 
   coeffs = [a, b, c, d];
 
