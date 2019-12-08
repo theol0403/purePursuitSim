@@ -47,7 +47,7 @@ class PurePursuit {
 
     let closestIndex = this.findClosestIndex(currentPos);
     let closestPoint = this.path[closestIndex];
-    let onPath = (Vector.dist(currentPos, closestPoint.vector()) < this.lookDistance);
+    let onPath = Vector.dist(currentPos, closestPoint.vector()) <= this.lookDistance;
 
     let lookPoint = this.findLookahead(currentPos);
     let projectedLookPoint = Vector.add(Vector.scalarMult(Vector.normalize(Vector.sub(lookPoint, currentPos)), this.lookDistance), currentPos);
@@ -67,7 +67,7 @@ class PurePursuit {
     // finished if on path, closest point is target, if lookahead is target, and if distance to
     // point is closer than a segment width
     this.isFinished =
-    (closestIndex >= path.length - 1) ;
+    (closestIndex >= path.length - 1);
 
     let targetVel = 0;
     if(onPath) {
