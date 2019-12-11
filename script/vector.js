@@ -36,6 +36,10 @@ class Vector {
     return new Vector(vec.x * scalar, vec.y * scalar);
   }
 
+  static dotMult(vec1, vec2) {
+    return new Vector(vec1.x * vec2.x, vec1.y * vec2.y);
+  }
+
   // distance formula
   static dist(vec1, vec2) {
     return Math.sqrt((vec1.x - vec2.x) * (vec1.x - vec2.x) + (vec1.y - vec2.y) * (vec1.y - vec2.y));
