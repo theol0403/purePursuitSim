@@ -67,7 +67,9 @@ class PurePursuit {
     // finished if on path, closest point is target, if lookahead is target, and if distance to
     // point is closer than a segment width
     this.isFinished =
-    (closestIndex >= path.length - 1);
+      (Vector.dist(closestPoint.vector(), this.path[this.path.length - 1].vector()) <
+       this.lookDistance) &&
+      (Vector.dist(currentPos, this.path[this.path.length - 1].vector()) < this.lookDistance);
 
     let targetVel = 0;
     if(onPath) {
