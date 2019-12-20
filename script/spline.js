@@ -1,4 +1,8 @@
 
+// TODO get rid of these somehow
+const minTime = 3;
+const maxtime = 100;
+
 class QuinticPolynomial {
   
   constructor(xstart, vstart, astart, xend, vend, aend, T) {
@@ -23,8 +27,8 @@ class QuinticPolynomial {
     let x = math.lusolve(A, b);
 
     this.a3 = math.subset(x, math.index(0, 0));
-    this.a4 = math.subset(x, math.index(0, 1));
-    this.a5 = math.subset(x, math.index(0, 2));
+    this.a4 = math.subset(x, math.index(1, 0));
+    this.a5 = math.subset(x, math.index(2, 0));
 
     this.coeffs = [this.a0, this.a1, this.a2, this.a3, this.a4, this.a5];
   }
@@ -63,5 +67,80 @@ class QuinticPolynomial {
     }
 
     return xt;
+  }
+}
+
+class QuinticSegmentPlanner {
+
+  constructor(sx, sy, syaw, sv, sa, gx, gy, gyaw, gv, ga, maxA, maxJ, dt) {
+    let vxs = sv * Math.cos(syaw);
+    let vys = sv * Math.sin(syaw);
+    let vxg = gv * Math.cos(gyaw);
+    let vyg = gv * Math.sin(gyaw);
+
+    let axs = sa * Math.cos(syaw);
+    let ays = sa * Math.sin(syaw);
+    let axg = ga * Math.cos(gyaw);
+    let ayg = ga * Math.sin(gyaw);
+    
+    for(let T = minTime; T <= maxtime; T += minTime) {
+      let xqp = new QuinticPolynomial(sx, vxs, axs, gx, vxg, axg, T);
+      let yqp = new QuinticPolynomial(sy, vys, ays, gy, vyg, ayg, T);
+
+      let time = [];
+      let rx = [];
+      let ry = [];
+      let ryaw = [];
+      let rv = [];
+      let ra = [];
+      let rj = [];
+
+      for(let t = 0; t <= T + dt; t += dt) {
+        time.push(t);
+        rx.push(xqp.calcPoint(t));
+        ry.push(yqp.calcPoint(t));
+
+        let vx = xqp.calcFirstDeriv(t);
+        let vy = yqp.calcFirstDeriv(t);
+        rv.push(math.hypot(vx, vy));
+        ryaw.push(Math.atan2(vy, vx));
+
+        let ax = xqp.calcSecondDeriv(t);
+        let ay = yqp.calcSecondDeriv(t);
+        let a = math.hypot(ax, ay);
+        if(rv.length >=2 && rv[rv.length-1] - rv[rv.length-2] < 0) {
+          a *= -1;
+        }
+        ra.push(a);
+
+        let jx = xqp.calcThirdDeriv(t);
+        let jy = yqp.calcThirdDeriv(t);
+        let j = math.hypot(jx, jy);
+        if(ra.length >=2 && ra[ra.length-1] - ra[ra.length-2] < 0) {
+          j *= -1;
+        }
+        rj.push(j);
+      }
+
+      if(Math.max(math.abs(ra)) <= maxA && Math.max(math.abs(rj)) <= maxJ) {
+        console.log('path found');
+        break;
+      }
+
+      this.results = [time, rx, ry, ryaw, rv, ra, rj];
+    }
+  }
+
+  getPath() {
+    let path = []
+    let [t, x, y, theta, v, a, j] = this.results;
+
+    for(let i = 0; i < x.length; i++) {
+      let p = new PathPoint(x[i], y[i]);
+      p.setVelocity(v[i]);
+      path.push(p);
+    }
+
+    return path;
   }
 }
