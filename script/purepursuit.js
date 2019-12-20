@@ -61,12 +61,12 @@ class PurePursuit {
       followBackward = Math.abs(angleToLook) > Math.PI / 2;;
     }
 
-    if(followBackward) heading -= PI;
     let curvature = this.findLookaheadCurvature(currentPos, heading, finalLookPoint);
+    // if(followBackward) curvature = -curvature;
 
     // finished if on path, closest point is target, if lookahead is target, and if distance to
     // point is closer than a segment width
-    this.isFinished =(closestIndex >= path.length - 1);
+    this.isFinished = (closestIndex >= path.length - 1);
 
     let targetVel = 0;
     if(onPath) {
@@ -94,8 +94,8 @@ class PurePursuit {
         leftVel = this.computeLeftVel(targetVel, curvature, this.robotTrack);
         rightVel = this.computeRightVel(targetVel, curvature, this.robotTrack);
       } else {
-        leftVel = -this.computeRightVel(targetVel, curvature, this.robotTrack);
-        rightVel = -this.computeLeftVel(targetVel, curvature, this.robotTrack);
+        leftVel = -this.computeLeftVel(targetVel, curvature, this.robotTrack);
+        rightVel = -this.computeRightVel(targetVel, curvature, this.robotTrack);
       }
     }
 
@@ -171,7 +171,7 @@ class PurePursuit {
 
 
   findLookahead(currentPos) {
-    
+
     // used for optimizing number of intersection searches
     let lastIntersect = 0;
 
