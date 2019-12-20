@@ -175,6 +175,11 @@ class PurePursuit {
     // used for optimizing number of intersection searches
     let lastIntersect = 0;
 
+    if(this.lastLookIndex == 0 && Vector.dist(currentPos, this.path[this.path.length - 1].vector()) < this.lookDistance) {
+      this.lastLookIndex = this.path.length - 2;
+      this.lastLookT = 1;
+    }
+
     // loop through every segment looking for intersection
     for(let i = Math.max(this.lastLookIndex, this.lastClosestIndex); i < this.path.length - 1; i++) {
       let segmentStart = this.path[i].vector();
