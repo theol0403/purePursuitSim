@@ -17,7 +17,8 @@ let path = [];
 
 function main() {
   maintainCanvas();
-  
+
+  let test = new QuinticPolynomial(1, 0, 0, 4, 0, 0, 5);
   points.push(new Vector(1, 1));
   points.push(new Vector(5, 4));
   points.push(new Vector(9, 2));
