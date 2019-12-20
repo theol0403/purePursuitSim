@@ -137,10 +137,36 @@ class QuinticSegmentPlanner {
 
     for(let i = 0; i < x.length; i++) {
       let p = new PathPoint(x[i], y[i]);
-      p.setVelocity(v[i]);
       path.push(p);
     }
 
     return path;
+  }
+}
+
+class QuinticPathPlanner {
+
+  constructor(points, maxAccel, maxJerk, dt=2) {
+    if(points.length == 2) {
+      let [p1, p2] = points;
+      let segment = new QuinticSegmentPlanner(p1.x, p1.y, p1.theta, p1.vel, p1.accel,
+                                          p2.x, p2.y, p2.theta, p2.vel, p2.accel, maxAccel, maxJerk, dt);
+
+      this.path = segment.getPath();
+    } else {
+      this.path = [];
+      for(let i = 0; i < points.length - 1; i++) {
+        let p1 = points[i];
+        let p2 = points[i+1];
+        let segment = new QuinticSegmentPlanner(p1.x, p1.y, p1.theta, p1.vel, p1.accel,
+                                                p2.x, p2.y, p2.theta, p2.vel, p2.accel, maxAccel, maxJerk, dt);
+        
+        this.path = this.path.concat(segment.getPath());
+      }
+    }
+  }
+
+  getPath() {
+    return this.path;
   }
 }

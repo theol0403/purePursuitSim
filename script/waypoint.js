@@ -12,4 +12,8 @@ class WayPoint {
   getCoords() {
     return new Vector(x, y);
   }
+
+  vector() {
+    return new Vector(x, y);
+  }
 }

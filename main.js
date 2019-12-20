@@ -14,13 +14,15 @@ const turnK = 20;
 let points = [];
 let bots = [];
 let path = [];
-let test = new QuinticSegmentPlanner(1, 1, Math.PI/2, 0.01, 0, 8, 4, Math.PI, 0.03, 0, 50, 35, 1.5);
+let waypoints = [new WayPoint(1, 1, 0, 0.04, 0), new WayPoint(4, 4, Math.PI/2, 0.02, 0), new WayPoint(7, 4, 0, 0.03 , 0), new WayPoint(2, 2, Math.PI/2 + 0.3, 0.03, 0)];
+let test = new QuinticPathPlanner(waypoints, 15, 25, 3);
 
 function main() {
   maintainCanvas();
 
   points.push(new Vector(1, 1));
   bots.push(new PurePursuit(new Vector(1, 1)));
+  path = test.getPath();; 
   animate();
 }
 
@@ -35,10 +37,9 @@ function animate() {
   // path = insertPoints(points, sliders.resolution);
   // path = smoothen(path, 0.25, 1e-10);
 
-  // path = computeCurvatures(path);
-  // path = computeVelocity(path, maxVel, maxAccel, turnK);
+  path = computeCurvatures(path);
+  path = computeVelocity(path, maxVel, maxAccel, turnK);
 
-  path = test.getPath();
 
   bots.forEach((bot, i) => {
     bot.setPath(path);
