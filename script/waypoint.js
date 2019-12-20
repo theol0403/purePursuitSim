@@ -1,10 +1,11 @@
 
 class WayPoint {
 
-  constructor(x, y, theta, accel) {
+  constructor(x, y, theta, vel, accel) {
     this.x = x;
     this.y = y;
     this.theta = theta;
+    this.vel = vel;
     this.accel = accel;
   }
 
