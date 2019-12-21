@@ -1,11 +1,9 @@
 
-// TODO get rid of these somehow
-const minTime = 3;
-const maxtime = 100;
-
 class QuinticPolynomial {
   
-  constructor(xstart, vstart, astart, xend, vend, aend, T) {
+  constructor(xstart, vstart, astart, xend, vend, aend) {
+    let T = 1;
+
     this.xs = xstart;
     this.vs = vstart;
     this.as = astart;
@@ -41,38 +39,11 @@ class QuinticPolynomial {
 
     return xt;
   }
-
-  calcFirstDeriv(t) {
-    let xt = 0;
-    for(let power = 1; power < 6; power ++) {
-      xt += power * this.coeffs[power] * Math.pow(t, power - 1);
-    }
-
-    return xt;
-  }
-
-  calcSecondDeriv(t) {
-    let xt = 0;
-    for(let power = 2; power < 6; power ++) {
-      xt += power * (power - 1) * this.coeffs[power] * Math.pow(t, power - 2);
-    }
-
-    return xt;
-  }
-
-  calcThirdDeriv(t) {
-    let xt = 0;
-    for(let power = 3; power < 6; power ++) {
-      xt += power * (power - 1) * (power - 2) * this.coeffs[power] * Math.pow(t, power - 3);
-    }
-
-    return xt;
-  }
 }
 
 class QuinticSegmentPlanner {
 
-  constructor(sx, sy, syaw, sv, sa, gx, gy, gyaw, gv, ga, maxA, maxJ, dt) {
+  constructor(sx, sy, syaw, sv, sa, gx, gy, gyaw, gv, ga, dt) {
     let vxs = sv * Math.cos(syaw);
     let vys = sv * Math.sin(syaw);
     let vxg = gv * Math.cos(gyaw);
@@ -83,60 +54,23 @@ class QuinticSegmentPlanner {
     let axg = ga * Math.cos(gyaw);
     let ayg = ga * Math.sin(gyaw);
     
-    for(let T = minTime; T <= maxtime; T += minTime) {
-      let xqp = new QuinticPolynomial(sx, vxs, axs, gx, vxg, axg, T);
-      let yqp = new QuinticPolynomial(sy, vys, ays, gy, vyg, ayg, T);
+    let xqp = new QuinticPolynomial(sx, vxs, axs, gx, vxg, axg);
+    let yqp = new QuinticPolynomial(sy, vys, ays, gy, vyg, ayg);
 
-      let time = [];
-      let rx = [];
-      let ry = [];
-      let ryaw = [];
-      let rv = [];
-      let ra = [];
-      let rj = [];
+    this.rx = [];
+    this.ry = [];
 
-      for(let t = 0; t <= T + dt; t += dt) {
-        time.push(t);
-        rx.push(xqp.calcPoint(t));
-        ry.push(yqp.calcPoint(t));
-
-        let vx = xqp.calcFirstDeriv(t);
-        let vy = yqp.calcFirstDeriv(t);
-        rv.push(math.hypot(vx, vy));
-        ryaw.push(Math.atan2(vy, vx));
-
-        let ax = xqp.calcSecondDeriv(t);
-        let ay = yqp.calcSecondDeriv(t);
-        let a = math.hypot(ax, ay);
-        if(rv.length >=2 && rv[rv.length-1] - rv[rv.length-2] < 0) {
-          a *= -1;
-        }
-        ra.push(a);
-
-        let jx = xqp.calcThirdDeriv(t);
-        let jy = yqp.calcThirdDeriv(t);
-        let j = math.hypot(jx, jy);
-        if(ra.length >=2 && ra[ra.length-1] - ra[ra.length-2] < 0) {
-          j *= -1;
-        }
-        rj.push(j);
-      }
-
-      if(Math.max(math.abs(ra)) <= maxA && Math.max(math.abs(rj)) <= maxJ) {
-        console.log('path found');
-        break;
-      }
-
-      this.results = [time, rx, ry, ryaw, rv, ra, rj];
+    for(let t = 0; t <= 1; t += dt) {
+      this.rx.push(xqp.calcPoint(t));
+      this.ry.push(yqp.calcPoint(t));
     }
   }
 
   getPath() {
     let path = []
-    let [t, x, y, theta, v, a, j] = this.results;
 
-    for(let i = 0; i < x.length; i++) {
-      let p = new PathPoint(x[i], y[i]);
+    for(let i = 0; i < this.rx.length; i++) {
+      let p = new PathPoint(this.rx[i], this.ry[i]);
       path.push(p);
     }
 
@@ -146,11 +80,11 @@ class QuinticSegmentPlanner {
 
 class QuinticPathPlanner {
 
-  constructor(points, maxAccel, maxJerk, dt=2) {
+  constructor(points, dt=0.01) {
     if(points.length == 2) {
       let [p1, p2] = points;
       let segment = new QuinticSegmentPlanner(p1.x, p1.y, p1.theta, p1.vel, p1.accel,
-                                          p2.x, p2.y, p2.theta, p2.vel, p2.accel, maxAccel, maxJerk, dt);
+                                              p2.x, p2.y, p2.theta, p2.vel, p2.accel, dt);
 
       this.path = segment.getPath();
     } else {
@@ -159,7 +93,7 @@ class QuinticPathPlanner {
         let p1 = points[i];
         let p2 = points[i+1];
         let segment = new QuinticSegmentPlanner(p1.x, p1.y, p1.theta, p1.vel, p1.accel,
-                                                p2.x, p2.y, p2.theta, p2.vel, p2.accel, maxAccel, maxJerk, dt);
+                                                p2.x, p2.y, p2.theta, p2.vel, p2.accel, dt);
         
         this.path = this.path.concat(segment.getPath());
       }
