@@ -318,7 +318,7 @@ function click(e) {
       points.splice(path[nodeIndex].segment + 1, 0, lastCoord);
       move(e);
     } else if (!hovering) {
-      points.push(lastCoord);
+      points.push(new WayPoint(lastCoord.x, lastCoord.y, 1, 0));
       // dragging = true;
       move(e);
     }
@@ -389,7 +389,8 @@ function move(e) {
   });
   } else {
     lastCoord = canvasEventToLocalCoord(e);
-    points[dragIndex] = lastCoord;
+    points[dragIndex].x = lastCoord.x;
+    points[dragIndex].y = lastCoord.y;
   }
 
 
@@ -458,13 +459,16 @@ function keyup(e) {
 let scrollRatio = 5;
 
 function zoom(e) {
-  if (e.ctrlKey) {
+  if(e.ctrlKey) {
     e.preventDefault();
-    if (e.originalEvent.detail > 0) {
+    if(e.originalEvent.detail > 0) {
       canvasScale -= scrollRatio;
     } else {
       canvasScale += scrollRatio;
     }
+  } else if(hovering) {
+    points[dragIndex].theta += 0.2 * sgn(e.originalEvent.detail);
+    console.log(e);
   }
 }
 
