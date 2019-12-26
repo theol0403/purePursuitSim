@@ -1,5 +1,4 @@
 
-
 /**
  * Pursuit Constants
  */
@@ -14,15 +13,13 @@ const turnK = 20;
 let points = [];
 let bots = [];
 let path = [];
-let waypoints = [new WayPoint(1, 1, 0, 4), new WayPoint(4, 4, Math.PI/2, 2), new WayPoint(7, 4, 0, 2), new WayPoint(2, 2, Math.PI/2 + 0.3, 3)];
-let test = new QuinticPathPlanner(waypoints);
 
 function main() {
   maintainCanvas();
 
-  points.push(new Vector(1, 1));
+  points.push(new Vector(1, 1), new Vector(5, 5));
   bots.push(new PurePursuit(new Vector(1, 1)));
-  path = test.getPath();; 
+
   animate();
 }
 
@@ -31,11 +28,15 @@ function animate() {
 
   maintainCanvas();
 
+  let waypoints = [];
+  points.forEach(p => {waypoints.push(new WayPoint(p.x, p.y, 0, sliders.resolution))});
+
+  let test = new QuinticPathPlanner(waypoints);
+  path = test.getPath();
+
   /**
    * Pure Pursuit Algorithm
    */
-  // path = insertPoints(points, sliders.resolution);
-  // path = smoothen(path, 0.25, 1e-10);
 
   path = computeCurvatures(path);
   path = computeVelocity(path, maxVel, maxAccel, turnK);
