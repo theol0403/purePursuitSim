@@ -1,13 +1,11 @@
 
 class WayPoint {
 
-  constructor(x, y, theta, vel, accel) {
+  constructor(x, y, theta, vel) {
     this.x = x;
     this.y = y;
     this.theta = theta;
-    this.vel = vel;
-    this.accel = accel;
-  }
+    this.vel = vel;  }
 
   getCoords() {
     return new Vector(x, y);

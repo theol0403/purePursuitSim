@@ -1,26 +1,23 @@
 
 class QuinticPolynomial {
   
-  constructor(xstart, vstart, astart, xend, vend, aend) {
+  constructor(xstart, vstart, xend, vend) {
     let T = 1;
 
     this.xs = xstart;
     this.vs = vstart;
-    this.as = astart;
     this.xe = xend;
     this.ve = vend;
-    this.ae = aend;
     
     this.a0 = this.xs;
     this.a1 = this.vs;
-    this.a2 = this.as / 2.0;
 
     let A = math.matrix([[Math.pow(T, 3), Math.pow(T, 4), Math.pow(T, 5)],
                          [3 * T*T, 4 * Math.pow(T, 3), 5 * Math.pow(T, 4)],
                          [6 * T, 12 * T*T, 20 * Math.pow(T, 3)]]);
-    let b = math.matrix([[this.xe - this.a0 - this.a1 * T - this.a2 * T*T],
-                         [this.ve - this.a1 - 2 * this.a2 * T],
-                         [this.ae - 2 * this.a2]]);
+    let b = math.matrix([[this.xe - this.a0 - this.a1 * T],
+                         [this.ve - this.a1],
+                         [0]]);
 
     let x = math.lusolve(A, b);
 
@@ -28,7 +25,7 @@ class QuinticPolynomial {
     this.a4 = math.subset(x, math.index(1, 0));
     this.a5 = math.subset(x, math.index(2, 0));
 
-    this.coeffs = [this.a0, this.a1, this.a2, this.a3, this.a4, this.a5];
+    this.coeffs = [this.a0, this.a1, 0, this.a3, this.a4, this.a5];
   }
 
   calcPoint(t) {
@@ -43,19 +40,14 @@ class QuinticPolynomial {
 
 class QuinticSegmentPlanner {
 
-  constructor(sx, sy, syaw, sv, sa, gx, gy, gyaw, gv, ga, dt) {
+  constructor(sx, sy, syaw, sv, gx, gy, gyaw, gv, dt) {
     let vxs = sv * Math.cos(syaw);
     let vys = sv * Math.sin(syaw);
     let vxg = gv * Math.cos(gyaw);
     let vyg = gv * Math.sin(gyaw);
-
-    let axs = sa * Math.cos(syaw);
-    let ays = sa * Math.sin(syaw);
-    let axg = ga * Math.cos(gyaw);
-    let ayg = ga * Math.sin(gyaw);
     
-    let xqp = new QuinticPolynomial(sx, vxs, axs, gx, vxg, axg);
-    let yqp = new QuinticPolynomial(sy, vys, ays, gy, vyg, ayg);
+    let xqp = new QuinticPolynomial(sx, vxs, gx, vxg);
+    let yqp = new QuinticPolynomial(sy, vys, gy, vyg);
 
     this.rx = [];
     this.ry = [];
@@ -83,8 +75,8 @@ class QuinticPathPlanner {
   constructor(points, dt=0.01) {
     if(points.length == 2) {
       let [p1, p2] = points;
-      let segment = new QuinticSegmentPlanner(p1.x, p1.y, p1.theta, p1.vel, p1.accel,
-                                              p2.x, p2.y, p2.theta, p2.vel, p2.accel, dt);
+      let segment = new QuinticSegmentPlanner(p1.x, p1.y, p1.theta, p1.vel,
+                                              p2.x, p2.y, p2.theta, p2.vel, dt);
 
       this.path = segment.getPath();
     } else {
@@ -92,8 +84,8 @@ class QuinticPathPlanner {
       for(let i = 0; i < points.length - 1; i++) {
         let p1 = points[i];
         let p2 = points[i+1];
-        let segment = new QuinticSegmentPlanner(p1.x, p1.y, p1.theta, p1.vel, p1.accel,
-                                                p2.x, p2.y, p2.theta, p2.vel, p2.accel, dt);
+        let segment = new QuinticSegmentPlanner(p1.x, p1.y, p1.theta, p1.vel,
+                                                p2.x, p2.y, p2.theta, p2.vel, dt);
         
         this.path = this.path.concat(segment.getPath());
       }

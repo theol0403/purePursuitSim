@@ -14,7 +14,7 @@ const turnK = 20;
 let points = [];
 let bots = [];
 let path = [];
-let waypoints = [new WayPoint(1, 1, 0, 4, 0), new WayPoint(4, 4, Math.PI/2, 2, 0), new WayPoint(7, 4, 0, 2 , 0), new WayPoint(2, 2, Math.PI/2 + 0.3, 3, 0)];
+let waypoints = [new WayPoint(1, 1, 0, 4), new WayPoint(4, 4, Math.PI/2, 2), new WayPoint(7, 4, 0, 2), new WayPoint(2, 2, Math.PI/2 + 0.3, 3)];
 let test = new QuinticPathPlanner(waypoints);
 
 function main() {
