@@ -4,19 +4,11 @@ class QuinticPolynomial {
   constructor(xstart, vstart, xend, vend) {
     let T = 1;
 
-    this.xs = xstart;
-    this.vs = vstart;
-    this.xe = xend;
-    this.ve = vend;
-    
-    this.a0 = this.xs;
-    this.a1 = this.vs;
-
     let A = math.matrix([[Math.pow(T, 3), Math.pow(T, 4), Math.pow(T, 5)],
                          [3 * T*T, 4 * Math.pow(T, 3), 5 * Math.pow(T, 4)],
                          [6 * T, 12 * T*T, 20 * Math.pow(T, 3)]]);
-    let b = math.matrix([[this.xe - this.a0 - this.a1 * T],
-                         [this.ve - this.a1],
+    let b = math.matrix([[xend - xstart - vstart * T],
+                         [vend - vstart],
                          [0]]);
 
     let x = math.lusolve(A, b);
@@ -25,7 +17,7 @@ class QuinticPolynomial {
     this.a4 = math.subset(x, math.index(1, 0));
     this.a5 = math.subset(x, math.index(2, 0));
 
-    this.coeffs = [this.a0, this.a1, 0, this.a3, this.a4, this.a5];
+    this.coeffs = [xstart, vstart, 0, this.a3, this.a4, this.a5];
   }
 
   calcPoint(t) {
