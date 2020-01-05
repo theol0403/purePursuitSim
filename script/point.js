@@ -6,7 +6,7 @@ class PathPoint {
     this.distance = 0;
     this.velocity = 0;
     this.curvature = 0;
-    this.segment = 0;
+    this.segmentIndex = 0;
   }
 
   x() {
@@ -33,7 +33,7 @@ class PathPoint {
     this.curvature = icurvature;
   }
 
-  setSegment(isegment) {
-    this.segment = isegment;
+  setSegmentIndex(isegmentIndex) {
+    this.segmentIndex = isegmentIndex;
   }
 }

@@ -17,7 +17,7 @@ function insertPoints(points, resolution) {
       let xNew = start.x + step.x * j;
       let yNew = start.y + step.y * j;
       let newPoint = new PathPoint(xNew, yNew);
-      newPoint.setSegment(i);
+      newPoint.setSegmentIndex(i);
       path.push(newPoint);
     }
   }

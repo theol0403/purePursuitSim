@@ -34,7 +34,7 @@ const marginOffset = 9; //correction for canvas choords vs window choords. relat
 const waypointWidth = 4;
 const pointWidth = 2;
 
-let sliders = {resolution: 0, lookahead: 0};
+let sliders = {resolution: 0, scalar: 0, lookahead: 0};
 
 ///////////////////////
 // Utility Functions //
@@ -45,14 +45,14 @@ function maintainCanvas() {
   c.lineWidth = 1;
 
   /* slider value calculations */
-  sliders.resolution = slider1.value / 1000;
+  sliders.resolution = slider1.value / 10000;
   slider1_val.innerHTML = sliders.resolution;
 
-  sliders.lookahead = slider2.value / 1000;
-  slider2_val.innerHTML = sliders.lookahead;
+  sliders.scalar = slider2.value / 500;
+  slider2_val.innerHTML = sliders.scalar;
 
-  // sliders.tolerance = Math.pow(10, -slider3.value / 100) * 100;
-  // slider3_val.innerHTML = sliders.tolerance;
+  sliders.lookahead = slider3.value / 1000;
+  slider3_val.innerHTML = sliders.lookahead;
 
   if (showRect) {
     c.beginPath();
@@ -315,10 +315,10 @@ function click(e) {
     if (e.ctrlKey) {
       dragIndex = -2;
     } else if(nodeIndex != -1 && !hovering) {
-      points.splice(path[nodeIndex].segment + 1, 0, lastCoord);
+      points.splice(path[nodeIndex].segmentIndex + 1, 0, new WayPoint(lastCoord.x, lastCoord.y, 1));
       move(e);
     } else if (!hovering) {
-      points.push(lastCoord);
+      points.push(new WayPoint(lastCoord.x, lastCoord.y, 1));
       // dragging = true;
       move(e);
     }
@@ -389,7 +389,8 @@ function move(e) {
   });
   } else {
     lastCoord = canvasEventToLocalCoord(e);
-    points[dragIndex] = lastCoord;
+    points[dragIndex].x = lastCoord.x;
+    points[dragIndex].y = lastCoord.y;
   }
 
 
@@ -458,13 +459,15 @@ function keyup(e) {
 let scrollRatio = 5;
 
 function zoom(e) {
-  if (e.ctrlKey) {
+  if(e.ctrlKey) {
     e.preventDefault();
-    if (e.originalEvent.detail > 0) {
+    if(e.originalEvent.detail > 0) {
       canvasScale -= scrollRatio;
     } else {
       canvasScale += scrollRatio;
     }
+  } else if(hovering) {
+    points[dragIndex].theta += 0.2 * sgn(e.originalEvent.detail);
   }
 }
 
