@@ -34,7 +34,7 @@ const marginOffset = 9; //correction for canvas choords vs window choords. relat
 const waypointWidth = 4;
 const pointWidth = 2;
 
-let sliders = {resolution: 0, lookahead: 0};
+let sliders = {scalar: 0, lookahead: 0};
 
 ///////////////////////
 // Utility Functions //
@@ -45,8 +45,8 @@ function maintainCanvas() {
   c.lineWidth = 1;
 
   /* slider value calculations */
-  sliders.resolution = slider1.value / 50;
-  slider1_val.innerHTML = sliders.resolution;
+  sliders.scalar = slider1.value / 1000;
+  slider1_val.innerHTML = sliders.scalar;
 
   sliders.lookahead = slider2.value / 1000;
   slider2_val.innerHTML = sliders.lookahead;

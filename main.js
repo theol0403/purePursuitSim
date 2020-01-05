@@ -28,7 +28,7 @@ function animate() {
 
   maintainCanvas();
 
-  let test = new QuinticPathPlanner(points);
+  let test = new QuinticPathPlanner(points, 0.01, sliders.scalar);
   path = test.getPath();
 
   /**
