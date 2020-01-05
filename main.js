@@ -10,15 +10,18 @@ const turnK = 20;
 /**
  * Starting points
  */
-let points = [];
+let points = [new WayPoint(1, 1, 0, 1), new WayPoint(5, 5, 0, 1)];
 let bots = [];
 let path = [];
+
+let test = new QuinticSpline(points);
 
 function main() {
   maintainCanvas();
 
-  points.push(new WayPoint(1, 1, 0, 1), new WayPoint(5, 5, 0, 1));
+  // points.push(new WayPoint(1, 1, 0, 1), new WayPoint(5, 5, 0, 1));
   bots.push(new PurePursuit(new Vector(1, 1)));
+  console.log(test.coeffs);
 
   animate();
 }
@@ -33,8 +36,8 @@ function animate() {
     p.vel = sliders.resolution;
   });
 
-  let test = new QuinticPathPlanner(points);
-  path = test.getPath();
+  // let test = new QuinticPathPlanner(points);
+  // path = test.getPath();
 
   /**
    * Pure Pursuit Algorithm

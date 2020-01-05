@@ -11,7 +11,7 @@ class QuinticSpline {
   _generateControlVectors() {
     let vectors = [];
     
-    for(let i = 0; i < length(this.waypoints) - 1; i++) {
+    for(let i = 0; i < this.waypoints.length - 1; i++) {
       let p0 = this.waypoints[i];
       let p1 = this.waypoints[i+1];
 
@@ -27,13 +27,13 @@ class QuinticSpline {
   _generateSplines() {
     let splines = [];
 
-    for(let i = 0; i < length(this.controlVectors) - 1; i++) {
+    for(let i = 0; i < this.controlVectors.length - 1; i++) {
       let xInitial = this.controlVectors[i].x;
       let yInitial = this.controlVectors[i].y;
       let xFinal = this.controlVectors[i+1].x;
       let yFinal = this.controlVectors[i+1].y;
 
-      splines.push(_this.generateSpline(xInitial, xFinal, yInitial, yFinal));
+      splines.push(this._generateSpline(xInitial, xFinal, yInitial, yFinal));
     }
 
     this.splines = splines;
@@ -45,14 +45,14 @@ class QuinticSpline {
   }
 
   _generateSpline(xInitial, xFinal, yInitial, yFinal) {
-    let coeffs = math.zeros([6, 6]);
+    let coeffs = math.zeros(6, 6);
 
     let hermite = [[ -6, -3, -0.5,   6, -3, 0.5],
                    [ 15,  8,  1.5, -15,  7,   1],
                    [-10, -6, -1.5,  10, -4, 0.5],
                    [  0,  0,  0.5,   0,  0,   0],
                    [  0,  1,    0,   0,  0,   0],
-                   [  1,  0,    0,   0,  0,  0]];
+                   [  1,  0,    0,   0,  0,   0]];
 
     let x = [[xInitial[0]], [xInitial[1]], [xInitial[2]], 
              [xFinal[0]], [xFinal[1]], [xFinal[2]]];
@@ -60,17 +60,17 @@ class QuinticSpline {
     let y = [[yInitial[0]], [yInitial[1]], [yInitial[2]], 
              [yFinal[0]], [yFinal[1]], [yFinal[2]]];
 
-    coeffs.subset(math.index(0), math.transpose(hermite * x));
-    coeffs.subset(math.index(1), math.transpose(hermite * y));
+    coeffs.subset(math.index(0, [0, 1, 2, 3, 4, 5]), math.transpose(math.multiply(hermite, x)));
+    coeffs.subset(math.index(1, [0, 1, 2, 3, 4, 5]), math.transpose(math.multiply(hermite, y)));
 
     for(let i = 0; i < 6; i++) {
-      coeffs.subset(math.index([2, 3], i), math.subset(coeffs, math.index([0, 1], i) * (5-i)));
+      coeffs.subset(math.index([2, 3], i), math.multiply(math.subset(coeffs, math.index([0, 1], i)), (5-i)));
     }
 
     for(let i = 0; i < 5; i ++) {
-      coeffs.subset(math.index([4, 5], i), math.subset(coeffs, math.index([2, 3], i) * (4-i)));
+      coeffs.subset(math.index([4, 5], i), math.multiply(math.subset(coeffs, math.index([2, 3], i)), (4-i)));
     }
 
-    this.coeffs = coeffs;
+    return coeffs;
   }
 }
