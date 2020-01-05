@@ -53,20 +53,20 @@ class PurePursuit {
     let projectedLookPoint = Vector.add(Vector.scalarMult(Vector.normalize(Vector.sub(lookPoint, currentPos)), this.lookDistance), currentPos);
     let finalLookPoint = projectedLookPoint;
 
-    let followBackward = false;
-    if(Vector.dist(currentPos, this.path[this.path.length - 1].vector()) > this.lookDistance) {
-      followBackward = this.followBackward;
-    } else{
-      let angleToLook = angleToPoint(lookPoint, currentPos, heading); 
-      followBackward = Math.abs(angleToLook) > Math.PI / 2;;
-    }
+    let endInLookahead =
+      Vector.dist(closestPoint.vector(), this.path[this.path.length - 1].vector()) < this.lookDistance &&
+      Vector.dist(currentPos, this.path[this.path.length - 1].vector()) < this.lookDistance;
 
-    let curvature = this.findLookaheadCurvature(currentPos, heading, finalLookPoint);
-    // if(followBackward) curvature = -curvature;
+    let curvature =
+      endInLookahead ? 0 : this.findLookaheadCurvature(currentPos, heading, finalLookPoint);
 
-    // finished if on path, closest point is target, if lookahead is target, and if distance to
-    // point is closer than a segment width
-    this.isFinished = (closestIndex >= path.length - 1);
+    let angleToEnd = Math.abs(angleToPoint(this.path[this.path.length - 1].vector(), currentPos, heading));
+    let pastEnd = this.followBackward ? angleToEnd < PI / 2 : angleToEnd > PI / 2;
+
+    let followBackward = this.followBackward;
+    if(endInLookahead) followBackward = angleToEnd > PI / 2;
+
+    this.isFinished = pastEnd && endInLookahead;
 
     let targetVel = 0;
     if(onPath) {
@@ -87,19 +87,19 @@ class PurePursuit {
     this.lastPos = currentPos;
     this.lastVelocity = targetVel;
 
-    let leftVel = 0;
-    let rightVel = 0;
+    let leftVel = this.computeLeftVel(targetVel, curvature, this.robotTrack);
+    let rightVel = this.computeRightVel(targetVel, curvature, this.robotTrack);
+
     if(!this.isFinished) {
       if(!followBackward) {
-        leftVel = this.computeLeftVel(targetVel, curvature, this.robotTrack);
-        rightVel = this.computeRightVel(targetVel, curvature, this.robotTrack);
+        this.bot.tank(leftVel / maxVel, rightVel / maxVel);
       } else {
-        leftVel = -this.computeLeftVel(targetVel, curvature, this.robotTrack);
-        rightVel = -this.computeRightVel(targetVel, curvature, this.robotTrack);
+        this.bot.tank(-leftVel / maxVel, -rightVel / maxVel);
       }
+    } else {
+      this.bot.tank(0, 0);
     }
 
-    this.bot.tank(leftVel/maxVel, rightVel/maxVel);
     this.bot.update();
 
     drawLookahead(this.bot.getCanvasPos(), lookPoint, this.lookDistance, finalLookPoint);
