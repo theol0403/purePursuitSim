@@ -315,7 +315,7 @@ function click(e) {
     if (e.ctrlKey) {
       dragIndex = -2;
     } else if(nodeIndex != -1 && !hovering) {
-      points.splice(path[nodeIndex].segment + 1, 0, lastCoord);
+      points.splice(path[nodeIndex].segment + 1, 0, new WayPoint(lastCoord.x, lastCoord.y, 1));
       move(e);
     } else if (!hovering) {
       points.push(new WayPoint(lastCoord.x, lastCoord.y, 1));
