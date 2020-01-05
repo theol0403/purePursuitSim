@@ -5,7 +5,6 @@ class WayPoint {
     this.x = x;
     this.y = y;
     this.theta = theta;
-    this.vel = 0;
   }
 
   getCoords() {

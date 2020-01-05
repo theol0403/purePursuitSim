@@ -318,7 +318,7 @@ function click(e) {
       points.splice(path[nodeIndex].segment + 1, 0, lastCoord);
       move(e);
     } else if (!hovering) {
-      points.push(new WayPoint(lastCoord.x, lastCoord.y, 1, 0));
+      points.push(new WayPoint(lastCoord.x, lastCoord.y, 1));
       // dragging = true;
       move(e);
     }
