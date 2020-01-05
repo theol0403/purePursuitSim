@@ -64,10 +64,10 @@ class QuinticSegmentPlanner {
 
 class QuinticPathPlanner {
 
-  constructor(points, dt=0.01, velocityScalar=1.5) {
+  constructor(points, dt=0.01, slopeScalar=0.8) {
     this.points = points;
     this.dt = dt;
-    this.velocityScalar = velocityScalar;
+    this.slopeScalar = slopeScalar;
     this._generateVelocities();
     this._generatePath();
   }
@@ -81,7 +81,7 @@ class QuinticPathPlanner {
       let p1 = this.points[i];
       let p2 = this.points[i+1];
 
-      let vel = 0.8 * Vector.dist(p1.vector(), p2.vector());
+      let vel = this.slopeScalar * Vector.dist(p1.vector(), p2.vector());
       p1.vel = vel;
 
       if(i == this.points.length - 2) {
