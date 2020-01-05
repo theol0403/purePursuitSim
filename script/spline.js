@@ -13,11 +13,11 @@ class QuinticPolynomial {
 
     let x = math.lusolve(A, b);
 
-    this.a3 = math.subset(x, math.index(0, 0));
-    this.a4 = math.subset(x, math.index(1, 0));
-    this.a5 = math.subset(x, math.index(2, 0));
+    let a3 = math.subset(x, math.index(0, 0));
+    let a4 = math.subset(x, math.index(1, 0));
+    let a5 = math.subset(x, math.index(2, 0));
 
-    this.coeffs = [xstart, vstart, 0, this.a3, this.a4, this.a5];
+    this.coeffs = [xstart, vstart, 0, a3, a4, a5];
   }
 
   calcPoint(t) {
