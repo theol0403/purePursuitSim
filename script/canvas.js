@@ -468,7 +468,6 @@ function zoom(e) {
     }
   } else if(hovering) {
     points[dragIndex].theta += 0.2 * sgn(e.originalEvent.detail);
-    console.log(e);
   }
 }
 
