@@ -104,7 +104,7 @@ class QuinticPathPlanner {
         let segment = new QuinticSegmentPlanner(p1, p2, this.dt);
         let segmentPath = segment.getPath();
         segmentPath.forEach(node => {
-          node.setSegment(i);
+          node.setSegmentIndex(i);
         });
         this.path = this.path.concat(segmentPath);
       }
