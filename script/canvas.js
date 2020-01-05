@@ -45,7 +45,7 @@ function maintainCanvas() {
   c.lineWidth = 1;
 
   /* slider value calculations */
-  sliders.scalar = slider1.value / 1000;
+  sliders.scalar = slider1.value / 500;
   slider1_val.innerHTML = sliders.scalar;
 
   sliders.lookahead = slider2.value / 1000;
