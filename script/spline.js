@@ -64,25 +64,47 @@ class QuinticSegmentPlanner {
 
 class QuinticPathPlanner {
 
-  constructor(points, dt=0.01) {
-    if(points.length == 2) {
-      let [p1, p2] = points;
-      let segment = new QuinticSegmentPlanner(p1, p2, dt);
-
-      this.path = segment.getPath();
-    } else {
-      this.path = [];
-      for(let i = 0; i < points.length - 1; i++) {
-        let p1 = points[i];
-        let p2 = points[i+1];
-        let segment = new QuinticSegmentPlanner(p1, p2, dt);
-
-        this.path = this.path.concat(segment.getPath());
-      }
-    }
+  constructor(points, dt=0.01, velocityScalar=1.5) {
+    this.points = points;
+    this.dt = dt;
+    this.velocityScalar = velocityScalar;
+    this._generateVelocities();
+    this._generatePath();
   }
 
   getPath() {
     return this.path;
+  }
+
+  _generateVelocities() {
+    for(let i = 0; i < this.points.length-1; i++) {
+      let p1 = this.points[i];
+      let p2 = this.points[i+1];
+
+      let vel = 0.8 * Vector.dist(p1.vector(), p2.vector());
+      p1.vel = vel;
+
+      if(i == this.points.length - 2) {
+        p2.vel = vel;
+      }
+    }
+  }
+
+  _generatePath() {
+    if(this.points.length == 2) {
+      let [p1, p2] = this.points;
+      let segment = new QuinticSegmentPlanner(p1, p2, this.dt);
+
+      this.path = segment.getPath();
+    } else {
+      this.path = [];
+      for(let i = 0; i < this.points.length - 1; i++) {
+        let p1 = this.points[i];
+        let p2 = this.points[i+1];
+        let segment = new QuinticSegmentPlanner(p1, p2, this.dt);
+
+        this.path = this.path.concat(segment.getPath());
+      }
+    }
   }
 }

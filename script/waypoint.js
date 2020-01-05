@@ -9,10 +9,10 @@ class WayPoint {
   }
 
   getCoords() {
-    return new Vector(x, y);
+    return new Vector(this.x, this.y);
   }
 
   vector() {
-    return new Vector(x, y);
+    return new Vector(this.x, this.y);
   }
 }
