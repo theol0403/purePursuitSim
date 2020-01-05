@@ -47,11 +47,11 @@ class PurePursuit {
 
     let closestIndex = this.findClosestIndex(currentPos);
     let closestPoint = this.path[closestIndex];
-    let onPath = (Vector.dist(currentPos, closestPoint.vector()) < this.lookDistance);
+    let onPath = Vector.dist(currentPos, closestPoint.vector()) <= this.lookDistance;
 
     let lookPoint = this.findLookahead(currentPos);
     let projectedLookPoint = Vector.add(Vector.scalarMult(Vector.normalize(Vector.sub(lookPoint, currentPos)), this.lookDistance), currentPos);
-    let finalLookPoint = onPath && Vector.dist(currentPos, lookPoint) < Vector.dist(currentPos, projectedLookPoint) ? lookPoint : projectedLookPoint;
+    let finalLookPoint = projectedLookPoint;
 
     let followBackward = false;
     if(Vector.dist(currentPos, this.path[this.path.length - 1].vector()) > this.lookDistance) {
@@ -61,13 +61,12 @@ class PurePursuit {
       followBackward = Math.abs(angleToLook) > Math.PI / 2;;
     }
 
-    if(followBackward) heading -= PI;
     let curvature = this.findLookaheadCurvature(currentPos, heading, finalLookPoint);
+    // if(followBackward) curvature = -curvature;
 
     // finished if on path, closest point is target, if lookahead is target, and if distance to
     // point is closer than a segment width
-    this.isFinished =
-    (closestIndex >= path.length - 1) ;
+    this.isFinished = (closestIndex >= path.length - 1);
 
     let targetVel = 0;
     if(onPath) {
@@ -95,8 +94,8 @@ class PurePursuit {
         leftVel = this.computeLeftVel(targetVel, curvature, this.robotTrack);
         rightVel = this.computeRightVel(targetVel, curvature, this.robotTrack);
       } else {
-        leftVel = -this.computeRightVel(targetVel, curvature, this.robotTrack);
-        rightVel = -this.computeLeftVel(targetVel, curvature, this.robotTrack);
+        leftVel = -this.computeLeftVel(targetVel, curvature, this.robotTrack);
+        rightVel = -this.computeRightVel(targetVel, curvature, this.robotTrack);
       }
     }
 
@@ -122,7 +121,15 @@ class PurePursuit {
     // then later the lookahead will be bumped so it's not behind closest
     // this makes it so the closest can consider pushing the lookahead forward
     // the reason it does not scan all options so that the closest won't catch a much further point in an intersection 
-    for (let i = closestIndex; i < this.lastLookIndex + 2; i++) {
+    let lastI = this.lastLookIndex + 2;
+
+    // if the end of the path is within the lookahead, we want to make sure that the closest point
+    // actually ends up being the end
+    if(Vector.dist(currentPos, this.path[this.path.length - 1].vector()) <= this.lookDistance) {
+      lastI = this.path.length;
+    }
+
+    for (let i = closestIndex; i < lastI; i++) {
       if(i >= this.path.length) break;
       let distance = Vector.dist(currentPos, this.path[i].vector());    
       if(distance < closestDist) {
@@ -165,15 +172,13 @@ class PurePursuit {
 
   findLookahead(currentPos) {
 
-    // return the end of the path if it is within the lookahead
-    if(Vector.dist(currentPos, this.path[this.path.length - 1].vector()) <= this.lookDistance) {
-      this.lastLookIndex = this.path.length - 2;
-      this.lastLookT = 1;
-      return this.path[this.path.length - 1].vector();
-    }
-
     // used for optimizing number of intersection searches
     let lastIntersect = 0;
+
+    if(this.lastLookIndex == 0 && Vector.dist(currentPos, this.path[this.path.length - 1].vector()) < this.lookDistance) {
+      this.lastLookIndex = this.path.length - 2;
+      this.lastLookT = 1;
+    }
 
     // loop through every segment looking for intersection
     for(let i = Math.max(this.lastLookIndex, this.lastClosestIndex); i < this.path.length - 1; i++) {
