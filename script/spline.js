@@ -2,11 +2,10 @@
 class QuinticPolynomial {
   
   constructor(xstart, vstart, xend, vend) {
-    let T = 1;
 
-    let A = math.matrix([[Math.pow(T, 3), Math.pow(T, 4), Math.pow(T, 5)],
-                         [3 * T*T, 4 * Math.pow(T, 3), 5 * Math.pow(T, 4)],
-                         [6 * T, 12 * T*T, 20 * Math.pow(T, 3)]]);
+    let A = math.matrix([[1,  1,  1],
+                         [3,  4,  5],
+                         [6, 12, 20]]);
     let b = math.matrix([[xend - xstart - vstart * T],
                          [vend - vstart],
                          [0]]);
