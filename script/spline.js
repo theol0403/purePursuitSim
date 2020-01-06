@@ -2,20 +2,12 @@
 class QuinticPolynomial {
   
   constructor(xstart, vstart, xend, vend) {
-    let T = 1;
+    let u = xend - xstart - vstart;
+    let v = vend - vstart;
 
-    let A = math.matrix([[Math.pow(T, 3), Math.pow(T, 4), Math.pow(T, 5)],
-                         [3 * T*T, 4 * Math.pow(T, 3), 5 * Math.pow(T, 4)],
-                         [6 * T, 12 * T*T, 20 * Math.pow(T, 3)]]);
-    let b = math.matrix([[xend - xstart - vstart * T],
-                         [vend - vstart],
-                         [0]]);
-
-    let x = math.lusolve(A, b);
-
-    let a3 = math.subset(x, math.index(0, 0));
-    let a4 = math.subset(x, math.index(1, 0));
-    let a5 = math.subset(x, math.index(2, 0));
+    let a3 = 10 * u - 4 * v;
+    let a4 = -15 * u + 7 * v;
+    let a5 = 6 * u - 3 * v;
 
     this.coeffs = [xstart, vstart, 0, a3, a4, a5];
   }
