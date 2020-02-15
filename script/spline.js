@@ -40,9 +40,9 @@ class QuinticSegmentPlanner {
       let xqp = new QuinticPolynomial(s.x, vxs, g.x, vxg);
       let yqp = new QuinticPolynomial(s.y, vys, g.y, vyg);
 
-      for(let t = 0.0; (end ? t <= 1.0 : t < 1.0); t += 1.0 / steps) {
-        this.rx.push(xqp.calcPoint(t));
-        this.ry.push(yqp.calcPoint(t));
+      for(let i = 0; i <= (end ? steps : steps - 1); i++) {
+        this.rx.push(xqp.calcPoint(i / steps));
+        this.ry.push(yqp.calcPoint(i / steps));
       }
     }
   }
