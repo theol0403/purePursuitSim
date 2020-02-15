@@ -24,7 +24,7 @@ class QuinticPolynomial {
 
 class QuinticSegmentPlanner {
 
-  constructor(s, g, steps) {
+  constructor(s, g, steps, end) {
     this.rx = [];
     this.ry = [];
 
@@ -40,7 +40,7 @@ class QuinticSegmentPlanner {
       let xqp = new QuinticPolynomial(s.x, vxs, g.x, vxg);
       let yqp = new QuinticPolynomial(s.y, vys, g.y, vyg);
 
-      for(let t = 0.0; t <= 1.0; t += 1.0 / steps) {
+      for(let t = 0.0; (end ? t <= 1.0 : t < 1.0); t += 1.0 / steps) {
         this.rx.push(xqp.calcPoint(t));
         this.ry.push(yqp.calcPoint(t));
       }
@@ -97,11 +97,8 @@ class QuinticPathPlanner {
       for(let i = 0; i < this.points.length - 1; i++) {
         let p1 = this.points[i];
         let p2 = this.points[i+1];
-        let segment = new QuinticSegmentPlanner(p1, p2, this.steps);
+        let segment = new QuinticSegmentPlanner(p1, p2, this.steps, i == this.points.length - 2);
         let segmentPath = segment.getPath();
-        if(i != this.points.length - 2) {
-          segmentPath.pop();
-        }
         segmentPath.forEach(node => {
           node.setSegmentIndex(i);
         });
