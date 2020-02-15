@@ -45,7 +45,7 @@ function maintainCanvas() {
   c.lineWidth = 1;
 
   /* slider value calculations */
-  sliders.resolution = slider1.value;
+  sliders.resolution = slider1.value / 1;
   slider1_val.innerHTML = sliders.resolution;
 
   sliders.scalar = slider2.value / 500;
