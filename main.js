@@ -27,8 +27,8 @@ function animate() {
 
   maintainCanvas();
 
-  // let ipoints = calculateAngles(points);
-  let test = new QuinticPathPlanner(points, sliders.resolution, sliders.scalar);
+  let ipoints = calculateAngles(points);
+  let test = new QuinticPathPlanner(ipoints, sliders.resolution, sliders.scalar);
   path = test.getPath();
 
   /**
