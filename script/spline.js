@@ -28,29 +28,24 @@ class QuinticSegmentPlanner {
     this.rx = [];
     this.ry = [];
 
-    if(steps <= 0.0) {
-      this.rx.push(s.x);
-      this.ry.push(s.y);
-    } else {
-      let vxs = s.vel * Math.cos(s.theta);
-      let vys = s.vel * Math.sin(s.theta);
-      let vxg = g.vel * Math.cos(g.theta);
-      let vyg = g.vel * Math.sin(g.theta);
+    let vxs = s.vel * Math.cos(s.theta);
+    let vys = s.vel * Math.sin(s.theta);
+    let vxg = g.vel * Math.cos(g.theta);
+    let vyg = g.vel * Math.sin(g.theta);
 
-      let xqp = new QuinticPolynomial(s.x, vxs, g.x, vxg);
-      let yqp = new QuinticPolynomial(s.y, vys, g.y, vyg);
+    let xqp = new QuinticPolynomial(s.x, vxs, g.x, vxg);
+    let yqp = new QuinticPolynomial(s.y, vys, g.y, vyg);
 
-      for(let i = 0; i <= (end ? steps : steps - 1); i++) {
-        this.rx.push(xqp.calcPoint(i / steps));
-        this.ry.push(yqp.calcPoint(i / steps));
-      }
+    for(let i = 0; i <= (end ? steps : steps - 1); i++) {
+      this.rx.push(xqp.calcPoint(i / steps));
+      this.ry.push(yqp.calcPoint(i / steps));
     }
   }
 
   getPath() {
     let path = []
 
-    for(let i = 0; i < this.rx.length; i++) {
+      for(let i = 0; i < this.rx.length; i++) {
       let p = new PathPoint(this.rx[i], this.ry[i]);
       path.push(p);
     }
@@ -90,14 +85,14 @@ class QuinticPathPlanner {
   _generatePath() {
     if(this.points.length == 2) {
       let [p1, p2] = this.points;
-      let segment = new QuinticSegmentPlanner(p1, p2, this.steps);
+      let segment = new QuinticSegmentPlanner(p1, p2, this.steps, true);
       this.path = segment.getPath();
     } else {
       this.path = [];
       for(let i = 0; i < this.points.length - 1; i++) {
         let p1 = this.points[i];
         let p2 = this.points[i+1];
-        let segment = new QuinticSegmentPlanner(p1, p2, this.steps, i == this.points.length - 2);
+        let segment = new QuinticSegmentPlanner(p1, p2, this.steps, i >= this.points.length - 2);
         let segmentPath = segment.getPath();
         segmentPath.forEach(node => {
           node.setSegmentIndex(i);
