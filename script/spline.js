@@ -102,3 +102,15 @@ class QuinticPathPlanner {
     }
   }
 }
+
+const angleBetweenPointsSpline = (current, target) =>
+  rollAngle180(Math.atan2(target.x - current.x, target.y - current.y));
+
+function calculateAngles(path) {
+  path[0].theta = angleBetweenPointsSpline(path[0], path[1]);
+  for(let i = 1; i < path.length - 1; i++) {
+    path[i].theta = angleBetweenPointsSpline(path[i - 1], path[i + 1]);
+  }
+  path[path.length - 1].theta = angleBetweenPointsSpline(path[path.length - 2], path[path.length - 1]);
+  return path;
+}
