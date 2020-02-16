@@ -25,8 +25,8 @@ class Bot {
     ///////////
     // Clamp //
     ///////////
-    left = _.clamp(left, -1, 1);
-    right = _.clamp(right, -1, 1);
+    // left = _.clamp(left, -1, 1);
+    // right = _.clamp(right, -1, 1);
 
     ////////////////
     // Scale down //
@@ -40,16 +40,16 @@ class Bot {
     /////////////////////////////////
     // Subtract overflow from both //
     /////////////////////////////////
-    // let maxMag;
-    // if(Math.abs(left) > Math.abs(right)) {
-    //   maxMag = left;
-    // } else {
-    //   maxMag = right;
-    // }
-    // if(Math.abs(maxMag) > 1) {
-    //   left -= (Math.abs(maxMag) - 1) * sgn(maxMag);
-    //   right -= (Math.abs(maxMag) - 1) * sgn(maxMag);
-    // }
+    let maxMag;
+    if(Math.abs(left) > Math.abs(right)) {
+      maxMag = left;
+    } else {
+      maxMag = right;
+    }
+    if(Math.abs(maxMag) > 1) {
+      left -= (Math.abs(maxMag) - 1) * sgn(maxMag);
+      right -= (Math.abs(maxMag) - 1) * sgn(maxMag);
+    }
 
     this.spd = {l: left, r: right}; 
   }
