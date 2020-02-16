@@ -28,10 +28,10 @@ class QuinticSegmentPlanner {
     this.rx = [];
     this.ry = [];
 
-    let vxs = s.vel * Math.cos(s.theta);
-    let vys = s.vel * Math.sin(s.theta);
-    let vxg = g.vel * Math.cos(g.theta);
-    let vyg = g.vel * Math.sin(g.theta);
+    let vxs = s.vel * Math.sin(s.theta);
+    let vys = s.vel * Math.cos(s.theta);
+    let vxg = g.vel * Math.sin(g.theta);
+    let vyg = g.vel * Math.cos(g.theta);
 
     let xqp = new QuinticPolynomial(s.x, vxs, g.x, vxg);
     let yqp = new QuinticPolynomial(s.y, vys, g.y, vyg);
