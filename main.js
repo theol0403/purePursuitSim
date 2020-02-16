@@ -17,7 +17,7 @@ let path = [];
 function main() {
   maintainCanvas();
 
-  points.push(new WayPoint(1, 1, 0), new WayPoint(5, 5, 0), new WayPoint(7, 2, 3*Math.PI/2));
+  points.push(new WayPoint(1, 1, Math.PI/2), new WayPoint(5, 5, Math.PI/2), new WayPoint(7, 2, Math.PI/2));
   bots.push(new PurePursuit(new Vector(1, 1)));
 
   animate();
