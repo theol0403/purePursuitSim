@@ -94,6 +94,7 @@ class PurePursuit {
       if(!followBackward) {
         this.bot.tank(leftVel / maxVel, rightVel / maxVel);
       } else {
+        curvature *= -1;
         this.bot.tank(-leftVel / maxVel, -rightVel / maxVel);
       }
     } else {
