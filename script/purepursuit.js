@@ -5,6 +5,10 @@ const angleBetweenPoints = (target, current) =>
 const angleToPoint = (target, current, heading) =>
   rollAngle180(angleBetweenPoints(target, current) - heading);
 
+Array.prototype.back = function () {
+  return this[this.length - 1];
+};
+
 
 class PurePursuit {
 
@@ -54,13 +58,13 @@ class PurePursuit {
     let finalLookPoint = projectedLookPoint;
 
     let endInLookahead =
-      Vector.dist(closestPoint.vector(), this.path.slice(-1)[0].vector()) < this.lookDistance &&
-      Vector.dist(currentPos, this.path.slice(-1)[0].vector()) < this.lookDistance;
+      Vector.dist(closestPoint.vector(), this.path.back().vector()) < this.lookDistance &&
+      Vector.dist(currentPos, this.path.back().vector()) < this.lookDistance;
 
     let curvature =
       endInLookahead ? 0 : this.findLookaheadCurvature(currentPos, heading, finalLookPoint);
 
-    let angleToEnd = Math.abs(angleToPoint(this.path.slice(-1)[0].vector(), currentPos, heading));
+    let angleToEnd = Math.abs(angleToPoint(this.path.back().vector(), currentPos, heading));
     let pastEnd = this.followBackward ? angleToEnd < PI / 2 : angleToEnd > PI / 2;
 
     let followBackward = this.followBackward;
@@ -126,7 +130,7 @@ class PurePursuit {
 
     // if the end of the path is within the lookahead, we want to make sure that the closest point
     // actually ends up being the end
-    if (Vector.dist(currentPos, this.path.slice(-1)[0].vector()) <= this.lookDistance) {
+    if (Vector.dist(currentPos, this.path.back().vector()) <= this.lookDistance) {
       lastI = this.path.length;
     }
 
@@ -176,7 +180,7 @@ class PurePursuit {
     // used for optimizing number of intersection searches
     let lastIntersect = 0;
 
-    if (this.lastLookIndex == 0 && Vector.dist(currentPos, this.path.slice(-1)[0].vector()) < this.lookDistance) {
+    if (this.lastLookIndex == 0 && Vector.dist(currentPos, this.path.back().vector()) < this.lookDistance) {
       this.lastLookIndex = this.path.length - 2;
       this.lastLookT = 1;
     }
