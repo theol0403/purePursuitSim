@@ -58,8 +58,7 @@ class PurePursuit {
     let finalLookPoint = projectedLookPoint;
 
     let endInLookahead =
-      this.lastLookIndex >= this.path.length - 2 && Vector.dist(closestPoint.vector(), this.path.back().vector()) < this.lookDistance &&
-      Vector.dist(currentPos, this.path.back().vector()) < this.lookDistance;
+      this.lastLookIndex >= this.path.length - 2;
 
     let curvature =
       endInLookahead ? 0 : this.findLookaheadCurvature(currentPos, heading, finalLookPoint);
