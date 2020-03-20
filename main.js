@@ -17,7 +17,7 @@ let path = [];
 function main() {
   maintainCanvas();
 
-  points.push(new WayPoint(1, 1, Math.PI/2), new WayPoint(5, 5, Math.PI/2), new WayPoint(7, 2, Math.PI/2));
+  points.push(new WayPoint(1, 1, Math.PI / 2), new WayPoint(5, 5, Math.PI / 2), new WayPoint(7, 2, Math.PI / 2));
   bots.push(new PurePursuit(new Vector(1, 1)));
 
   animate();
@@ -42,10 +42,10 @@ function animate() {
   bots.forEach((bot, i) => {
     bot.setPath(path);
     bot.setLookDistance(sliders.lookahead);
-    bot.setRobotTrack(1/12.8);
+    bot.setRobotTrack(1 / 12.8);
 
     bot.update();
-    if(bot.isFinished) {
+    if (bot.isFinished) {
       bots.splice(i, 1);
     }
   });
