@@ -34,7 +34,7 @@ const marginOffset = 9; //correction for canvas choords vs window choords. relat
 const waypointWidth = 4;
 const pointWidth = 2;
 
-let sliders = {resolution: 0, scalar: 0, lookahead: 0};
+let sliders = { resolution: 0, scalar: 0, lookahead: 0 };
 
 ///////////////////////
 // Utility Functions //
@@ -72,10 +72,10 @@ function maintainCanvas() {
  */
 function perc2color(perc, min, max) {
   let base = max - min;
-  if (base == 0) { 
-    perc = 0; 
+  if (base == 0) {
+    perc = 0;
   } else {
-    perc = (perc - min) / base * 100; 
+    perc = (perc - min) / base * 100;
   }
   let r, g, b = 0;
   if (perc < 50) {
@@ -98,10 +98,10 @@ function perc2color(perc, min, max) {
  */
 function perc2multcolor(perc, min, max) {
   let base = max - min;
-  if (base == 0) { 
-    perc = 0; 
+  if (base == 0) {
+    perc = 0;
   } else {
-    perc = (perc - min) / base * 100; 
+    perc = (perc - min) / base * 100;
   }
   let r, g, b = 0;
   if (perc >= 0 && perc <= 20) {
@@ -150,13 +150,13 @@ function getAttr(array, compare, get) {
  * Scales coordenates from simulation coordenates to canvas coordenates
  */
 function localToCanvas(point) {
-  return { x: point.x * canvasScale, y: canvas.height - (point.y * canvasScale)};
+  return { x: point.x * canvasScale, y: canvas.height - (point.y * canvasScale) };
 }
 /**
  * Scales coordenates from canvas coordenates to simulation coordenates
  */
 function canvasToLocal(point) {
-  return { x: point.x / canvasScale, y: (canvas.height - point.y) / canvasScale};
+  return { x: point.x / canvasScale, y: (canvas.height - point.y) / canvasScale };
 }
 
 /**
@@ -197,10 +197,10 @@ let fullMax = 0;
 function drawPath(path, colorGet, min, max) {
 
   //curvature color calculations
-  if(min === true) {
+  if (min === true) {
     fullMin = Math.min(fullMin, getAttr(path, Math.min, colorGet));
     fullMax = Math.max(fullMax, getAttr(path, Math.max, colorGet));
-  } else if (min === undefined || min === false) { 
+  } else if (min === undefined || min === false) {
     //if min is not provided or is false
     fullMin = getAttr(path, Math.min, colorGet);
     fullMax = getAttr(path, Math.max, colorGet);
@@ -210,14 +210,14 @@ function drawPath(path, colorGet, min, max) {
   }
   c.lineWidth = "2";
   path.forEach((node, i) => {
-   let canvasX = node.x() * canvasScale;
-   let canvasY = node.y() * canvasScale;
-   let style = perc2multcolor(colorGet(node), fullMin, fullMax);
-   c.fillStyle = style;
-   c.strokeStyle = style;
+    let canvasX = node.x() * canvasScale;
+    let canvasY = node.y() * canvasScale;
+    let style = perc2multcolor(colorGet(node), fullMin, fullMax);
+    c.fillStyle = style;
+    c.strokeStyle = style;
     //draw points
     c.beginPath();
-    if(nodeIndex == i) {
+    if (nodeIndex == i) {
       c.arc(canvasX, canvas.height - canvasY, pointWidth * 2, 0, Math.PI * 2);
     } else {
       c.arc(canvasX, canvas.height - canvasY, pointWidth, 0, Math.PI * 2);
@@ -263,23 +263,23 @@ function drawClosest(currPos, closest) {
 function drawCurvature(curvature, p1, p2) {
   c.lineWidth = "0.5";
   c.strokeStyle = "#000"
-  if(Math.abs(curvature) < 0.005) 
+  if (Math.abs(curvature) < 0.005)
     curvature = 0.005;// * sgn(curvature);
 
-  let radius = Math.abs(1/curvature);
+  let radius = Math.abs(1 / curvature);
 
   let x3 = (p1.x + p2.x) / 2;
   let y3 = (p1.y + p2.y) / 2;
   let q = Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
 
   let b = Math.sqrt(Math.pow(radius, 2) - Math.pow(q / 2, 2));
-  let x = x3 - b * (p1.y - p2.y)/q * sgn(curvature);
-  let y = y3 - b * (p2.x - p1.x)/q * sgn(curvature);
+  let x = x3 - b * (p1.y - p2.y) / q * sgn(curvature);
+  let y = y3 - b * (p2.x - p1.x) / q * sgn(curvature);
 
-  let canvasPoint = localToCanvas({ x: x, y: y});
+  let canvasPoint = localToCanvas({ x: x, y: y });
 
   c.beginPath();
-  c.arc(canvasPoint.x, canvasPoint.y, Math.abs(1/curvature*canvasScale), 0, Math.PI * 2);
+  c.arc(canvasPoint.x, canvasPoint.y, Math.abs(1 / curvature * canvasScale), 0, Math.PI * 2);
   c.closePath();
   c.stroke();
 }
@@ -314,7 +314,7 @@ function click(e) {
   if (e.button == 0) {
     if (e.ctrlKey) {
       dragIndex = -2;
-    } else if(nodeIndex != -1 && !hovering) {
+    } else if (nodeIndex != -1 && !hovering) {
       points.splice(path[nodeIndex].segmentIndex + 1, 0, new WayPoint(lastCoord.x, lastCoord.y, 1));
       move(e);
     } else if (!hovering) {
@@ -344,9 +344,9 @@ function move(e) {
     lastCoord = canvasEventToLocalCoord(e);
     dragIndex = points.findIndex(function (node) {
       return lastCoord.x >= node.x - waypointWidth / canvasScale
-      && lastCoord.x <= node.x + waypointWidth / canvasScale
-      && lastCoord.y >= node.y - waypointWidth / canvasScale
-      && lastCoord.y <= node.y + waypointWidth / canvasScale;
+        && lastCoord.x <= node.x + waypointWidth / canvasScale
+        && lastCoord.y >= node.y - waypointWidth / canvasScale
+        && lastCoord.y <= node.y + waypointWidth / canvasScale;
     });
 
     if (e.ctrlKey) {
@@ -385,8 +385,8 @@ function move(e) {
         && goalY >= node.y
         && orginY <= node.y) {
         deleteIndexes.push(i);
-    }
-  });
+      }
+    });
   } else {
     lastCoord = canvasEventToLocalCoord(e);
     points[dragIndex].x = lastCoord.x;
@@ -397,9 +397,9 @@ function move(e) {
   /* node interaction */
   nodeIndex = path.findIndex(function (node) {
     return lastCoord.x >= node.x() - waypointWidth * 2 / canvasScale
-    && lastCoord.x <= node.x() + waypointWidth * 2 / canvasScale
-    && lastCoord.y >= node.y() - waypointWidth * 2 / canvasScale
-    && lastCoord.y <= node.y() + waypointWidth * 2 / canvasScale;
+      && lastCoord.x <= node.x() + waypointWidth * 2 / canvasScale
+      && lastCoord.y >= node.y() - waypointWidth * 2 / canvasScale
+      && lastCoord.y <= node.y() + waypointWidth * 2 / canvasScale;
   });
   if (nodeIndex == -1) {
     tooltip.style.opacity = "0";
@@ -408,9 +408,9 @@ function move(e) {
     tooltip.style.left = e.clientX + marginOffset + 'px';
     tooltip.style.top = e.clientY - marginOffset + 'px';
 
-    tooltip.innerHTML = 
-    "curvature: " + path[nodeIndex].curvature.toFixed(4) + 
-    "\nvelocity: " + path[nodeIndex].velocity.toFixed(4);
+    tooltip.innerHTML =
+      "curvature: " + path[nodeIndex].curvature.toFixed(4) +
+      "\nvelocity: " + path[nodeIndex].velocity.toFixed(4);
   }
 }
 
@@ -459,14 +459,14 @@ function keyup(e) {
 let scrollRatio = 5;
 
 function zoom(e) {
-  if(e.ctrlKey) {
+  if (e.ctrlKey) {
     e.preventDefault();
-    if(e.originalEvent.detail > 0) {
+    if (e.originalEvent.detail > 0) {
       canvasScale -= scrollRatio;
     } else {
       canvasScale += scrollRatio;
     }
-  } else if(hovering) {
+  } else if (hovering) {
     points[dragIndex].theta += 0.2 * sgn(e.originalEvent.detail);
   }
 }

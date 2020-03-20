@@ -55,5 +55,5 @@ class Vector {
   static normalize(vec1) {
     return new Vector(vec1.x / Vector.mag(vec1), vec1.y / Vector.mag(vec1));
   }
-  
+
 }

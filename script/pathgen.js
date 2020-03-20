@@ -8,7 +8,7 @@ function insertPoints(points, resolution) {
   for (let i = 0; i < numPoints - 1; i++) {
     let start = points[i];
     let end = points[i + 1];
-    
+
     let diff = Vector.sub(end, start); // start - end
     let numInsert = Math.ceil(Vector.mag(diff) / resolution); // number of points needed
     let step = Vector.scalarMult(diff, 1 / numInsert); // how much to increment each point
@@ -59,7 +59,7 @@ function computeSingleCurvature(prevPoint, point, nextPoint) {
   let triangleArea = Math.sqrt(semiPerimeter * (semiPerimeter - distOne) * (semiPerimeter - distTwo) * (semiPerimeter - distThree));
 
   let r = (productOfSides) / (4 * triangleArea);
-  let curvature = isNaN(1/r) ? 0 : 1/r;
+  let curvature = isNaN(1 / r) ? 0 : 1 / r;
   return curvature;
 }
 
@@ -75,7 +75,7 @@ function computeCurvatures(path) {
 
 
 function computeVelocity(path, maxVel, maxRate, k) {
-  path[path.length-1].setVelocity(0);
+  path[path.length - 1].setVelocity(0);
   for (let i = path.length - 1; i > 0; i--) {
     let start = path[i];
     let end = path[i - 1];

@@ -20,7 +20,7 @@ class Bot {
     this.spd = { l: 0, r: 0 };
   }
 
-  tank(left, right) { 
+  tank(left, right) {
 
     ///////////
     // Clamp //
@@ -41,17 +41,17 @@ class Bot {
     // Subtract overflow from both //
     /////////////////////////////////
     let maxMag;
-    if(Math.abs(left) > Math.abs(right)) {
+    if (Math.abs(left) > Math.abs(right)) {
       maxMag = left;
     } else {
       maxMag = right;
     }
-    if(Math.abs(maxMag) > 1) {
+    if (Math.abs(maxMag) > 1) {
       left -= (Math.abs(maxMag) - 1) * sgn(maxMag);
       right -= (Math.abs(maxMag) - 1) * sgn(maxMag);
     }
 
-    this.spd = {l: left, r: right}; 
+    this.spd = { l: left, r: right };
   }
 
   getLocalPos() {
@@ -94,7 +94,7 @@ class Bot {
     c.lineTo(
       this.pos.x + Math.cos(this.pos.a) * 15,
       this.pos.y + Math.sin(this.pos.a) * 15
-      );
+    );
     c.closePath();
     c.stroke();
 
@@ -104,7 +104,7 @@ class Bot {
     c.moveTo(
       this.pos.x + Math.cos(this.pos.a + Math.PI / 2) * 10,
       this.pos.y + Math.sin(this.pos.a + Math.PI / 2) * 10
-      );
+    );
     c.lineTo(
       this.pos.x +
       Math.cos(this.pos.a + Math.PI / 2) * 10 +
@@ -112,7 +112,7 @@ class Bot {
       this.pos.y +
       Math.sin(this.pos.a + Math.PI / 2) * 10 +
       this.spd.r * 20 * Math.sin(this.pos.a)
-      );
+    );
     c.closePath();
     c.stroke();
 
@@ -121,7 +121,7 @@ class Bot {
     c.moveTo(
       this.pos.x + Math.cos(this.pos.a - Math.PI / 2) * 10,
       this.pos.y + Math.sin(this.pos.a - Math.PI / 2) * 10
-      );
+    );
     c.lineTo(
       this.pos.x +
       Math.cos(this.pos.a - Math.PI / 2) * 10 +
@@ -129,7 +129,7 @@ class Bot {
       this.pos.y +
       Math.sin(this.pos.a - Math.PI / 2) * 10 +
       this.spd.l * 20 * Math.sin(this.pos.a)
-      );
+    );
     c.closePath();
     c.stroke();
   }

@@ -2,7 +2,7 @@
 class PathPoint {
 
   constructor(ix, iy) {
-    this.loc = [ ix, iy ];
+    this.loc = [ix, iy];
     this.distance = 0;
     this.velocity = 0;
     this.curvature = 0;
