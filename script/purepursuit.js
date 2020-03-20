@@ -126,13 +126,9 @@ class PurePursuit {
     // then later the lookahead will be bumped so it's not behind closest
     // this makes it so the closest can consider pushing the lookahead forward
     // the reason it does not scan all options so that the closest won't catch a much further point in an intersection 
-    let lastI = this.lastLookIndex + 2;
-
     // if the end of the path is within the lookahead, we want to make sure that the closest point
     // actually ends up being the end
-    if (Vector.dist(currentPos, this.path.back().vector()) <= this.lookDistance) {
-      lastI = this.path.length;
-    }
+    let lastI = Vector.dist(currentPos, this.path.back().vector()) > this.lookDistance ? this.lastLookIndex + 2 : this.path.length - 1;
 
     for (let i = closestIndex; i < lastI; i++) {
       if (i >= this.path.length) break;
